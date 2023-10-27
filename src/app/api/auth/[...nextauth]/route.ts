@@ -12,7 +12,7 @@ export const authOptions = {
     async jwt({ token, account }) {
       if (account) {
         token = Object.assign({}, token, {
-          access_token: account.access_token,
+          accessToken: account.access_token,
         });
       }
       return token;
@@ -20,9 +20,8 @@ export const authOptions = {
     async session({ session, token }) {
       if (session) {
         session = Object.assign({}, session, {
-          access_token: token.access_token,
+          accessToken: token.access_token,
         });
-        console.log(session);
       }
       return session;
     },
