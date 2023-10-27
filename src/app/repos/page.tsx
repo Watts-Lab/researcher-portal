@@ -11,6 +11,7 @@ export default async function ReposPage() {
         <p>
           Congratulations, {session.user?.name}, you are successfully logged in!
         </p>
+        <pre>{JSON.stringify(session, null, 2)}</pre>
       </div>
     );
   }

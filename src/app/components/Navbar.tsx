@@ -3,7 +3,7 @@ import Login from "./Login";
 
 export default function Navbar() {
   return (
-    <nav className="navbar bg-base-100">
+    <nav className="navbar bg-base-300">
       <Login />
     </nav>
   );
