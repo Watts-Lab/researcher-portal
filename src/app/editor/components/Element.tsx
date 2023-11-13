@@ -2,22 +2,22 @@
 A base wrapper for all the elements
 
 */
+import React from 'react'
 
-import React from "react";
 // import { useStageTimer, useStage } from "@empirica/core/player/classic/react";
-import { Prompt } from "./elements/Prompt";
-import { Separator } from "./elements/Separator";
-import { AudioElement } from "./elements/AudioElement";
-import { Survey } from "./elements/Survey";
-import { SubmitButton } from "./elements/SubmitButton";
-import { KitchenTimer } from "./elements/KitchenTimer";
-import { TrainingVideo } from "./elements/TrainingVideo";
-import { Qualtrics } from "./elements/Qualtrics";
+import Prompt from "../elements/Prompt";
+import Separator from "../elements/Separator";
+import AudioElement from "../elements/AudioElement";
+import Survey from "../elements/Survey";
+import SubmitButton from "../elements/SubmitButton";
+import KitchenTimer from "../elements/KitchenTimer";
+import TrainingVideo from "../elements/TrainingVideo";
+import Qualtrics from "../elements/Qualtrics";
 
 export function Element({ element, onSubmit }) {
   //   const stageTimer = useStageTimer();
   //   const stage = useStage();
-
+  console.log(element.type)
   switch (element.type) {
     case "audio":
       return <AudioElement file={element.file} />;
@@ -46,17 +46,15 @@ export function Element({ element, onSubmit }) {
       return <Survey surveyName={element.surveyName} onSubmit={onSubmit} />;
 
     case "timer":
-      if (stageTimer)
-        return (
-          <KitchenTimer
-            startTime={element.startTime || element.displayTime || 0}
-            endTime={
-              element.endTime || element.hideTime || stage?.get("duration")
-            }
-            warnTimeRemaining={element.warnTimeRemaining}
-          />
-        );
-      return undefined;
+      return (
+        <KitchenTimer
+          startTime={element.startTime || element.displayTime || 0}
+          endTime={
+            element.endTime || element.hideTime || ""
+          }
+          warnTimeRemaining={element.warnTimeRemaining}
+        />
+      );
 
     case "video":
       return <TrainingVideo url={element.url} />;

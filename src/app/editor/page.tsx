@@ -1,5 +1,6 @@
 import React from "react";
-// import CodeEditor from "./components/CodeEditor";
+import CodeEditor from "./components/CodeEditor";
+import Timeline from "./components/Timeline";
 
 export default function EditorPage({}) {
   return (
@@ -9,11 +10,11 @@ export default function EditorPage({}) {
           left top
         </div>
         <div id="leftColumnBottom" className="bg-red-500 m-5 h-1/2">
-          left bottom
+          <Timeline />
         </div>
       </div>
       <div id="rightColumn" className="bg-green-500 m-5 w-1/3">
-        {/* <CodeEditor /> */}
+        <CodeEditor />
         right
       </div>
     </div>

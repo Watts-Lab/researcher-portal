@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 // import styled from "styled-components";
 import { Button } from "./Button";
 import { parse, stringify } from "yaml";
+import Timeline from "./Timeline";
 // const ConfigEditor = styled.div`
 //   width: 40%;
 //   height: 100vh;
@@ -29,28 +30,30 @@ export default function CodeEditor() {
   function handleSave(e) {
     e.preventDefault();
     setCode(e.target.value);
-    localStorage.setItem("code", code);
-    const yamlObj = parse(code)[0];
-    //Parse obj to extract components
-    const gameStages = yamlObj["gameStages"]; //array of each stage
-    console.log(gameStages);
-    for (let i = 0; i < gameStages.length; i++) {
-      const stage = gameStages[i];
-      console.log(stage);
-      //stage has a name, duration, elements
-      const elts = stage.elements;
-      console.log(elts.length);
-
-      const eltComponents = [];
-      for (let j = 0; j < elts.length; j++) {
-        const elt = elts[j];
-        eltComponents.push(<Element elt handleChange />);
-      }
-      setElements(eltComponents);
-      localStorage.setItem("elements", elements);
-    }
+    // localStorage.setItem("code", code);
+    // const yamlObj = parse(code)[0];
+    // console.log(yamlObj)
+    // //Parse obj to extract components
+    // const gameStages = yamlObj["gameStages"]; //array of each stage
+    // console.log(gameStages);
+    // const stageElements = {}
+    // for (let i = 0; i < gameStages.length; i++) {
+    //   const stage = gameStages[i];
+    //   console.log(stage);
+    //   //stage has a name, duration, elements
+    //   const elts = stage.elements;
+    //   const eltComponents = [];
+    //   for (let j = 0; j < elts.length; j++) {
+    //     const elt = elts[j];
+    //     eltComponents.push(<Element key={j} element={elt} onSubmit={handleChange} />);
+    //   }
+    //   console.log(eltComponents)
+    //   stageElements[stage.name] = eltComponents
+    // }
+    // console.log(stageElements)
+    // localStorage.setItem("stageElements", JSON.stringify(stageElements))
+    // setElements(stageElements)
   }
-
   return (
     <div>
       <div
@@ -74,6 +77,9 @@ export default function CodeEditor() {
         <button className="btn btn-primary" onClick={handleSave}>
           Save
         </button>
+      </div>
+      <div>
+        {/* <Timeline /> */}
       </div>
     </div>
   );
