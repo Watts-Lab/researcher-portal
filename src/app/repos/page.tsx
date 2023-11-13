@@ -4,6 +4,7 @@ import { authOptions } from "@/api/auth/[...nextauth]/route";
 import { Octokit } from "octokit";
 
 export default async function ReposPage() {
+  // TODO: Should this whole page be async, or just some of the components?
   const session = await getServerSession(authOptions);
   // const client = await github();
 
@@ -19,7 +20,7 @@ export default async function ReposPage() {
   };
 
   if (session) {
-    const { accessToken } = session;
+    const { accessToken, userName } = session;
     const octokit = new Octokit({
       auth: accessToken,
     });
@@ -28,6 +29,12 @@ export default async function ReposPage() {
       per_page: 10,
     });
 
+    // https://docs.github.com/en/search-github/github-code-search/understanding-github-code-search-syntax#path-qualifier
+    const queryString = encodeURIComponent(
+      `path:deliberationLab.config.json user:${userName}`
+    );
+    const results = await octokit.rest.search.repos({ q: queryString });
+
     return (
       <div>
         <h1>Protected Content</h1>
@@ -35,6 +42,8 @@ export default async function ReposPage() {
           Congratulations, {session.user?.name}, you are successfully logged in!
         </p>
         <pre>{JSON.stringify(session, null, 2)}</pre>
+        <pre>{JSON.stringify(results, null, 2)}</pre>
+
         <div className="flex flex-col justify-center">
           {repos.data.map(renderRepoCard)}
         </div>
