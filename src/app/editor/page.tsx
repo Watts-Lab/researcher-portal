@@ -3,6 +3,8 @@ import React from "react";
 import { useResizable } from "react-resizable-layout";
 import DraggableSplitter from "../components/DraggableSplitter";
 // import CodeEditor from "./components/CodeEditor";
+import CodeEditor from "./components/CodeEditor";
+import Timeline from "./components/Timeline";
 
 export default function EditorPage({}) {
   const { position: codeWidth, separatorProps: codeSeparatorProps } =
@@ -36,8 +38,7 @@ export default function EditorPage({}) {
           className="shrink-0 bottom-0 overflow-x-auto scroll-smooth"
           style={{ height: timelineHeight }}
         >
-          <h1>Timeline</h1>
-          <p>{"Lorem Ipsum ".repeat(100)}</p>
+          <Timeline/>
         </div>
       </div>
 
@@ -48,19 +49,7 @@ export default function EditorPage({}) {
         className="shrink-0 overflow-auto scroll-smooth"
         style={{ width: codeWidth }}
       >
-        <h1>Code</h1>
-
-        {[...Array(100)].map((_, i) => {
-          return (
-            <>
-              <code className="whitespace-nowrap" key={i}>
-                Test code lines that are long and repeat themselves ad nauseum
-                to make sure they fit in the page
-              </code>
-              <br />
-            </>
-          );
-        })}
+        <CodeEditor/>
       </div>
     </div>
   );
