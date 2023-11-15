@@ -1,0 +1,30 @@
+- name: cypress3_load_test
+  desc: Cypress testing with lots of players and rapid interaction in the same game
+  playerCount: 8
+  gameStages:
+    - name: Topic Survey
+      duration: 600
+      elements:
+        - type: prompt
+          file: projects/example/multipleChoiceWizards.md
+          shared: true
+          name: sharedMultipleChoiceWizards
+          displayTime: 30
+          hideTime: 300
+        - type: prompt
+          file: projects/example/multipleChoiceColors.md
+          name: individualMultipleChoiceColors
+          displayTime: 350
+          hideTime: 600
+        - type: submitButton
+    - name: Stars Video
+      duration: 50
+      elements:
+        - type: video
+          url: https://youtu.be/QC8iQqtG0hg
+        - type: prompt
+          file: projects/example/openResponse.md
+          displayTime: 15
+          hideTime: 30
+  exitSurveys:
+    - TeamViability

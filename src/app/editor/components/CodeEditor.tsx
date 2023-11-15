@@ -13,7 +13,6 @@ import Timeline from "./Timeline";
 export default function CodeEditor() {
   const [code, setCode] = useState("");
   const [elements, setElements] = useState([]);
-
   useEffect(() => {
     let value;
     // Get the value from local storage if it exists
@@ -78,9 +77,7 @@ export default function CodeEditor() {
           Save
         </button>
       </div>
-      <div>
-        {/* <Timeline /> */}
-      </div>
+      <div>{/* <Timeline /> */}</div>
     </div>
   );
 }
