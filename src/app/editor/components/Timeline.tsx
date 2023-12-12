@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { parse, stringify } from "yaml";
 import { Element } from "./Element";
-import { useState } from "react";
-import { Stage } from "./Stage";
+import { StageCard } from "./StageCard";
+import TimelineTools from "./TimelineTools";
 
 export default function Timeline({}) {
-  const scale = 1; //pixels per second
+  const [scale, setScale] = useState(1); // pixels per second
   const codeStr = localStorage.getItem("code") || "";
   const parsedCode = parse(codeStr);
   // TODO: add a page before this that lets the researcher select what treatment to work on
@@ -15,18 +15,27 @@ export default function Timeline({}) {
   console.log("parsed", parsedCode);
 
   return (
-    <div className="flex flex-row bg-slate-600 h-full pb-5">
-      {treatment?.gameStages?.map((stage) => (
-        <Stage
-          key={stage.name}
-          title={stage.name}
-          elements={stage.elements}
-          duration={stage.duration}
-          scale={scale}
-        />
-      ))}
-      <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center h-full">
-        <p className="text-center align-middle">+</p>
+    <div id="timeline" className="h-full flex flex-col">
+      <TimelineTools setScale={setScale} />
+      <div id="timelineCanvas" className="grow min-h-10 bg-slate-600 p-2">
+        <div className="flex flex-row flex-nowrap h-full overflow-x-auto gap-x-1">
+          {treatment?.gameStages?.map((stage, index) => (
+            <StageCard
+              key={stage.name}
+              index={index}
+              title={stage.name}
+              elements={stage.elements}
+              duration={stage.duration}
+              scale={scale}
+            />
+          ))}
+          <div
+            id="newStage"
+            className="card bg-slate-300 shrink-0 w-12 h-full opacity-50"
+          >
+            <p className="text-center align-middle">+</p>
+          </div>
+        </div>
       </div>
     </div>
   );
