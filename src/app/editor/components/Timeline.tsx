@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { parse, stringify } from "yaml";
-import { Element } from "./Element";
 import { StageCard } from "./StageCard";
 import TimelineTools from "./TimelineTools";
 
@@ -31,9 +30,9 @@ export default function Timeline({}) {
           ))}
           <div
             id="newStage"
-            className="card bg-slate-300 shrink-0 w-12 h-full opacity-50"
+            className="card bg-slate-300 shrink-0 w-6 h-full opacity-50 text-center justify-center"
           >
-            <p className="text-center align-middle">+</p>
+            <p>+</p>
           </div>
         </div>
       </div>

@@ -6,11 +6,14 @@ export function ElementCard({ element, scale, stageDuration }) {
 
   return (
     <div
-      className="card bg-base-200 shadow-md min-h-12 min-w-[10px]"
+      className="card bg-base-200 shadow-md min-h-12 min-w-[10px] justify-center px-5"
       style={{ left: startTime * scale, width: scale * (endTime - startTime) }}
     >
-      <p>{element.name}</p>
-      <p>{element.type}</p>
+      <p>
+        <span className="text-black"> {element.name}</span>
+        <span className="text-slate-500"> {element.type}</span>
+        <span className="text-blue-500"> {element.file}</span>
+      </p>
     </div>
   );
 }
