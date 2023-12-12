@@ -12,7 +12,7 @@ import Timeline from "./Timeline";
 // `;
 export default function CodeEditor() {
   const [code, setCode] = useState("");
-  const [elements, setElements] = useState([]);
+  //const [elements, setElements] = useState([]);
   useEffect(() => {
     let value;
     // Get the value from local storage if it exists
@@ -26,32 +26,9 @@ export default function CodeEditor() {
     console.log(code);
   }
 
-  function handleSave(e) {
+  function handleSave(e) { //TODO validation should occur here
     e.preventDefault();
-    setCode(e.target.value);
-    // localStorage.setItem("code", code);
-    // const yamlObj = parse(code)[0];
-    // console.log(yamlObj)
-    // //Parse obj to extract components
-    // const gameStages = yamlObj["gameStages"]; //array of each stage
-    // console.log(gameStages);
-    // const stageElements = {}
-    // for (let i = 0; i < gameStages.length; i++) {
-    //   const stage = gameStages[i];
-    //   console.log(stage);
-    //   //stage has a name, duration, elements
-    //   const elts = stage.elements;
-    //   const eltComponents = [];
-    //   for (let j = 0; j < elts.length; j++) {
-    //     const elt = elts[j];
-    //     eltComponents.push(<Element key={j} element={elt} onSubmit={handleChange} />);
-    //   }
-    //   console.log(eltComponents)
-    //   stageElements[stage.name] = eltComponents
-    // }
-    // console.log(stageElements)
-    // localStorage.setItem("stageElements", JSON.stringify(stageElements))
-    // setElements(stageElements)
+    window.location.reload(false) //refresh page to make elements appear on screen
   }
   return (
     <div>
@@ -61,7 +38,7 @@ export default function CodeEditor() {
         <YamlEditor
           value={code}
           language="yaml"
-          placeholder="Please enter treatment configuration. Do not refresh the page before saving."
+          placeholder={"Please enter treatment configuration. Do not refresh the page before saving."}
           onChange={(env) => handleChange(env)}
           padding={5}
           style={{
