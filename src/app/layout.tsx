@@ -21,7 +21,7 @@ export default function RootLayout({
       {/* <body className={inter.className}> */}
       <body className="h-screen flex flex-col">
         <SessionProvider>
-          <Navbar />
+          {/* <Navbar /> */}
           {children}
         </SessionProvider>
       </body>
