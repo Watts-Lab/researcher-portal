@@ -53,7 +53,6 @@ export default function Timeline({}) {
               index={index}
               title={stage.name}
               elements={stage.elements}
-              duration={stage.duration}
               scale={scale}
               sequence={"exitStep"}
             />
