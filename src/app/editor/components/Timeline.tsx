@@ -4,6 +4,7 @@ import { parse, stringify } from "yaml";
 import { Element } from "./Element";
 import { useState } from "react";
 import { Stage } from "./Stage";
+import AddPopup from "./AddPopup";
 
 export default function Timeline({}) {
   const scale = 1; //pixels per second
@@ -11,7 +12,13 @@ export default function Timeline({}) {
   const parsedCode = parse(codeStr);
   // TODO: add a page before this that lets the researcher select what treatment to work on
   // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
-  const treatment = parsedCode ? parsedCode[0] : {};
+  const [treatment, setTreatment] = useState(parsedCode ? parsedCode[0] : {});
+  const addStageOptions = [
+       {"question": "Name", "responseType": "text"},
+       {"question": "Duration", "responseType": "text"},
+       {"question": "Discussion", "responseType": "text"},
+       
+     ]
   console.log("parsed", parsedCode);
 
   return (
@@ -26,7 +33,16 @@ export default function Timeline({}) {
         />
       ))}
       <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center h-full">
-        <p className="text-center align-middle">+</p>
+      <button className="btn" onClick={()=>document.getElementById('add-stage').showModal()}>+</button>
+      <dialog id="add-stage" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          </form>
+          <AddPopup type="stage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment}/>
+        </div>
+      </dialog>
       </div>
     </div>
   );
