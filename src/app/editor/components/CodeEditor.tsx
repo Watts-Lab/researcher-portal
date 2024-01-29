@@ -22,19 +22,19 @@ export default function CodeEditor() {
 
   function handleChange(evn) {
     let entry = evn.target.value
-    try {
-      parse(entry);
-    } catch {
-      entry = code
-      //TODO also display a little something went wrong pop up
-    }
     setCode(entry);
-    localStorage.setItem("code", entry);
     console.log(code);
   }
 
   function handleSave(e) { //TODO validation should occur here
     e.preventDefault();
+    let entry = code
+    try {
+      parse(code);
+      localStorage.setItem("code", entry);
+    } catch (YAMLParseError) {
+      //TODO also display a little something went wrong pop up
+    }
     window.location.reload(false) //refresh page to make elements appear on screen
   }
   return (
