@@ -32,11 +32,11 @@ export default function CodeEditor() {
     try {
       parse(code);
       localStorage.setItem("code", entry);
+      window.location.reload(false) //refresh page to make elements appear on screen
     } catch (YAMLParseError) {
       //TODO also display a little something went wrong pop up
       //TODO find a way for changes to still appear and just not parse it - might need to happen in timeline
     }
-    window.location.reload(false) //refresh page to make elements appear on screen
   }
   return (
     <div>
