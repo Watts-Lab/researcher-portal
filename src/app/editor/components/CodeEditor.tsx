@@ -21,8 +21,15 @@ export default function CodeEditor() {
   }, []);
 
   function handleChange(evn) {
-    setCode(evn.target.value);
-    localStorage.setItem("code", evn.target.value);
+    let entry = evn.target.value
+    try {
+      parse(entry);
+    } catch {
+      entry = code
+      //TODO also display a little something went wrong pop up
+    }
+    setCode(entry);
+    localStorage.setItem("code", entry);
     console.log(code);
   }
 
