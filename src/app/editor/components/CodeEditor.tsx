@@ -28,14 +28,12 @@ export default function CodeEditor() {
 
   function handleSave(e) { //TODO validation should occur here
     e.preventDefault();
-    let entry = code
     try {
       parse(code);
-      localStorage.setItem("code", entry);
+      localStorage.setItem("code", code);
       window.location.reload(false) //refresh page to make elements appear on screen
     } catch (YAMLParseError) {
       //TODO also display a little something went wrong pop up
-      //TODO find a way for changes to still appear and just not parse it - might need to happen in timeline
     }
   }
   return (
