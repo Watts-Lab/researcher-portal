@@ -30,6 +30,8 @@ export default function Timeline({}) {
           elements={stage.elements}
           duration={stage.duration}
           scale={scale}
+          treatment={treatment}
+          setTreatment={setTreatment}
         />
       ))}
       <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center h-full">
