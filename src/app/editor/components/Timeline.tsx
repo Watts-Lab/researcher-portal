@@ -2,24 +2,32 @@
 import React from "react";
 import { parse, stringify } from "yaml";
 import { Element } from "./Element";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Stage } from "./Stage";
 import AddPopup from "./AddPopup";
 
 export default function Timeline({}) {
   const scale = 1; //pixels per second
   const codeStr = localStorage.getItem("code") || "";
+  console.log(codeStr)
   const parsedCode = parse(codeStr);
   // TODO: add a page before this that lets the researcher select what treatment to work on
   // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
-  const [treatment, setTreatment] = useState(parsedCode ? parsedCode[0] : {});
+  const [treatment, setTreatment] = useState(parsedCode);
   const addStageOptions = [
        {"question": "Name", "responseType": "text"},
        {"question": "Duration", "responseType": "text"},
        {"question": "Discussion", "responseType": "text"},
-       
      ]
-  console.log("parsed", parsedCode);
+  console.log("parsed", parsedCode)
+  //console.log(treatment.gameStages)
+
+  /*useEffect(() => {
+    console.log(treatment)
+    localStorage.setItem("code", stringify(treatment))
+    console.log(localStorage.getItem("code"))
+    //window.location.reload(false)
+  },[treatment])*/
 
   return (
     <div className="flex flex-row bg-slate-600 h-full pb-5">

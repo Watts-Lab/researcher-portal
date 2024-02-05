@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { stringify } from "yaml";
 
 export default function AddElementPopup({ questions, type, treatment, setTreatment }) {
    //questions will be a list of dicts in form [{question: question, responseType: text, dropdown, or multiselect, options: options that will appear if dropdown or multiselect}]
@@ -12,9 +13,20 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
   function handleSave() {
     const updatedTreatment = {...treatment}
     updatedTreatment.gameStages[0].elements?.push({"type": selectedOption, "name" : nameValue})
+    setSelectedOption(null)
+    setNameValue('')
     setTreatment(updatedTreatment)
     console.log("UPDATED TREATMENT")
-    console.log(updatedTreatment.gameStages[0])
+    //console.log(treatment.gameStages[0])
+
+    const addElementDialog = document.getElementById('add-element');
+    if (addElementDialog) {
+      addElementDialog.close();
+    }
+
+    localStorage.setItem("code", stringify(treatment))
+    console.log(localStorage.getItem("code"))
+    window.location.reload(false)
   }
 
   const [selectedOption, setSelectedOption] = useState(null);
@@ -53,7 +65,7 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
               <div class="label">
                 <span class="label-text">{question}</span>
               </div>
-              <select class="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange}> //TODO fix multiselect
+              <select class="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} value={"Pick one"}> //TODO fix multiselect
                 <option disabled selected>Pick one</option>
                 {options.map(option => (<option>{option}</option>))}
               </select>
@@ -69,7 +81,7 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
     <div>
       <h1> Add {type}</h1>
       {htmlElements}
-      <button className="btn btn-primary" onClick={handleSave}>Add Element</button>
+      <button className="btn btn-primary" style={{ margin: '10px' }} onClick={handleSave} disabled={selectedOption == null}>Add Element</button>
     </div>
   );
 }

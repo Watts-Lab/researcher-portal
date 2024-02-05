@@ -40,7 +40,7 @@ function Element({ element, scale, stageDuration }) {
       className="card bg-slate-100 shadow-md m-1 min-h-12 min-w-[10px]"
       style={{ "margin-left": left, width: width }}
     >
-      {element.type}
+      {element.type + " (" + element.name + ")"}
     </div>
   );
 }
@@ -49,7 +49,7 @@ export function Stage({ title, elements, duration, scale, treatment, setTreatmen
   {/* Options for AddElementPopup*/}
   const addElementOptions = [
     {"question": "Name", "responseType": "text"},
-    {"question": "Type", "responseType": "dropdown", "options": ["prompt", "survey"]},
+    {"question": "Type", "responseType": "dropdown", "options": ["prompt", "survey", "audioElement", "kitchenTimer", "qualtrics", "separator", "submitButton", "trainingVideo"]},
   ]
 
   //console.log("elements", elements);

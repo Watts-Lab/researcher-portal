@@ -13,12 +13,29 @@ import Timeline from "./Timeline";
 export default function CodeEditor() {
   const [code, setCode] = useState("");
   //const [elements, setElements] = useState([]);
+  
   useEffect(() => {
     let value;
     // Get the value from local storage if it exists
     value = localStorage.getItem("code") || "";
     setCode(value);
   }, []);
+
+  /*useEffect(() => {
+    function checkCode() {
+      const item = localStorage.getItem('code')
+  
+      if (item) {
+        setCode(item)
+      }
+    }
+  
+    window.addEventListener('storage', checkCode)
+  
+    return () => {
+      window.removeEventListener('storage', checkCode)
+    }
+  })*/
 
   function handleChange(evn) {
     let entry = evn.target.value
