@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import { parse, stringify } from "yaml";
-import { Element } from "./Element";
+import { Element } from "./ElementCard";
 import { useState, useEffect } from "react";
-import { Stage } from "./Stage";
+import { Stage } from "./StageCard";
 import AddPopup from "./AddPopup";
 
 export default function Timeline({}) {
