@@ -9,8 +9,11 @@ export default function AddPopup({ questions, type, treatment, setTreatment }) {
   //  ]
 
   function handleSave() {
-    treatment?.gameStages?.push({"name": "new stage", "duration": 90})
+    console.log("local storgae code: ", localStorage.getItem("code"))
+    treatment?.gameStages?.push({"name": "new stage", "duration": 90}) //TODO not hardcode this - it does add to treatment
     console.log(treatment.gameStages)
+    localStorage.setItem("code", JSON.stringify(treatment))
+    window.location.reload(false) //force refresh
   }
    
   const htmlElements = []

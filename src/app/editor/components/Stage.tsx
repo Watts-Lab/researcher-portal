@@ -62,7 +62,7 @@ export function Stage({ title, elements, duration, scale, treatment, setTreatmen
       {" "}
       {/* stage card */}
       <h3>{title}</h3>
-      {elements.map((element) => (
+      {elements?.map((element) => (
         <Element element={element} scale={scale} stageDuration={duration} />
       ))}
       {/* Add Element Button*/}

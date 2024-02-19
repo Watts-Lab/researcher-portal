@@ -49,6 +49,7 @@ export default function CodeEditor() {
       parse(code);
       localStorage.setItem("code", code);
       window.location.reload(false) //refresh page to make elements appear on screen
+      console.log("local storage code", localStorage.getItem("code"))
     } catch (YAMLParseError) {
       //TODO also display a little something went wrong pop up
     }
