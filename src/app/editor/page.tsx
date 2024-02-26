@@ -43,9 +43,6 @@ export default function EditorPage({}) {
         <div id="lowerLeft" className="grow">
           <Timeline />
         </div>
-        <div>
-          <AddPopup questions={[]} type={"stage"}/>
-        </div>
       </div>
 
       <DraggableSplitter dir="vertical" {...codeSeparatorProps} />
