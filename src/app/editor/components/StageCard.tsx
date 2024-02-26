@@ -1,5 +1,5 @@
 "use client";
-
+import AddElementPopup from "./AddElementPopup";
 import React from "react";
 import { ElementCard } from "./ElementCard";
 import { cn } from "@/app/components/utils";
@@ -10,9 +10,16 @@ export function StageCard({
   duration,
   scale,
   index,
+  treatment,
+  setTreatment,
   sequence,
+  stageIndex
 }) {
   console.log("elements", elements);
+  const addElementOptions = [
+    {"question": "Name", "responseType": "text"},
+    {"question": "Type", "responseType": "dropdown", "options": ["prompt", "survey", "audioElement", "kitchenTimer", "qualtrics", "separator", "submitButton", "trainingVideo"]},
+  ]
 
   const width = duration ? scale * duration : "auto";
   return (
@@ -35,14 +42,27 @@ export function StageCard({
             stageDuration={duration}
           />
         ))}
-        <div
+        {/* Add Element Button*/}
+        <div className="card bg-slate-100 opacity-50  shadow-md m-1 min-h-12 flex items-center">
+          <button className="btn h-full w-full" onClick={()=>document.getElementById(stageIndex).showModal()}>+</button>
+          <dialog id={stageIndex} className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <AddElementPopup type="Element" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} index={stageIndex}/>
+          </div>
+          </dialog>
+        </div>
+        {/* <div
           className={cn(
             "card shadow-md bg-base-200 min-h-6 min-w-[10px] opacity-40 text-center justify-center",
             "hover:opacity-80"
           )}
         >
           <span>+</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
