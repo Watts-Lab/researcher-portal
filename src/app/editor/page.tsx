@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useResizable } from "react-resizable-layout";
 import DraggableSplitter from "../components/DraggableSplitter";
 // import CodeEditor from "./components/CodeEditor";
@@ -8,38 +8,40 @@ import Timeline from "./components/Timeline";
 import AddPopup from "./components/AddPopup";
 
 export default function EditorPage({}) {
-  const { position: codeWidth, separatorProps: codeSeparatorProps } =
+  const { position: leftWidth, separatorProps: codeSeparatorProps } =
     useResizable({
       axis: "x",
       initial: 400,
       min: 100,
-      reverse: true,
     });
 
-  const { position: timelineHeight, separatorProps: timelineSeparatorProps } =
+  const { position: upperLeftHeight, separatorProps: timelineSeparatorProps } =
     useResizable({
       axis: "y",
       initial: 500,
       min: 100,
-      reverse: true,
     });
 
   return (
-    <div id="editor" className="flex w-full h-full">
-      <div id="leftColumn" className="flex grow flex-col">
-        <div id="tophalf" className="grow overflow-y-auto scroll-smooth">
+    <div id="editor" className="flex flex-row h-full w-full">
+      <div
+        id="leftColumn"
+        className="flex flex-col h-full w-full"
+        style={{ width: leftWidth }}
+      >
+        <div
+          id="upperLeft"
+          className="overflow-auto h-full w-full"
+          style={{ height: upperLeftHeight }}
+        >
           <h1>Render Panel </h1>
           <p>{"Lorem Ipsum ".repeat(100)}</p>
         </div>
 
         <DraggableSplitter dir="horizontal" {...timelineSeparatorProps} />
 
-        <div
-          id="timeline"
-          className="shrink-0 bottom-0 overflow-x-auto scroll-smooth"
-          style={{ height: timelineHeight }}
-        >
-          <Timeline/>
+        <div id="lowerLeft" className="grow">
+          <Timeline />
         </div>
         <div>
           <AddPopup questions={[]} type={"stage"}/>
@@ -48,12 +50,8 @@ export default function EditorPage({}) {
 
       <DraggableSplitter dir="vertical" {...codeSeparatorProps} />
 
-      <div
-        id="code"
-        className="shrink-0 overflow-auto scroll-smooth"
-        style={{ width: codeWidth }}
-      >
-        <CodeEditor/>
+      <div id="rightColumn" className="grow">
+        <CodeEditor />
       </div>
     </div>
   );

@@ -1,65 +1,16 @@
-/*
-A base wrapper for all the elements
+import React from "react";
+import { Element } from "./Element";
 
-*/
-import React from 'react'
+export function ElementCard({ element, scale, stageDuration, onSubmit }) {
+  const startTime = element.displayTime || 0;
+  const endTime = element.hideTime || stageDuration;
 
-// import { useStageTimer, useStage } from "@empirica/core/player/classic/react";
-import Prompt from "../elements/Prompt";
-import Separator from "../elements/Separator";
-import AudioElement from "../elements/AudioElement";
-import Survey from "../elements/Survey";
-import SubmitButton from "../elements/SubmitButton";
-import KitchenTimer from "../elements/KitchenTimer";
-import TrainingVideo from "../elements/TrainingVideo";
-import Qualtrics from "../elements/Qualtrics";
-
-export function Element({ element, onSubmit }) {
-  //   const stageTimer = useStageTimer();
-  //   const stage = useStage();
-  console.log(element.type)
-  switch (element.type) {
-    case "audio":
-      return <AudioElement file={element.file} />;
-
-    case "prompt":
-      return <Prompt file={element.file} saveKey={element.name} />;
-
-    case "qualtrics":
-      return (
-        <Qualtrics
-          url={element.url}
-          params={element.params}
-          onSubmit={onSubmit}
-        />
-      );
-
-    case "separator":
-      return <Separator style={element.style} />;
-
-    case "submitButton":
-      return (
-        <SubmitButton onSubmit={onSubmit} buttonText={element.buttonText} />
-      );
-
-    case "survey":
-      return <Survey surveyName={element.surveyName} onSubmit={onSubmit} />;
-
-    case "timer":
-      return (
-        <KitchenTimer
-          startTime={element.startTime || element.displayTime || 0}
-          endTime={
-            element.endTime || element.hideTime || ""
-          }
-          warnTimeRemaining={element.warnTimeRemaining}
-        />
-      );
-
-    case "video":
-      return <TrainingVideo url={element.url} />;
-
-    default:
-      return undefined;
-  }
+  return (
+    <div
+      className="card bg-base-200 shadow-md min-h-12 min-w-[10px] justify-center px-5"
+      style={{ left: startTime * scale, width: scale * (endTime - startTime) }}
+    >
+      <Element element={element} onSubmit={onSubmit}/>
+    </div>
+  );
 }
