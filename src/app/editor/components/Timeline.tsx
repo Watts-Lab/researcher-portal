@@ -84,6 +84,7 @@ export default function Timeline({}) {
               treatment={treatment}
               setTreatment={setTreatment}
               sequence={"gameStage"}
+              stageIndex={index}
             />
           ))}
           {/* {renderAddStage({ sequence: "gameStage" })}
@@ -101,18 +102,18 @@ export default function Timeline({}) {
             />
           ))}
           {renderAddStage({ sequence: "exit" })} */}
-        </div>
-        <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center h-full">
-          <button className="btn" onClick={()=>document.getElementById('add-stage').showModal()}>+</button>
-          <dialog id="add-stage" className="modal">
-            <div className="modal-box">
-              <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-              </form>
-              <AddPopup type="stage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment}/>
-            </div>
-          </dialog>
+          <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center h-full">
+            <button className="btn" onClick={()=>document.getElementById('add-stage').showModal()}>+</button>
+            <dialog id="add-stage" className="modal">
+              <div className="modal-box">
+                <form method="dialog">
+                  {/* if there is a button in form, it will close the modal */}
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                </form>
+                <AddPopup type="stage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment}/>
+              </div>
+            </dialog>
+          </div>
         </div>
       </div>
     </div>

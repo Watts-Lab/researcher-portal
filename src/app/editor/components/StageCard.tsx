@@ -13,6 +13,7 @@ export function StageCard({
   treatment,
   setTreatment,
   sequence,
+  stageIndex
 }) {
   console.log("elements", elements);
   const addElementOptions = [
@@ -43,14 +44,14 @@ export function StageCard({
         ))}
         {/* Add Element Button*/}
         <div className="card bg-slate-100 opacity-50  shadow-md m-1 min-h-12 flex items-center">
-          <button className="btn h-full w-full" onClick={()=>document.getElementById('add-element').showModal()}>+</button>
-          <dialog id="add-element" className="modal">
+          <button className="btn h-full w-full" onClick={()=>document.getElementById(stageIndex).showModal()}>+</button>
+          <dialog id={stageIndex} className="modal">
           <div className="modal-box">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <AddElementPopup type="Element" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment}/>
+            <AddElementPopup type="Element" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} index={stageIndex}/>
           </div>
           </dialog>
         </div>
