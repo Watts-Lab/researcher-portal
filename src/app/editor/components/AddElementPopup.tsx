@@ -3,12 +3,6 @@ import { useState } from "react";
 import { stringify } from "yaml";
 
 export default function AddElementPopup({ questions, type, treatment, setTreatment, index }) {
-   //questions will be a list of dicts in form [{question: question, responseType: text, dropdown, or multiselect, options: options that will appear if dropdown or multiselect}]
-  //  questions = [
-  //    {"question": "Name", "responseType": "text"},
-  //    {"question": "Type", "responseType": "dropdown", "options": ["Prompt", "Survey"]},
-  //   //  {"question": "File", "responseType": "multiselect", "options": ["Prompt", "Survey"]},
-  //  ]
 
   function handleSave() {
     const updatedTreatment = {...treatment}
@@ -19,16 +13,12 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
         inputs[key] = value
       }
     }
-    //console.log(inputs)
-    console.log("SAVING TO INDEX " + index)
-    console.log(updatedTreatment)
     updatedTreatment[0].gameStages[index]?.elements?.push(inputs) // HARDCODED TO FIRST GAME STAGE
 
     setSelectedOption(null)
     setNameValue('')
     setElementValues(defaultElementValues)
     setTreatment(updatedTreatment)
-    console.log("UPDATED TREATMENT")
 
     const addElementDialog = document.getElementById('add-element');
     if (addElementDialog) {
@@ -36,7 +26,6 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
     }
 
     localStorage.setItem("code", stringify(updatedTreatment))
-    console.log(localStorage.getItem("code"))
     window.location.reload(false)
   }
 
@@ -81,32 +70,31 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
   const handleEndTimeChange = (newValue) => handleInputChange('endTime', newValue);
   
   const htmlElements = []
-  questions.forEach(q => {
+  questions.forEach((q, index) => {
     const question = q.question
     const responseType = q.responseType
     const options = q.options || []
-    //console.log(responseType)
     htmlElements.push(
-      <form>
+      <form key={q + index}>
         {responseType === "text" &&
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{question}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{question}</span>
               </div>
-              <input value = {nameValue} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
+              <input value = {nameValue} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
             </label>
           </div>
         }
         {(responseType === "dropdown" || responseType === "multiselect") &&
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{question}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{question}</span>
               </div>
-              <select class="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange}> //TODO fix multiselect
-                <option disabled selected>Pick one</option>
-                {options.map(option => (<option>{option}</option>))}
+              <select className="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} defaultValue="Pick one"> //TODO fix multiselect
+                <option disabled>Pick one</option>
+                {options.map((option, index) => (<option key={option + index}>{option}</option>))}
               </select>
             </label>
           </div>
@@ -117,84 +105,84 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
 
    // ELEMENT ATTRIBUTES
   htmlElements.push(
-    <form>
+    <form key={"type" + selectedOption}>
       { (selectedOption === "prompt" || selectedOption === "audioElement") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"File Address"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"File Address"}</span>
             </div>
-            <input value = {elementValues.file} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleFileChange(e.target.value)}/>
+            <input value = {elementValues.file} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleFileChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "kitchenTimer") && 
         <div>
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{"Start Time"}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{"Start Time"}</span>
               </div>
-              <input value = {elementValues.startTime} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleStartTimeChange(e.target.value)}/>
+              <input value = {elementValues.startTime} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleStartTimeChange(e.target.value)}/>
             </label>
           </div>
           <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"End Time"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"End Time"}</span>
             </div>
-            <input value = {elementValues.endTime} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleEndTimeChange(e.target.value)}/>
+            <input value = {elementValues.endTime} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleEndTimeChange(e.target.value)}/>
           </label>
         </div>
       </div>
       }
       { (selectedOption === "qualtrics" || selectedOption === "trainingVideo") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"URL"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"URL"}</span>
             </div>
-            <input value = {elementValues.url} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleURLChange(e.target.value)}/>
+            <input value = {elementValues.url} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleURLChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "qualtrics") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"Parameters"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Parameters"}</span>
             </div>
-            <input value = {elementValues.params} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleParamsChange(e.target.value)}/>
+            <input value = {elementValues.params} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleParamsChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "separator") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"Style"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Style"}</span>
             </div>
-            <input value = {elementValues.style} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleStyleChange(e.target.value)}/>
+            <input value = {elementValues.style} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleStyleChange(e.target.value)}/>
           </label>
         </div>
       }     
       { (selectedOption === "survey" || selectedOption === "qualtrics" || selectedOption === "submitButton") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"On Submit"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"On Submit"}</span>
             </div>
-            <input value = {elementValues.onSubmit} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleOnSubmitChange(e.target.value)}/>
+            <input value = {elementValues.onSubmit} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleOnSubmitChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "submitButton") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"Button Text"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Button Text"}</span>
             </div>
-            <input value = {elementValues.buttonText} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleButtonTextChange(e.target.value)}/>
+            <input value = {elementValues.buttonText} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleButtonTextChange(e.target.value)}/>
           </label>
         </div>
       }
