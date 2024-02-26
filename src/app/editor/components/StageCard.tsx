@@ -15,7 +15,6 @@ export function StageCard({
   sequence,
   stageIndex
 }) {
-  console.log("elements", elements);
   const addElementOptions = [
     {"question": "Name", "responseType": "text"},
     {"question": "Type", "responseType": "dropdown", "options": ["prompt", "survey", "audioElement", "kitchenTimer", "qualtrics", "separator", "submitButton", "trainingVideo"]},
@@ -55,14 +54,6 @@ export function StageCard({
           </div>
           </dialog>
         </div>
-        {/* <div
-          className={cn(
-            "card shadow-md bg-base-200 min-h-6 min-w-[10px] opacity-40 text-center justify-center",
-            "hover:opacity-80"
-          )}
-        >
-          <span>+</span>
-        </div> */}
       </div>
     </div>
   );

@@ -3,22 +3,13 @@ import { useState } from "react";
 import { stringify } from "yaml";
 
 export default function AddPopup({ questions, type, treatment, setTreatment }) {
-   //questions will be a list of dicts in form [{question: question, responseType: text, dropdown, or multiselect, options: options that will appear if dropdown or multiselect}]
-  //  questions = [
-  //    {"question": "Name", "responseType": "text"},
-  //    {"question": "Type", "responseType": "dropdown", "options": ["Prompt", "Survey"]},
-  //   //  {"question": "File", "responseType": "multiselect", "options": ["Prompt", "Survey"]},
-  //  ]
 
   function handleSave() {
     const updatedTreatment = {...treatment}
     const inputs = {name: nameValue, duration: parseInt(durationValue), elements: []}
 
-    console.log(inputs)
-
     updatedTreatment[0].gameStages.push(inputs)
     setTreatment(updatedTreatment)
-    console.log(updatedTreatment)
     localStorage.setItem("code", stringify(updatedTreatment))
 
     setNameValue('')
@@ -39,13 +30,12 @@ export default function AddPopup({ questions, type, treatment, setTreatment }) {
   }
    
   const htmlElements = []
-  questions.forEach(q => {
+  questions.forEach((q, index) => {
     const question = q.question
     const responseType = q.responseType
     const options = q.options || []
-    //console.log(responseType)
     htmlElements.push(
-      <form>
+      <form key={question + index}>
         {question === "Name" &&
           <div>
             <label class="form-control w-full max-w-xs">

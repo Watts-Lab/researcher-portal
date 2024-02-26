@@ -3,8 +3,6 @@ A base wrapper for all the elements
 
 */
 import React from 'react'
-
-// import { useStageTimer, useStage } from "@empirica/core/player/classic/react";
 import Prompt from "../elements/Prompt";
 import Separator from "../elements/Separator";
 import AudioElement from "../elements/AudioElement";
@@ -15,9 +13,6 @@ import TrainingVideo from "../elements/TrainingVideo";
 import Qualtrics from "../elements/Qualtrics";
 
 export function Element({ element, onSubmit }) {
-  //   const stageTimer = useStageTimer();
-  //   const stage = useStage();
-  console.log(element.type)
   switch (element.type) {
     case "audio":
       return <AudioElement file={element.file} />;

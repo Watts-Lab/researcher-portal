@@ -1,18 +1,10 @@
 "use client";
 import YamlEditor from "@uiw/react-textarea-code-editor";
 import { useState, useEffect } from "react";
-// import styled from "styled-components";
-import { Button } from "./Button";
-import { parse, stringify } from "yaml";
-import Timeline from "./Timeline";
-// const ConfigEditor = styled.div`
-//   width: 40%;
-//   height: 100vh;
-//   border: solid 1px;
-// `;
+import { parse } from "yaml";
+
 export default function CodeEditor() {
   const [code, setCode] = useState("");
-  //const [elements, setElements] = useState([]);
   
   useEffect(() => {
     let value;
@@ -21,26 +13,9 @@ export default function CodeEditor() {
     setCode(value);
   }, []);
 
-  /*useEffect(() => {
-    function checkCode() {
-      const item = localStorage.getItem('code')
-  
-      if (item) {
-        setCode(item)
-      }
-    }
-  
-    window.addEventListener('storage', checkCode)
-  
-    return () => {
-      window.removeEventListener('storage', checkCode)
-    }
-  })*/
-
   function handleChange(evn) {
     let entry = evn.target.value
     setCode(entry);
-    console.log(code);
   }
 
   function handleSave(e) { //TODO validation should occur here
@@ -49,7 +24,6 @@ export default function CodeEditor() {
       parse(code);
       localStorage.setItem("code", code);
       window.location.reload(false) //refresh page to make elements appear on screen
-      console.log("local storage code", localStorage.getItem("code"))
     } catch (YAMLParseError) {
       //TODO also display a little something went wrong pop up
     }

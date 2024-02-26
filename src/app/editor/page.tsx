@@ -1,11 +1,9 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React from "react";
 import { useResizable } from "react-resizable-layout";
 import DraggableSplitter from "../components/DraggableSplitter";
-// import CodeEditor from "./components/CodeEditor";
 import CodeEditor from "./components/CodeEditor";
 import Timeline from "./components/Timeline";
-import AddPopup from "./components/AddPopup";
 
 export default function EditorPage({}) {
   const { position: leftWidth, separatorProps: codeSeparatorProps } =

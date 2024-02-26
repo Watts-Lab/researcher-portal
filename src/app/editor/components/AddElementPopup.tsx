@@ -3,12 +3,6 @@ import { useState } from "react";
 import { stringify } from "yaml";
 
 export default function AddElementPopup({ questions, type, treatment, setTreatment, index }) {
-   //questions will be a list of dicts in form [{question: question, responseType: text, dropdown, or multiselect, options: options that will appear if dropdown or multiselect}]
-  //  questions = [
-  //    {"question": "Name", "responseType": "text"},
-  //    {"question": "Type", "responseType": "dropdown", "options": ["Prompt", "Survey"]},
-  //   //  {"question": "File", "responseType": "multiselect", "options": ["Prompt", "Survey"]},
-  //  ]
 
   function handleSave() {
     const updatedTreatment = {...treatment}
@@ -19,16 +13,12 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
         inputs[key] = value
       }
     }
-    //console.log(inputs)
-    console.log("SAVING TO INDEX " + index)
-    console.log(updatedTreatment)
     updatedTreatment[0].gameStages[index]?.elements?.push(inputs) // HARDCODED TO FIRST GAME STAGE
 
     setSelectedOption(null)
     setNameValue('')
     setElementValues(defaultElementValues)
     setTreatment(updatedTreatment)
-    console.log("UPDATED TREATMENT")
 
     const addElementDialog = document.getElementById('add-element');
     if (addElementDialog) {
@@ -36,7 +26,6 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
     }
 
     localStorage.setItem("code", stringify(updatedTreatment))
-    console.log(localStorage.getItem("code"))
     window.location.reload(false)
   }
 
@@ -85,7 +74,6 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
     const question = q.question
     const responseType = q.responseType
     const options = q.options || []
-    //console.log(responseType)
     htmlElements.push(
       <form>
         {responseType === "text" &&
