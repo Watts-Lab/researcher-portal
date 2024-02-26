@@ -78,21 +78,21 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
       <form>
         {responseType === "text" &&
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{question}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{question}</span>
               </div>
-              <input value = {nameValue} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
+              <input value = {nameValue} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
             </label>
           </div>
         }
         {(responseType === "dropdown" || responseType === "multiselect") &&
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{question}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{question}</span>
               </div>
-              <select class="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} defaultValue="Pick one"> //TODO fix multiselect
+              <select className="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} defaultValue="Pick one"> //TODO fix multiselect
                 <option disabled>Pick one</option>
                 {options.map(option => (<option>{option}</option>))}
               </select>
@@ -108,81 +108,81 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
     <form>
       { (selectedOption === "prompt" || selectedOption === "audioElement") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"File Address"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"File Address"}</span>
             </div>
-            <input value = {elementValues.file} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleFileChange(e.target.value)}/>
+            <input value = {elementValues.file} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleFileChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "kitchenTimer") && 
         <div>
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{"Start Time"}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{"Start Time"}</span>
               </div>
-              <input value = {elementValues.startTime} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleStartTimeChange(e.target.value)}/>
+              <input value = {elementValues.startTime} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleStartTimeChange(e.target.value)}/>
             </label>
           </div>
           <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"End Time"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"End Time"}</span>
             </div>
-            <input value = {elementValues.endTime} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleEndTimeChange(e.target.value)}/>
+            <input value = {elementValues.endTime} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleEndTimeChange(e.target.value)}/>
           </label>
         </div>
       </div>
       }
       { (selectedOption === "qualtrics" || selectedOption === "trainingVideo") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"URL"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"URL"}</span>
             </div>
-            <input value = {elementValues.url} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleURLChange(e.target.value)}/>
+            <input value = {elementValues.url} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleURLChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "qualtrics") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"Parameters"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Parameters"}</span>
             </div>
-            <input value = {elementValues.params} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleParamsChange(e.target.value)}/>
+            <input value = {elementValues.params} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleParamsChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "separator") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"Style"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Style"}</span>
             </div>
-            <input value = {elementValues.style} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleStyleChange(e.target.value)}/>
+            <input value = {elementValues.style} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleStyleChange(e.target.value)}/>
           </label>
         </div>
       }     
       { (selectedOption === "survey" || selectedOption === "qualtrics" || selectedOption === "submitButton") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"On Submit"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"On Submit"}</span>
             </div>
-            <input value = {elementValues.onSubmit} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleOnSubmitChange(e.target.value)}/>
+            <input value = {elementValues.onSubmit} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleOnSubmitChange(e.target.value)}/>
           </label>
         </div>
       }
       { (selectedOption === "submitButton") &&
         <div>
-          <label class="form-control w-full max-w-xs">
-            <div class="label">
-              <span class="label-text">{"Button Text"}</span>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Button Text"}</span>
             </div>
-            <input value = {elementValues.buttonText} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={(e) => handleButtonTextChange(e.target.value)}/>
+            <input value = {elementValues.buttonText} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleButtonTextChange(e.target.value)}/>
           </label>
         </div>
       }

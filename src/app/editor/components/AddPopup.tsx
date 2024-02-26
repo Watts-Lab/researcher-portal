@@ -38,21 +38,21 @@ export default function AddPopup({ questions, type, treatment, setTreatment }) {
       <form key={question + index}>
         {question === "Name" &&
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{question}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{question}</span>
               </div>
-              <input value = {nameValue} type="text" placeholder="Enter text here." class="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
+              <input value = {nameValue} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
             </label>
           </div>
         }
         {question === "Duration" &&
           <div>
-            <label class="form-control w-full max-w-xs">
-              <div class="label">
-                <span class="label-text">{question}</span>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">{question}</span>
               </div>
-              <input value = {durationValue} type="text" placeholder="Enter number here." class="input input-bordered w-full max-w-xs" onChange={handleDurationChange}/>
+              <input value = {durationValue} type="text" placeholder="Enter number here." className="input input-bordered w-full max-w-xs" onChange={handleDurationChange}/>
             </label>
           </div>
         }
