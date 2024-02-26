@@ -70,12 +70,12 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
   const handleEndTimeChange = (newValue) => handleInputChange('endTime', newValue);
   
   const htmlElements = []
-  questions.forEach(q => {
+  questions.forEach((q, index) => {
     const question = q.question
     const responseType = q.responseType
     const options = q.options || []
     htmlElements.push(
-      <form>
+      <form key={q + index}>
         {responseType === "text" &&
           <div>
             <label className="form-control w-full max-w-xs">
@@ -94,7 +94,7 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
               </div>
               <select className="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} defaultValue="Pick one"> //TODO fix multiselect
                 <option disabled>Pick one</option>
-                {options.map(option => (<option>{option}</option>))}
+                {options.map((option, index) => (<option key={option + index}>{option}</option>))}
               </select>
             </label>
           </div>
@@ -105,7 +105,7 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
 
    // ELEMENT ATTRIBUTES
   htmlElements.push(
-    <form>
+    <form key={"type" + selectedOption}>
       { (selectedOption === "prompt" || selectedOption === "audioElement") &&
         <div>
           <label className="form-control w-full max-w-xs">
