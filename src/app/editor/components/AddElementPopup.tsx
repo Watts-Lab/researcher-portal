@@ -92,8 +92,8 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
               <div class="label">
                 <span class="label-text">{question}</span>
               </div>
-              <select class="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange}> //TODO fix multiselect
-                <option disabled selected>Pick one</option>
+              <select class="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} defaultValue="Pick one"> //TODO fix multiselect
+                <option disabled>Pick one</option>
                 {options.map(option => (<option>{option}</option>))}
               </select>
             </label>
