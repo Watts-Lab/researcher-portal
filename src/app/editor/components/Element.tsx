@@ -12,9 +12,9 @@ import KitchenTimer from "../elements/KitchenTimer";
 import TrainingVideo from "../elements/TrainingVideo";
 import Qualtrics from "../elements/Qualtrics";
 
-export function Element({ element, onSubmit }) {
+export function Element({ element}) {
   switch (element.type) {
-    case "audio":
+    case "audioElement":
       return <AudioElement file={element.file} />;
 
     case "prompt":
@@ -25,7 +25,7 @@ export function Element({ element, onSubmit }) {
         <Qualtrics
           url={element.url}
           params={element.params}
-          onSubmit={onSubmit}
+          onSubmit={element.onSubmit}
         />
       );
 
@@ -34,11 +34,11 @@ export function Element({ element, onSubmit }) {
 
     case "submitButton":
       return (
-        <SubmitButton onSubmit={onSubmit} buttonText={element.buttonText} />
+        <SubmitButton onSubmit={element.onSubmit} buttonText={element.buttonText} />
       );
 
     case "survey":
-      return <Survey surveyName={element.surveyName} onSubmit={onSubmit} />;
+      return <Survey surveyName={element.name} onSubmit={element.onSubmit} />;
 
     case "timer":
       return (
