@@ -19,11 +19,13 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
     setNameValue('')
     setElementValues(defaultElementValues)
     setTreatment(updatedTreatment)
-
+    
+    /*
     const addElementDialog = document.getElementById('add-element');
     if (addElementDialog) {
       addElementDialog.close();
     }
+    */
 
     localStorage.setItem("code", stringify(updatedTreatment))
     window.location.reload(false)

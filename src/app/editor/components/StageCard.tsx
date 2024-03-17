@@ -20,6 +20,7 @@ export function StageCard({
   ]
 
   const width = duration ? scale * duration : "auto";
+
   return (
     // TODO: reorder elements with drag and drop
     <div
