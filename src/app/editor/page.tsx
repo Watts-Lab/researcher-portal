@@ -9,15 +9,14 @@ export default function EditorPage({}) {
   const { position: leftWidth, separatorProps: codeSeparatorProps } =
     useResizable({
       axis: "x",
-      initial: 400,
+      initial: 1000,
       min: 100,
     });
 
   const { position: upperLeftHeight, separatorProps: timelineSeparatorProps } =
     useResizable({
       axis: "y",
-      initial: 500,
-      min: 100,
+      initial: 500
     });
 
   return (
@@ -25,12 +24,12 @@ export default function EditorPage({}) {
       <div
         id="leftColumn"
         className="flex flex-col h-full w-full"
-        style={{ width: leftWidth }}
+        style={{ width: leftWidth }} 
       >
         <div
           id="upperLeft"
           className="overflow-auto h-full w-full"
-          style={{ height: upperLeftHeight }}
+          style={{minHeight: 200, height: upperLeftHeight }}
         >
           <h1>Render Panel </h1>
           <p>{"Lorem Ipsum ".repeat(100)}</p>
@@ -38,7 +37,7 @@ export default function EditorPage({}) {
 
         <DraggableSplitter dir="horizontal" {...timelineSeparatorProps} />
 
-        <div id="lowerLeft" className="grow">
+        <div id="lowerLeft" className="grow overflow-auto">
           <Timeline />
         </div>
       </div>
