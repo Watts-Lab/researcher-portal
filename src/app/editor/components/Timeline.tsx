@@ -31,12 +31,10 @@ export default function Timeline({}) {
         <div className="w-full overflow-x-auto gap-x-1">
           <TimePicker />
         </div>
-        
-        <div className="flex flex-row flex-nowrap h-full overflow-x-auto gap-x-1">
-          {treatment[0].gameStages?.map((stage, index) => (
+        <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
+          {treatment && treatment?.gameStages?.map((stage, index) => (
             <StageCard
               key={stage.name}
-              index={index}
               title={stage.name}
               elements={stage.elements}
               duration={stage.duration}
@@ -47,7 +45,7 @@ export default function Timeline({}) {
               stageIndex={index}
             />
           ))}
-          <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center h-full">
+          <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
             <button className="btn" onClick={()=>document.getElementById('add-stage').showModal()}>+</button>
             <dialog id="add-stage" className="modal">
               <div className="modal-box">

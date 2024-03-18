@@ -9,7 +9,6 @@ export function StageCard({
   elements,
   duration,
   scale,
-  index,
   treatment,
   setTreatment,
   sequence,
@@ -21,10 +20,11 @@ export function StageCard({
   ]
 
   const width = duration ? scale * duration : "auto";
+
   return (
     // TODO: reorder elements with drag and drop
     <div
-      id={`timelineCard ${index}`}
+      id={`timelineCard ${stageIndex}`}
       className={cn(
         "card grow-0 shrink-0",
         sequence === "gameStage" ? "bg-slate-300" : "bg-red-300"
@@ -33,24 +33,29 @@ export function StageCard({
     >
       <h3 className="mx-3 my-2">{title}</h3>
       <div id="elementList" className="flex flex-col gap-y-1">
-        {elements.map((element, index) => (
+        {elements !== undefined && elements.map((element, index) => (
           <ElementCard
             key={`element ${index}`}
             element={element}
             scale={scale}
             stageDuration={duration}
+            stageIndex={stageIndex}
+            elementIndex={index}
+            treatment={treatment}
+            setTreatment={setTreatment}
+            elementOptions={addElementOptions}
           />
         ))}
         {/* Add Element Button*/}
-        <div className="card bg-slate-100 opacity-50  shadow-md m-1 min-h-12 flex items-center">
-          <button className="btn h-full w-full" onClick={()=>document.getElementById(stageIndex).showModal()}>+</button>
-          <dialog id={stageIndex} className="modal">
+        <div className="card bg-slate-100 opacity-50 shadow-md m-1 min-h-12 flex items-center">
+          <button className="btn h-full w-full" onClick={()=>document.getElementById("stage"+stageIndex).showModal()}>+</button>
+          <dialog id={"stage"+stageIndex} className="modal">
           <div className="modal-box">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <AddElementPopup type="Element" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} index={stageIndex}/>
+            <AddElementPopup type="Element" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex}/>
           </div>
           </dialog>
         </div>

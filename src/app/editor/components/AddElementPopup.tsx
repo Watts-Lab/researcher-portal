@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { stringify } from "yaml";
 
-export default function AddElementPopup({ questions, type, treatment, setTreatment, index }) {
+export default function AddElementPopup({ questions, type, treatment, setTreatment, stageIndex }) {
 
   function handleSave() {
     const updatedTreatment = {...treatment}
@@ -13,17 +13,19 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
         inputs[key] = value
       }
     }
-    updatedTreatment[0].gameStages[index]?.elements?.push(inputs) // HARDCODED TO FIRST GAME STAGE
+    updatedTreatment?.gameStages[stageIndex]?.elements?.push(inputs) // HARDCODED TO FIRST GAME STAGE
 
     setSelectedOption(null)
     setNameValue('')
     setElementValues(defaultElementValues)
     setTreatment(updatedTreatment)
-
+    
+    /*
     const addElementDialog = document.getElementById('add-element');
     if (addElementDialog) {
       addElementDialog.close();
     }
+    */
 
     localStorage.setItem("code", stringify(updatedTreatment))
     window.location.reload(false)
@@ -193,7 +195,7 @@ export default function AddElementPopup({ questions, type, treatment, setTreatme
     <div>
       <h1> Add {type}</h1>
       {htmlElements}
-      <button className="btn btn-primary" style={{ margin: '10px' }} onClick={handleSave} disabled={selectedOption == null || nameValue === ''}>{index}</button>
+      <button className="btn btn-primary" style={{ margin: '10px' }} onClick={handleSave} disabled={selectedOption == null || nameValue === ''}>{"Add Element"}</button>
     </div>
   );
 }

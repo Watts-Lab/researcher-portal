@@ -8,7 +8,7 @@ export default function AddPopup({ questions, type, treatment, setTreatment }) {
     const updatedTreatment = {...treatment}
     const inputs = {name: nameValue, duration: parseInt(durationValue), elements: []}
 
-    updatedTreatment[0].gameStages.push(inputs)
+    updatedTreatment?.gameStages?.push(inputs)
     setTreatment(updatedTreatment)
     localStorage.setItem("code", stringify(updatedTreatment))
 
