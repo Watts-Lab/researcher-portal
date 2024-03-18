@@ -4,6 +4,7 @@ import { parse } from "yaml";
 import { StageCard } from "./StageCard";
 import AddPopup from "./AddPopup";
 import TimelineTools from "./TimelineTools";
+import TimePicker from "./TimePicker";
 
 export default function Timeline({}) {
   const [scale, setScale] = useState(1); // pixels per second
@@ -27,6 +28,10 @@ export default function Timeline({}) {
     <div id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
       <div id="timelineCanvas" className="grow min-h-10 bg-slate-600 p-2">
+        <div className="w-full overflow-x-auto gap-x-1">
+          <TimePicker />
+        </div>
+        
         <div className="flex flex-row flex-nowrap h-full overflow-x-auto gap-x-1">
           {treatment[0].gameStages?.map((stage, index) => (
             <StageCard
