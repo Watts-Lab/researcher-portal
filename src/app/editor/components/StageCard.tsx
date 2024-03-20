@@ -1,5 +1,5 @@
 "use client";
-import AddElementPopup from "./AddElementPopup";
+import AddPopup from "./AddPopup";
 import React from "react";
 import { ElementCard } from "./ElementCard";
 import { cn } from "@/app/components/utils";
@@ -55,7 +55,7 @@ export function StageCard({
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <AddElementPopup type="Element" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex}/>
+            <AddPopup type="addElement" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex}/>
           </div>
           </dialog>
         </div>
