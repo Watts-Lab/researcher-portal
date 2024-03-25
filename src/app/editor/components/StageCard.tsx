@@ -12,11 +12,16 @@ export function StageCard({
   treatment,
   setTreatment,
   sequence,
-  stageIndex
+  stageIndex,
 }) {
   const addElementOptions = [
     {"question": "Name", "responseType": "text"},
     {"question": "Type", "responseType": "dropdown", "options": ["prompt", "survey", "audioElement", "kitchenTimer", "qualtrics", "separator", "submitButton", "trainingVideo"]},
+  ]
+  const addStageOptions = [
+    {"question": "Name", "responseType": "text"},
+    {"question": "Duration", "responseType": "text"},
+    {"question": "Discussion", "responseType": "text"},
   ]
 
   const width = duration ? scale * duration : "auto";
@@ -31,7 +36,20 @@ export function StageCard({
       )}
       style={{ width: scale * duration }}
     >
-      <h3 className="mx-3 my-2">{title}</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <h3 className="mx-3 my-2">{title}</h3>
+        <button className="my-3 mx-3 btn h-5 bg-gray-300" style={{ minHeight: 'unset'}} onClick={()=>document.getElementById("editStage"+stageIndex).showModal()}>Edit</button>
+        <dialog id={"editStage"+stageIndex} className="modal">
+          <div className="modal-box">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <AddPopup type="editStage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex}/>
+          </div>
+          </dialog>
+      </div>
+
       <div id="elementList" className="flex flex-col gap-y-1">
         {elements !== undefined && elements.map((element, index) => (
           <ElementCard

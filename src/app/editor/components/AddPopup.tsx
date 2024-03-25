@@ -12,6 +12,13 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
       updatedTreatment?.gameStages?.push(inputs)
     } 
 
+    else if (saveType === "editStage"){
+      const stageElmts = updatedTreatment.gameStages[stageIndex].elements
+      const inputs = {name: nameValue, duration: parseInt(durationValue), elements: []}
+      updatedTreatment.gameStages[stageIndex] = inputs
+      updatedTreatment.gameStages[stageIndex].elements = stageElmts
+    }
+
     else if (saveType === "addElement" || saveType === "editElement"){
       const inputs = {name: nameValue, type: selectedOption}
       for (const key in elementValues) {
@@ -37,6 +44,18 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
       });
       updatedTreatment.gameStages[stageIndex].elements = newElements
     }
+
+    else if (saveType === "deleteStage") {
+      const oldStages = {...updatedTreatment.gameStages}
+      var newStages = [];
+      Object.keys(oldStages).forEach(key => {
+        if (key != stageIndex) {
+          newStages.push(oldStages[key]);
+        }
+      });
+      updatedTreatment.gameStages = newStages
+    }
+
     setSelectedOption(null)
     setNameValue('')
     setDurationValue('')
@@ -54,14 +73,16 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
     window.location.reload(false)
   }
   
-  var currElement;
+  var currComponent;
   if (type === "editElement") {
-    currElement = treatment.gameStages[stageIndex].elements[elementIndex];
+    currComponent = treatment.gameStages[stageIndex].elements[elementIndex];
+  } else if (type === "editStage") {
+    currComponent = treatment.gameStages[stageIndex];
   }
     
-  const [selectedOption, setSelectedOption] = useState(currElement !== undefined && currElement.type !== undefined ? currElement.type : "Pick one");
-  const [nameValue, setNameValue] = useState(currElement !== undefined && currElement.name !== undefined ? currElement.name : "");
-  const [durationValue, setDurationValue] = useState('');
+  const [selectedOption, setSelectedOption] = useState((currComponent !== undefined && currComponent.type !== undefined) ? currComponent.type : "Pick one");
+  const [nameValue, setNameValue] = useState((currComponent !== undefined && currComponent.name !== undefined) ? currComponent.name : "");
+  const [durationValue, setDurationValue] = useState((currComponent !== undefined && currComponent.duration !== undefined) ? currComponent.duration : "");
 
   const handleNameChange = (event) => {
     setNameValue(event.target.value);
@@ -243,15 +264,20 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
     header = "Add Element"
   } else if (type === "addStage"){
     header = "Add Stage"
+  } else if (type === "editStage"){
+    header = "Edit Stage"
   }
 
   return (
     <div>
       <h1>{header}</h1>
       {htmlElements}
-      <button className="btn btn-primary" style={{ margin: '10px' }} onClick={() => handleSave(type)} disabled={(durationValue === '' || nameValue === '') && (selectedOption == null || nameValue === '')}>Save</button>
+      <button className="btn btn-primary" style={{ margin: '10px' }} onClick={() => handleSave(type)} disabled={(durationValue === "" || nameValue === "") && (selectedOption === "Pick one" || nameValue === "")}>Save</button>
       {type === "editElement" && 
       <button className="btn btn-secondary" style={{ margin: '10px' }} onClick={() => handleSave("deleteElement")}>{"Delete"}</button>
+      }
+      {type === "editStage" && 
+      <button className="btn btn-secondary" style={{ margin: '10px' }} onClick={() => handleSave("deleteStage")}>{"Delete"}</button>
       }
     </div>
   );

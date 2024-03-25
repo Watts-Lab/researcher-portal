@@ -13,6 +13,7 @@ export default function Timeline({}) {
   }
   
   const parsedCode = parse(codeStr);
+  //const parsedCode = "";
   // TODO: add a page before this that lets the researcher select what treatment to work on
   
   // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
