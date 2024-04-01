@@ -1,18 +1,31 @@
 import React, {useEffect, useState} from "react";
 import TimePicker from "./TimePicker";
 import { Element } from "./Element";
-export function RenderPanel({setRenderElements, renderElements, stageDuration}) {
+import { render } from "react-dom";
+export function RenderPanel({renderPanelStage}) {
     const [time, setTime] = useState(0)
-
+    const elements = renderPanelStage.elements
+    const stageName = renderPanelStage.title
+    const stageDuration = renderPanelStage.duration
     return(
-        <div>
-            <h1>Render Panel </h1>
-            {renderElements !== undefined && renderElements.map((element, index) => (
-                ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
-                <Element element={element} />
-            ))
+        <div className="flex">
+            {!stageName &&
+                <h1>Click on a stage card to preview the stage from a participant view.</h1>
             }
-            <TimePicker value = {time} setValue={setTime} maxValue={stageDuration}/>
+            {stageName && 
+                <div>
+                    <h1>Preview of {stageName} </h1>
+                    <TimePicker value = {time} setValue={setTime} maxValue={stageDuration}/>
+                </div>
+            }
+            <div>
+                {elements !== undefined && elements.map((element, index) => (
+                    ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
+                    <Element element={element} />
+                ))
+                }
+            </div>
+            
         </div>
     )
 }

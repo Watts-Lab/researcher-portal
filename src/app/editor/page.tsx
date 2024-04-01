@@ -21,7 +21,7 @@ export default function EditorPage({}) {
     });
   
   const [renderElements, setRenderElements] = useState([])
-  const [renderPanelStageDuration, setRenderPanelStageDuration] = useState(0)
+  const [renderPanelStage, setRenderPanelStage] = useState({})
 
   return (
     <div id="editor" className="flex flex-row h-full w-full">
@@ -35,13 +35,13 @@ export default function EditorPage({}) {
           className="overflow-auto h-full w-full"
           style={{minHeight: 200, height: upperLeftHeight }}
         >
-          <RenderPanel renderElements={renderElements} setRenderElements={setRenderElements} stageDuration={renderPanelStageDuration}/>
+          <RenderPanel renderPanelStage={renderPanelStage}/>
         </div>
 
         <DraggableSplitter dir="horizontal" {...timelineSeparatorProps} />
 
         <div id="lowerLeft" className="grow overflow-auto">
-          <Timeline renderElements={renderElements} setRenderElements={setRenderElements} setStageDuration={setRenderPanelStageDuration}/>
+          <Timeline setRenderPanelStage={setRenderPanelStage} />
         </div>
       </div>
 

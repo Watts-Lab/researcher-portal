@@ -13,9 +13,7 @@ export function StageCard({
   setTreatment,
   sequence,
   stageIndex,
-  renderElements,
-  setRenderElements,
-  setRenderPanelStageDuration
+  setRenderPanelStage
 }) {
   const addElementOptions = [
     {"question": "Name", "responseType": "text"},
@@ -25,8 +23,14 @@ export function StageCard({
   const width = duration ? scale * duration : "auto";
 
   function handleStageClick() {
-    setRenderElements(elements)
-    setRenderPanelStageDuration(duration)
+    setRenderPanelStage(
+      {
+        title: title,
+        elements: elements,
+        duration: duration,
+        stageIndex: stageIndex
+      }
+    )
   }
 
   return (
