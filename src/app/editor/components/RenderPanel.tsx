@@ -22,7 +22,10 @@ export function RenderPanel({renderPanelStage}) {
             <div>
                 {elements !== undefined && elements.map((element, index) => (
                     ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
-                    <Element element={element} />
+                    <div>
+                        {index != 0 && <div className="divider"></div>}
+                        <Element element={element} />
+                    </div>
                 ))
                 }
             </div>
