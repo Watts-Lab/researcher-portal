@@ -15,9 +15,10 @@ export function RenderPanel({renderPanelStage}) {
             {stageName && 
                 <div>
                     <h1>Preview of {stageName} </h1>
-                    <TimePicker value = {time} setValue={setTime} maxValue={stageDuration}/>
+                    <TimePicker value = {time + " s"} setValue={setTime} maxValue={stageDuration}/>
                 </div>
             }
+            {stageName && <div className="divider divider-horizontal"></div>}
             <div>
                 {elements !== undefined && elements.map((element, index) => (
                     ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
