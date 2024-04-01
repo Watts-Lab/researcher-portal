@@ -6,7 +6,7 @@ import AddPopup from "./AddPopup";
 import TimelineTools from "./TimelineTools";
 import TimePicker from "./TimePicker";
 
-export default function Timeline({}) {
+export default function Timeline({renderElements, setRenderElements, setStageDuration}) {
   const [scale, setScale] = useState(1); // pixels per second
   let codeStr;
   if (typeof window !== 'undefined') {
@@ -28,9 +28,6 @@ export default function Timeline({}) {
     <div id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
       <div id="timelineCanvas" className="grow min-h-10 bg-slate-600 p-2">
-        <div className="w-full overflow-x-auto gap-x-1">
-          <TimePicker />
-        </div>
         <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
           {treatment && treatment?.gameStages?.map((stage, index) => (
             <StageCard
@@ -43,6 +40,9 @@ export default function Timeline({}) {
               setTreatment={setTreatment}
               sequence={"gameStage"}
               stageIndex={index}
+              renderElements={renderElements}
+              setRenderElements={setRenderElements}
+              setRenderPanelStageDuration={setStageDuration}
             />
           ))}
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
