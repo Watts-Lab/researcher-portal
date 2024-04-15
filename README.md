@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## To Run the App
+```bash
+npm install next@latest react@latest react-dom@latest
+npm run dev
+```
+Navigate to `localhost:3000/editor` to use the treatment editor.
+
 ## Getting Started
 
 First, run the development server:
