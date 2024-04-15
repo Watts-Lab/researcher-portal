@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "patch": "mv mockedPlayer.d.ts ./node_modules/@empirica/core/dist/player-classic-react.d.ts"
   },
   "dependencies": {
     "@empirica/core": "^1.11.0",
