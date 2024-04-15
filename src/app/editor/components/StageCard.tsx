@@ -12,7 +12,8 @@ export function StageCard({
   treatment,
   setTreatment,
   sequence,
-  stageIndex
+  stageIndex,
+  setRenderPanelStage
 }) {
   const addElementOptions = [
     {"question": "Name", "responseType": "text"},
@@ -20,6 +21,17 @@ export function StageCard({
   ]
 
   const width = duration ? scale * duration : "auto";
+
+  function handleStageClick() {
+    setRenderPanelStage(
+      {
+        title: title,
+        elements: elements,
+        duration: duration,
+        stageIndex: stageIndex
+      }
+    )
+  }
 
   return (
     // TODO: reorder elements with drag and drop
@@ -30,6 +42,7 @@ export function StageCard({
         sequence === "gameStage" ? "bg-slate-300" : "bg-red-300"
       )}
       style={{ width: scale * duration }}
+      onClick={handleStageClick}
     >
       <h3 className="mx-3 my-2">{title}</h3>
       <div id="elementList" className="flex flex-col gap-y-1">

@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, {useState} from "react";
 import { useResizable } from "react-resizable-layout";
 import DraggableSplitter from "../components/DraggableSplitter";
 import CodeEditor from "./components/CodeEditor";
+import { RenderPanel } from "./components/RenderPanel";
 import Timeline from "./components/Timeline";
 
 export default function EditorPage({}) {
@@ -18,6 +19,9 @@ export default function EditorPage({}) {
       axis: "y",
       initial: 500
     });
+  
+  const [renderElements, setRenderElements] = useState([])
+  const [renderPanelStage, setRenderPanelStage] = useState({})
 
   return (
     <div id="editor" className="flex flex-row h-full w-full">
@@ -31,14 +35,13 @@ export default function EditorPage({}) {
           className="overflow-auto h-full w-full"
           style={{minHeight: 200, height: upperLeftHeight }}
         >
-          <h1>Render Panel </h1>
-          <p>{"Lorem Ipsum ".repeat(100)}</p>
+          <RenderPanel renderPanelStage={renderPanelStage}/>
         </div>
 
         <DraggableSplitter dir="horizontal" {...timelineSeparatorProps} />
 
         <div id="lowerLeft" className="grow overflow-auto">
-          <Timeline />
+          <Timeline setRenderPanelStage={setRenderPanelStage} />
         </div>
       </div>
 

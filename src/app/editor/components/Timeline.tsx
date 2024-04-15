@@ -4,8 +4,9 @@ import { parse } from "yaml";
 import { StageCard } from "./StageCard";
 import AddPopup from "./AddPopup";
 import TimelineTools from "./TimelineTools";
+import TimePicker from "./TimePicker";
 
-export default function Timeline({}) {
+export default function Timeline({setRenderPanelStage}) {
   const [scale, setScale] = useState(1); // pixels per second
   let codeStr;
   if (typeof window !== 'undefined') {
@@ -39,6 +40,7 @@ export default function Timeline({}) {
               setTreatment={setTreatment}
               sequence={"gameStage"}
               stageIndex={index}
+              setRenderPanelStage={setRenderPanelStage}
             />
           ))}
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
