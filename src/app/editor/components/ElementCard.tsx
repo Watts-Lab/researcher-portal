@@ -1,6 +1,6 @@
 import React from "react";
 import { Element } from "./Element";
-import EditElementPopup from "./EditElementPopup";
+import AddPopup from "./AddPopup";
 
 export function ElementCard({ element, scale, stageDuration, onSubmit, stageIndex, elementIndex, treatment, setTreatment, elementOptions}) {
   const startTime = element.displayTime || 0;
@@ -19,7 +19,7 @@ export function ElementCard({ element, scale, stageDuration, onSubmit, stageInde
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <EditElementPopup type="Element" questions={elementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex} elementIndex={elementIndex}/>
+            <AddPopup type="editElement" questions={elementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex} elementIndex={elementIndex}/>
           </div>
           </dialog>
     </div>
