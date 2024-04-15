@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import TimePicker from "./TimePicker";
-import { Element } from "./Element";
+import {Element} from "/Users/kimberlyepstein/researcher-portal/deliberation-empirica/client/src/elements/Element.jsx";
 import { render } from "react-dom";
 export function RenderPanel({renderPanelStage}) {
     const [time, setTime] = useState(0)
