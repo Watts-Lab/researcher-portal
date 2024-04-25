@@ -10,6 +10,7 @@ export function ElementCard({ element, scale, stageDuration, onSubmit, stageInde
     <div
       className="card bg-base-200 shadow-md min-h-12 min-w-[10px] justify-center px-5"
       style={{ left: startTime * scale, width: scale * (endTime - startTime) }}
+      data-cy={"element-"+stageIndex+"-"+elementIndex}
     >
       <Element element={element}/>
       <button data-cy={"edit-element-button-"+stageIndex+"-"+elementIndex} className="btn h-5 flex bg-gray-300" style={{ minHeight: 'unset' }} onClick={()=>document.getElementById("stage"+stageIndex+"element"+elementIndex).showModal()}>Edit</button>

@@ -26,7 +26,7 @@ export default function Timeline({setRenderPanelStage}) {
      ]
 
   return (
-    <div id="timeline" className="h-full flex flex-col">
+    <div data-cy={"timeline"} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
       <div id="timelineCanvas" className="grow min-h-10 bg-slate-600 p-2">
         <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
