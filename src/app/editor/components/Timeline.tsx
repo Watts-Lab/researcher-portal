@@ -43,7 +43,7 @@ export default function Timeline({}) {
             />
           ))}
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
-            <button className="btn" onClick={()=>document.getElementById('add-stage').showModal()}>+</button>
+            <button data-cy="add-stage-button" className="btn" onClick={()=>document.getElementById('add-stage').showModal()}>+</button>
             <dialog id="add-stage" className="modal">
               <div className="modal-box">
                 <form method="dialog">

@@ -127,6 +127,11 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
   const handleEndTimeChange = (newValue) => handleInputChange('endTime', newValue);
    
   // DEFAULT QUESTIONS
+  //console.log(stageIndex)
+  stageIndex = stageIndex !== undefined ? stageIndex : ""
+  
+  elementIndex = elementIndex !== undefined ? elementIndex : ""
+
   const htmlElements = []
   questions.forEach((q, index) => {
     const question = q.question
@@ -140,7 +145,7 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
               <div className="label">
                 <span className="label-text">{question}</span>
               </div>
-              <input value = {nameValue} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
+              <input data-cy={"add-popup-name-"+type+"-"+stageIndex+"-"+elementIndex} value = {nameValue} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={handleNameChange}/>
             </label>
           </div>
         }
@@ -150,7 +155,7 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
               <div className="label">
                 <span className="label-text">{question}</span>
               </div>
-              <input value = {durationValue} type="text" placeholder="Enter number here." className="input input-bordered w-full max-w-xs" onChange={handleDurationChange}/>
+              <input data-cy={"add-popup-duration-"+type+"-"+stageIndex+"-"+elementIndex} value = {durationValue} type="text" placeholder="Enter number here." className="input input-bordered w-full max-w-xs" onChange={handleDurationChange}/>
             </label>
           </div>
         }
@@ -160,7 +165,7 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
               <div className="label">
                 <span className="label-text">{question}</span>
               </div>
-              <select className="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} defaultValue={selectedOption}> //TODO fix multiselect
+              <select data-cy={"add-popup-type-"+type+"-"+stageIndex+"-"+elementIndex} className="select select-bordered" multiple={responseType === "multiselect"} onChange={handleSelectChange} defaultValue={selectedOption}> //TODO fix multiselect
                 <option disabled>Pick one</option>
                 {options.map((option, index) => (<option key={option + index}>{option}</option>))}
               </select>
@@ -180,7 +185,7 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
             <div className="label">
               <span className="label-text">{"File Address"}</span>
             </div>
-            <input value = {elementValues.file} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleFileChange(e.target.value)}/>
+            <input data-cy={"add-popup-fileAddress-"+type+"-"+stageIndex+"-"+elementIndex} value = {elementValues.file} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleFileChange(e.target.value)}/>
           </label>
         </div>
       }
@@ -210,7 +215,7 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
             <div className="label">
               <span className="label-text">{"URL"}</span>
             </div>
-            <input value = {elementValues.url} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleURLChange(e.target.value)}/>
+            <input data-cy={"add-popup-URL-"+type+"-"+stageIndex+"-"+elementIndex} value = {elementValues.url} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleURLChange(e.target.value)}/>
           </label>
         </div>
       }
@@ -240,7 +245,7 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
             <div className="label">
               <span className="label-text">{"On Submit"}</span>
             </div>
-            <input value = {elementValues.onSubmit} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleOnSubmitChange(e.target.value)}/>
+            <input data-cy={"add-popup-onSubmit-"+type+"-"+stageIndex+"-"+elementIndex} value = {elementValues.onSubmit} type="text" placeholder="Enter text here." className="input input-bordered w-full max-w-xs" onChange={(e) => handleOnSubmitChange(e.target.value)}/>
           </label>
         </div>
       }
@@ -272,12 +277,12 @@ export default function AddPopup({type, questions, treatment, setTreatment, stag
     <div>
       <h1>{header}</h1>
       {htmlElements}
-      <button className="btn btn-primary" style={{ margin: '10px' }} onClick={() => handleSave(type)} disabled={(durationValue === "" || nameValue === "") && (selectedOption === "Pick one" || nameValue === "")}>Save</button>
+      <button data-cy={"add-popup-save-"+type+"-"+stageIndex+"-"+elementIndex} className="btn btn-primary" style={{ margin: '10px' }} onClick={() => handleSave(type)} disabled={(durationValue === "" || nameValue === "") && (selectedOption === "Pick one" || nameValue === "")}>Save</button>
       {type === "editElement" && 
-      <button className="btn btn-secondary" style={{ margin: '10px' }} onClick={() => handleSave("deleteElement")}>{"Delete"}</button>
+      <button data-cy={"add-popup-delete-"+type+"-"+stageIndex+"-"+elementIndex} className="btn btn-secondary" style={{ margin: '10px' }} onClick={() => handleSave("deleteElement")}>{"Delete"}</button>
       }
       {type === "editStage" && 
-      <button className="btn btn-secondary" style={{ margin: '10px' }} onClick={() => handleSave("deleteStage")}>{"Delete"}</button>
+      <button data-cy={"add-popup-delete-"+type+"-"+stageIndex+"-"+elementIndex} className="btn btn-secondary" style={{ margin: '10px' }} onClick={() => handleSave("deleteStage")}>{"Delete"}</button>
       }
     </div>
   );

@@ -12,7 +12,7 @@ export function ElementCard({ element, scale, stageDuration, onSubmit, stageInde
       style={{ left: startTime * scale, width: scale * (endTime - startTime) }}
     >
       <Element element={element}/>
-      <button className="btn h-5 flex bg-gray-300" style={{ minHeight: 'unset' }} onClick={()=>document.getElementById("stage"+stageIndex+"element"+elementIndex).showModal()}>Edit</button>
+      <button data-cy={"edit-element-button-"+stageIndex+"-"+elementIndex} className="btn h-5 flex bg-gray-300" style={{ minHeight: 'unset' }} onClick={()=>document.getElementById("stage"+stageIndex+"element"+elementIndex).showModal()}>Edit</button>
       <dialog id={"stage"+stageIndex+"element"+elementIndex} className="modal">
           <div className="modal-box">
             <form method="dialog">

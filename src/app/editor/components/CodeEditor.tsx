@@ -34,6 +34,7 @@ export default function CodeEditor() {
         style={{ height: "95vh", overflow: "auto", backgroundColor: "#F0F2F6" }}
       >
         <YamlEditor
+          data-cy="code-editor"
           value={code}
           language="yaml"
           placeholder={"Please enter treatment configuration. Do not refresh the page before saving."}
@@ -48,7 +49,7 @@ export default function CodeEditor() {
         />
       </div>
       <div style={{ backgroundColor: "#F0F2F6" }}>
-        <button className="btn btn-primary" onClick={handleSave}>
+        <button data-cy="yaml-save" className="btn btn-primary" onClick={handleSave}>
           Save
         </button>
       </div>

@@ -51,7 +51,7 @@ export function Element({ element}) {
         />
       );
 
-    case "video":
+    case "trainingVideo":
       return <TrainingVideo url={element.url} />;
 
     default:
