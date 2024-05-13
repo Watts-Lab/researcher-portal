@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import TimePicker from "./TimePicker";
 import {Element} from "./../../../.././deliberation-empirica/client/src/elements/Element.jsx";
-import { render } from "react-dom";
+import RenderDelibElement from "./RenderDelibElement";
 export function RenderPanel({renderPanelStage}) {
     const [time, setTime] = useState(0)
     const elements = renderPanelStage.elements
     const stageName = renderPanelStage.title
     const stageDuration = renderPanelStage.duration
+
     return(
         <div className="flex">
             {!stageName &&
@@ -24,7 +25,7 @@ export function RenderPanel({renderPanelStage}) {
                     ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
                     <div>
                         {index != 0 && <div className="divider"></div>}
-                        <Element element={element} onSubmit={() => {}} />
+                        <RenderDelibElement element={element} onSubmit={() => {}} />
                     </div>
                 ))
                 }
