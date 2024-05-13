@@ -1,10 +1,15 @@
 export function usePlayer() {
   // This is a mock function that returns a mock player object
+  console.log("im being called?")
   const player = {
-    isMock: true,
+    newName: true,
+    introDone: true
   };
 
-  return player;
+  return {
+    get: (varName) => player[varName],
+    set: true
+  }
 }
 
 export function useGame() {

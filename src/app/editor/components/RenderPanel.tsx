@@ -24,7 +24,7 @@ export function RenderPanel({renderPanelStage}) {
                     ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
                     <div>
                         {index != 0 && <div className="divider"></div>}
-                        <Element element={element} />
+                        <Element element={element} onSubmit={() => {}} />
                     </div>
                 ))
                 }
