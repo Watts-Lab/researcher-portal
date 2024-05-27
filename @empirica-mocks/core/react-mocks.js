@@ -3,7 +3,8 @@ export function useGlobal() {
   const global = {
     isMock: true,
     recruitingBatchConfig: undefined, //TODO
-    
+    get: function (varName) {return this[varName]}
+
   };
 
   return global;

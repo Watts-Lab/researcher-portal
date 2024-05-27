@@ -6,10 +6,13 @@ export default function RenderDelibElement(element, onSubmit) {
     const player = usePlayer();
     const game = useGame();
     const stage = useStage();
-    console.log(player)
+    console.log("player called from RenderDelibElement ", player)
     //TODO set necessary stuff in player, game, and stage
 
     return (
-        <Element element={element} onSubmit={onSubmit} />
+        <div>
+            <Element element={element.element} onSubmit={element.onSubmit} />
+        </div>
+        
     )
 }

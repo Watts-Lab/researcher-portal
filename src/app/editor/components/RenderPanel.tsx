@@ -24,7 +24,6 @@ export function RenderPanel({renderPanelStage}) {
                 {elements !== undefined && elements.map((element, index) => (
                     ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
                     <div>
-                        {index != 0 && <div className="divider"></div>}
                         <RenderDelibElement element={element} onSubmit={() => {}} />
                     </div>
                 ))
