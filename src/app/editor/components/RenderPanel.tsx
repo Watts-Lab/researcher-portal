@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import TimePicker from "./TimePicker";
 import { Element } from "./Element";
-import { render } from "react-dom";
 export function RenderPanel({renderPanelStage}) {
     const [time, setTime] = useState(0)
     const elements = renderPanelStage.elements
@@ -22,7 +21,7 @@ export function RenderPanel({renderPanelStage}) {
             <div>
                 {elements !== undefined && elements.map((element, index) => (
                     ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
-                    <div>
+                    <div key={index}>
                         {index != 0 && <div className="divider"></div>}
                         <Element element={element} />
                     </div>

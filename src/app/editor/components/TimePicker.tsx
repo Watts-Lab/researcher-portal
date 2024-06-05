@@ -1,6 +1,6 @@
 import 'react'
 import { useState } from 'react'
-export default function ({value, setValue, maxValue}) {
+export default function TimePicker({value, setValue, maxValue}) {
     return (
         <div>
             <h3>Select a time:</h3>
