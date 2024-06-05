@@ -67,7 +67,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile }: { token: any, account: any, profile: any }) {
       if (account) {
         // console.log("account", account);
         token = Object.assign({}, token, {
@@ -81,7 +81,7 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any, token: any }) {
       if (session) {
         session = Object.assign({}, session, {
           accessToken: token.accessToken,

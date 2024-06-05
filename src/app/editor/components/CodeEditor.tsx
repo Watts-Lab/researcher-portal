@@ -13,17 +13,17 @@ export default function CodeEditor() {
     setCode(value);
   }, []);
 
-  function handleChange(evn) {
+  function handleChange(evn: any) {
     let entry = evn.target.value
     setCode(entry);
   }
 
-  function handleSave(e) { //TODO validation should occur here
+  function handleSave(e: any) { //TODO validation should occur here
     e.preventDefault();
     try {
       parse(code);
       localStorage.setItem("code", code);
-      window.location.reload(false) //refresh page to make elements appear on screen
+      window.location.reload() //refresh page to make elements appear on screen
     } catch (YAMLParseError) {
       //TODO also display a little something went wrong pop up
     }

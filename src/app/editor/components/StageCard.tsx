@@ -14,6 +14,16 @@ export function StageCard({
   sequence,
   stageIndex,
   setRenderPanelStage
+}: {
+  title: string,
+  elements: any[],
+  duration: number,
+  scale: number,
+  treatment: any,
+  setTreatment: any,
+  sequence: string,
+  stageIndex: number,
+  setRenderPanelStage: any
 }) {
   const addElementOptions = [
     {"question": "Name", "responseType": "text"},
@@ -59,7 +69,7 @@ export function StageCard({
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <AddPopup type="editStage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex}/>
+            <AddPopup type="editStage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex} elementIndex={""} />
           </div>
           </dialog>
       </div>
@@ -76,6 +86,7 @@ export function StageCard({
             treatment={treatment}
             setTreatment={setTreatment}
             elementOptions={addElementOptions}
+            onSubmit={""}
           />
         ))}
         {/* Add Element Button*/}
@@ -87,7 +98,7 @@ export function StageCard({
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <AddPopup type="addElement" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex}/>
+            <AddPopup type="addElement" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex} elementIndex={""}/>
           </div>
           </dialog>
         </div>

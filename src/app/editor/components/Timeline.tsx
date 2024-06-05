@@ -6,7 +6,7 @@ import AddPopup from "./AddPopup";
 import TimelineTools from "./TimelineTools";
 import TimePicker from "./TimePicker";
 
-export default function Timeline({setRenderPanelStage}) {
+export default function Timeline({setRenderPanelStage}: {setRenderPanelStage: any}) {
   const [scale, setScale] = useState(1); // pixels per second
   let codeStr;
   if (typeof window !== 'undefined') {
@@ -30,7 +30,7 @@ export default function Timeline({setRenderPanelStage}) {
       <TimelineTools setScale={setScale} />
       <div id="timelineCanvas" className="grow min-h-10 bg-slate-600 p-2">
         <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
-          {treatment && treatment?.gameStages?.map((stage, index) => (
+          {treatment && treatment?.gameStages?.map((stage: any, index: any) => (
             <StageCard
               key={stage.name}
               title={stage.name}
@@ -52,7 +52,7 @@ export default function Timeline({setRenderPanelStage}) {
                   {/* if there is a button in form, it will close the modal */}
                   <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                 </form>
-                <AddPopup type="addStage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment}/>
+                <AddPopup type="addStage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={""} elementIndex={""}/>
               </div>
             </dialog>
           </div>
