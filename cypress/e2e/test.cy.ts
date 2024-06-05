@@ -1,3 +1,5 @@
+// npm run cypress:open
+
 describe('test spec', () => {
   it('passes', () => {
     // initial yaml code for treatment
@@ -5,8 +7,6 @@ describe('test spec', () => {
     cy.visit('http://localhost:3000/editor')
     cy.get('[data-cy="code-editor"]').type(yamltreatment)
     cy.get('[data-cy="yaml-save"]').click()
-
-    // TODO: ADD ASSERTIONS !!
 
     // create first stage
     cy.get('[data-cy="add-stage-button"]').click()
