@@ -49,7 +49,7 @@ export interface GitHubProfile {
   };
   [claim: string]: unknown;
 }
-
+//@ts-ignore
 export const authOptions = {
   providers: [
     GithubProvider({
@@ -67,7 +67,8 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account, profile }) {
+    //@ts-ignore
+    async jwt({ token, account, profile }: { token: any, account: any, profile: any }) {
       if (account) {
         // console.log("account", account);
         token = Object.assign({}, token, {
@@ -81,7 +82,7 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any, token: any }) {
       if (session) {
         session = Object.assign({}, session, {
           accessToken: token.accessToken,
@@ -95,6 +96,7 @@ export const authOptions = {
 };
 
 // see: https://next-auth.js.org/configuration/initialization#route-handlers-app
+//@ts-ignore
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

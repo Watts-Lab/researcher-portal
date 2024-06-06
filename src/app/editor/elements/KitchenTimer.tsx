@@ -4,6 +4,10 @@ export default function KitchenTimer({
   startTime,
   endTime,
   warnTimeRemaining,
+} : {
+  startTime : any
+  endTime : any
+  warnTimeRemaining : any
 }) {
   return (
     <div>

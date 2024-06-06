@@ -8,7 +8,7 @@ export default async function ReposPage() {
   const session = await getServerSession(authOptions);
   // const client = await github();
 
-  const renderRepoCard = (repo) => {
+  const renderRepoCard = (repo : any) => {
     return (
       <div className="card w-5/6 bg-base-200 shadow-xl m-5" key={repo.id}>
         <div className="card-body">
