@@ -49,8 +49,8 @@ export interface GitHubProfile {
   };
   [claim: string]: unknown;
 }
-
-export const authOptions = {
+//@ts-ignore
+export const authOptions = { 
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -67,6 +67,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
+    //@ts-ignore
     async jwt({ token, account, profile }: { token: any, account: any, profile: any }) {
       if (account) {
         // console.log("account", account);
@@ -95,6 +96,7 @@ export const authOptions = {
 };
 
 // see: https://next-auth.js.org/configuration/initialization#route-handlers-app
+//@ts-ignore
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

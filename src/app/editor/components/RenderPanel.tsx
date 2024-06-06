@@ -19,7 +19,7 @@ export function RenderPanel({renderPanelStage}: {renderPanelStage: any}) {
             }
             {stageName && <div className="divider divider-horizontal"></div>}
             <div>
-                {elements !== undefined && elements.map((element: any, index: number) => (
+                {elements !== undefined && elements.map((element: any, index: any) => (
                     ((element.displayTime <= time && element.hideTime >= time) || !element.displayTime) &&
                     <div key={index}>
                         {index != 0 && <div className="divider"></div>}
