@@ -86,7 +86,8 @@ export function StageCard({
             treatment={treatment}
             setTreatment={setTreatment}
             elementOptions={addElementOptions}
-            onSubmit={undefined}          />
+            onSubmit={""}
+          />
         ))}
         {/* Add Element Button*/}
         <div className="card bg-slate-100 opacity-50 shadow-md m-1 min-h-12 flex items-center">

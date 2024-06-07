@@ -5,9 +5,12 @@ import { stringify } from "yaml";
 export default function AddPopup({type, questions, treatment, setTreatment, stageIndex, elementIndex}: 
   {type:string, questions:any, treatment:any, setTreatment:any, stageIndex:any, elementIndex:any}) {
 
+<<<<<<< HEAD
   function handleSave(saveType : string) {
     const updatedTreatment = {...treatment}
 
+=======
+>>>>>>> origin/christa-types
     if (saveType === "addStage"){
       const inputs = {name: nameValue, duration: parseInt(durationValue), elements: []}
       updatedTreatment?.gameStages?.push(inputs)
