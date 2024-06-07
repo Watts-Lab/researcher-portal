@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function SubmitButton({ url }) {
+export default function SubmitButton({ url }: { url: string }) {
   return (
     <div>
       <h1> Training Video </h1>

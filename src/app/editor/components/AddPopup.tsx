@@ -14,8 +14,8 @@ export default function AddPopup({
   questions: any;
   treatment: any;
   setTreatment: any;
-  stageIndex: number;
-  elementIndex: number;
+  stageIndex: any;
+  elementIndex: any;
 }) {
   function handleSave(saveType: string) {
     const updatedTreatment = { ...treatment };

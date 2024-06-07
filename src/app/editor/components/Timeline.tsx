@@ -8,7 +8,7 @@ import TimePicker from "./TimePicker";
 
 export default function Timeline({setRenderPanelStage}: {setRenderPanelStage: any}) {
   const [scale, setScale] = useState(1); // pixels per second
-  let codeStr;
+  let codeStr = "";
   if (typeof window !== 'undefined') {
     codeStr = localStorage.getItem("code") || "";
   }
@@ -45,7 +45,12 @@ export default function Timeline({setRenderPanelStage}: {setRenderPanelStage: an
             />
           ))}
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
-            <button data-cy="add-stage-button" className="btn" onClick={()=>document.getElementById('add-stage').showModal()}>+</button>
+            <button data-cy="add-stage-button" className="btn" onClick={()=> {
+              const element = document.getElementById('add-stage')
+              if (element instanceof HTMLDialogElement) {
+                element.showModal();
+              }
+            }}>+</button>
             <dialog id="add-stage" className="modal">
               <div className="modal-box">
                 <form method="dialog">

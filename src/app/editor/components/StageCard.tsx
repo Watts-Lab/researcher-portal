@@ -62,7 +62,12 @@ export function StageCard({
     >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <h3 className="mx-3 my-2">{title}</h3>
-        <button data-cy={"edit-stage-button-"+stageIndex} className="my-3 mx-3 btn h-5 bg-gray-300" style={{ minHeight: 'unset'}} onClick={()=>document.getElementById("editStage"+stageIndex).showModal()}>Edit</button>
+        <button data-cy={"edit-stage-button-"+stageIndex} className="my-3 mx-3 btn h-5 bg-gray-300" style={{ minHeight: 'unset'}} onClick={()=> {
+          const element = document.getElementById("editStage"+stageIndex);
+          if (element instanceof HTMLDialogElement) {
+            element.showModal();
+          }
+        }}>Edit</button>
         <dialog id={"editStage"+stageIndex} className="modal">
           <div className="modal-box">
             <form method="dialog">
@@ -91,7 +96,13 @@ export function StageCard({
         ))}
         {/* Add Element Button*/}
         <div className="card bg-slate-100 opacity-50 shadow-md m-1 min-h-12 flex items-center">
-          <button data-cy={"add-element-button-"+stageIndex} className="btn h-full w-full" onClick={()=>document.getElementById("stage"+stageIndex).showModal()}>+</button>
+          <button data-cy={"add-element-button-"+stageIndex} className="btn h-full w-full" onClick={()=> {
+            const element = document.getElementById("stage"+stageIndex);
+            if (element instanceof HTMLDialogElement) {
+              element.showModal();
+            }
+          }}>+</button>
+            
           <dialog id={"stage"+stageIndex} className="modal">  
           <div className="modal-box">
             <form method="dialog">
