@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "rsync -ar --delete @empirica-mocks/ ./deliberation-empirica/client/node_modules/@empirica/ && rm -r ./.next",
+    "build:deliberation-empirica": "(cd deliberation-empirica/client && npm install) && (cd deliberation-empirica/server && npm install)",
+    "predev": "npm run build:deliberation-empirica && rsync -ar --delete @empirica-mocks/ ./deliberation-empirica/client/node_modules/@empirica/ && rm -r ./.next",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "cypress:open": "cypress open",
-    "test": "npx cypress open"
+    "test": "npx cypress open",
     "patch": "cp patchedPlayer.d.ts ./node_modules/@empirica/core/dist/player-classic-react.d.ts"
   },
   "dependencies": {
