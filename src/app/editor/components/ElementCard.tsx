@@ -13,7 +13,7 @@ export function ElementCard({ element, scale, stageDuration, onSubmit, stageInde
       data-cy={"element-"+stageIndex+"-"+elementIndex}
     >
       <Element element={element}/>
-      <button data-cy={"edit-element-button-"+stageIndex+"-"+elementIndex} className="btn h-5 flex bg-gray-300" style={{ minHeight: 'unset' }} onClick={()=>document.getElementById("stage"+stageIndex+"element"+elementIndex)}>Edit</button>
+      <button data-cy={"edit-element-button-"+stageIndex+"-"+elementIndex} className="btn h-5 flex bg-gray-300" style={{ minHeight: 'unset' }} onClick={()=>(document.getElementById("stage"+stageIndex+"element"+elementIndex) as HTMLDialogElement | null)?.showModal()}>Edit</button>
       <dialog id={"stage"+stageIndex+"element"+elementIndex} className="modal">
           <div className="modal-box">
             <form method="dialog">

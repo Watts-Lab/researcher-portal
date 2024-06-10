@@ -17,6 +17,7 @@ export default function Timeline({setRenderPanelStage} : {setRenderPanelStage: a
   
   const parsedCode = parse(codeStr);
   //const parsedCode = "";
+
   // TODO: add a page before this that lets the researcher select what treatment to work on
   
   // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
@@ -47,7 +48,7 @@ export default function Timeline({setRenderPanelStage} : {setRenderPanelStage: a
             />
           ))}
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
-            <button data-cy="add-stage-button" className="btn" onClick={()=>document.getElementById('add-stage')}>+</button>
+            <button data-cy="add-stage-button" className="btn" onClick={()=>(document.getElementById('add-stage') as HTMLDialogElement | null)?.showModal()}>+</button>
             <dialog id="add-stage" className="modal">
               <div className="modal-box">
                 <form method="dialog">
