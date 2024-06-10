@@ -12,7 +12,7 @@ import KitchenTimer from "../elements/KitchenTimer";
 import TrainingVideo from "../elements/TrainingVideo";
 import Qualtrics from "../elements/Qualtrics";
 
-export function Element({ element}) {
+export function Element({ element }:{ element: any }) {
   switch (element.type) {
     case "audioElement":
       return <AudioElement file={element.file} />;
@@ -51,7 +51,7 @@ export function Element({ element}) {
         />
       );
 
-    case "video":
+    case "trainingVideo":
       return <TrainingVideo url={element.url} />;
 
     default:
