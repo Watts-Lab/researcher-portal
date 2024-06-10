@@ -58,12 +58,12 @@ describe('test spec', () => {
 
     // edit first element
     cy.get('[data-cy="edit-element-button-0-0"]').click()
-    cy.get('[data-cy="add-popup-name-editElement-0-0"]').type("{moveToStart}Edited ")
+    cy.get('[data-cy="add-popup-name-editElement-0-0"]').type(" Edited")
     cy.get('[data-cy="add-popup-onSubmit-editElement-0-0"]').clear().type("Thanks!")
     cy.get('[data-cy="add-popup-save-editElement-0-0"]').click()
 
     cy.get('[data-cy="element-0-0"]').contains("Survey").should("be.visible")
-    cy.get('[data-cy="element-0-0"]').contains("Edited Element 1").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("Element 1 Edited").should("be.visible")
 
     // delete second element
     cy.get('[data-cy="edit-element-button-0-1"]').click()
@@ -81,11 +81,11 @@ describe('test spec', () => {
 
     // edit first stage
     cy.get('[data-cy="edit-stage-button-0"]').click()
-    cy.get('[data-cy="add-popup-name-editStage-0-"]').type("{moveToStart}Edited ")
+    cy.get('[data-cy="add-popup-name-editStage-0-"]').type(" Edited")
     cy.get('[data-cy="add-popup-duration-editStage-0-"]').clear().type("400")
     cy.get('[data-cy="add-popup-save-editStage-0-"]').click()
 
-    cy.get('[data-cy="stage-0"]').contains("Edited Stage 1").should("be.visible")
+    cy.get('[data-cy="stage-0"]').contains("Stage 1 Edited").should("be.visible")
 
     // delete second stage
     cy.get('[data-cy="edit-stage-button-1"]').click()

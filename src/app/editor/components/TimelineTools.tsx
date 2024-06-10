@@ -1,7 +1,7 @@
 import React from "react";
 import TimePicker from "./TimePicker";
 
-export default function TimelineTools({ setScale } : { setScale: any }) {
+export default function TimelineTools({ setScale }: { setScale: any }) {
   return (
     <div data-test="timelineTools" className="bg-black h-6 w-full text-white">
       <div data-test="scaleSlider" className="">
