@@ -2,7 +2,7 @@
 A base wrapper for all the elements
 
 */
-import React from 'react'
+import React from "react";
 import Prompt from "../elements/Prompt";
 import Separator from "../elements/Separator";
 import AudioElement from "../elements/AudioElement";
@@ -12,7 +12,7 @@ import KitchenTimer from "../elements/KitchenTimer";
 import TrainingVideo from "../elements/TrainingVideo";
 import Qualtrics from "../elements/Qualtrics";
 
-export function Element({ element}) {
+export function Element({ element }: { element: any }) {
   switch (element.type) {
     case "audioElement":
       return <AudioElement file={element.file} />;
@@ -34,7 +34,10 @@ export function Element({ element}) {
 
     case "submitButton":
       return (
-        <SubmitButton onSubmit={element.onSubmit} buttonText={element.buttonText} />
+        <SubmitButton
+          onSubmit={element.onSubmit}
+          buttonText={element.buttonText}
+        />
       );
 
     case "survey":
@@ -44,14 +47,12 @@ export function Element({ element}) {
       return (
         <KitchenTimer
           startTime={element.startTime || element.displayTime || 0}
-          endTime={
-            element.endTime || element.hideTime || ""
-          }
+          endTime={element.endTime || element.hideTime || ""}
           warnTimeRemaining={element.warnTimeRemaining}
         />
       );
 
-    case "video":
+    case "trainingVideo":
       return <TrainingVideo url={element.url} />;
 
     default:
