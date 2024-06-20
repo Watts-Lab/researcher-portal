@@ -9,7 +9,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "cypress:open": "cypress open",
     "test": "npx cypress open",
     "patch": "cp patchedPlayer.d.ts ./node_modules/@empirica/core/dist/player-classic-react.d.ts"
   },
@@ -41,9 +40,7 @@
     "daisyui": "^3.9.4",
     "eslint": "^8",
     "eslint-config-next": "13.5.6",
-    "eslint-config-prettier": "^8.5.0",
     "postcss": "^8",
-    "prettier": "^2.8.8",
     "tailwindcss": "^3",
     "typescript": "^5"
   }

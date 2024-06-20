@@ -12,19 +12,27 @@ export default function Timeline({
   setRenderPanelStage: any;
 }) {
   const [scale, setScale] = useState(1); // pixels per second
-  let codeStr;
-  if (typeof window !== "undefined") {
-    codeStr = localStorage.getItem("code") || "";
-  } else {
-    codeStr = "";
+  const [treatment, setTreatment] = useState<any | null>(null);
+
+  useEffect(() => {
+    // Access localStorage only on the client side
+    if (typeof window !== "undefined") {
+      const codeStr = localStorage.getItem("code") || "";
+      const parsedCode = parse(codeStr);
+      setTreatment(parsedCode);
+    }
+  }, []);
+
+  if (!treatment) {
+    return null;
   }
 
-  const parsedCode = parse(codeStr);
   //const parsedCode = "";
+
   // TODO: add a page before this that lets the researcher select what treatment to work on
 
   // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
-  const [treatment, setTreatment] = useState(parsedCode);
+
   const addStageOptions = [
     { question: "Name", responseType: "text" },
     { question: "Duration", responseType: "text" },
@@ -55,7 +63,13 @@ export default function Timeline({
             <button
               data-cy="add-stage-button"
               className="btn"
-              onClick={() => document.getElementById("add-stage")}
+              onClick={() =>
+                (
+                  document.getElementById(
+                    "add-stage"
+                  ) as HTMLDialogElement | null
+                )?.showModal()
+              }
             >
               +
             </button>

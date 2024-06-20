@@ -4,6 +4,9 @@ describe('test spec', () => {
   it('passes', () => {
     // initial yaml code for treatment
     let yamltreatment = "name: cypress3_load_test\nplayerCount: 8\ngameStages:\n[]"
+
+    cy.viewport(2000, 1000, { log: false });
+
     cy.visit('http://localhost:3000/editor')
     cy.get('[data-cy="code-editor"]').type(yamltreatment)
     cy.get('[data-cy="yaml-save"]').click()
@@ -58,12 +61,12 @@ describe('test spec', () => {
 
     // edit first element
     cy.get('[data-cy="edit-element-button-0-0"]').click()
-    cy.get('[data-cy="add-popup-name-editElement-0-0"]').type("{moveToStart}Edited ")
+    cy.get('[data-cy="add-popup-name-editElement-0-0"]').type(" Edited")
     cy.get('[data-cy="add-popup-onSubmit-editElement-0-0"]').clear().type("Thanks!")
     cy.get('[data-cy="add-popup-save-editElement-0-0"]').click()
 
     cy.get('[data-cy="element-0-0"]').contains("Survey").should("be.visible")
-    cy.get('[data-cy="element-0-0"]').contains("Edited Element 1").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("Element 1 Edited").should("be.visible")
 
     // delete second element
     cy.get('[data-cy="edit-element-button-0-1"]').click()
@@ -79,18 +82,25 @@ describe('test spec', () => {
     cy.get('[data-cy="element-1-1"]').contains("Prompt").should("be.visible")
     cy.get('[data-cy="element-1-1"]').contains("Element 4").should("be.visible")
 
+    // add third stage via code editor
+    cy.get('[data-cy="code-editor"]').type("\n{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}- name: Stage 3\n  duration: 300\nelements: []")
+    cy.get('[data-cy="yaml-save"]').click()
+
+    cy.get('[data-cy="code-editor"]').contains("- name: Stage 3").should("be.visible")
+    cy.get('[data-cy="stage-2"]').contains("Stage 3").should("be.visible")
+
     // edit first stage
     cy.get('[data-cy="edit-stage-button-0"]').click()
-    cy.get('[data-cy="add-popup-name-editStage-0-"]').type("{moveToStart}Edited ")
+    cy.get('[data-cy="add-popup-name-editStage-0-"]').type(" Edited")
     cy.get('[data-cy="add-popup-duration-editStage-0-"]').clear().type("400")
     cy.get('[data-cy="add-popup-save-editStage-0-"]').click()
 
-    cy.get('[data-cy="stage-0"]').contains("Edited Stage 1").should("be.visible")
+    cy.get('[data-cy="stage-0"]').contains("Stage 1 Edited").should("be.visible")
 
     // delete second stage
-    cy.get('[data-cy="edit-stage-button-1"]').click()
-    cy.get('[data-cy="add-popup-delete-editStage-1-"]').click()
+    cy.get('[data-cy="edit-stage-button-2"]').click()
+    cy.get('[data-cy="add-popup-delete-editStage-2-"]').click()
 
-    cy.get('[data-cy="timeline"]').should("not.contain", "Stage 2")
+    cy.get('[data-cy="timeline"]').should("not.contain", "Stage 3")
   })
 })

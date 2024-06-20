@@ -13,39 +13,50 @@ export function StageCard({
   setTreatment,
   sequence,
   stageIndex,
-  setRenderPanelStage
+  setRenderPanelStage,
 }: {
-  title: string,
-  elements: any[],
-  duration: number,
-  scale: number,
-  treatment: any,
-  setTreatment: any,
-  sequence: string,
-  stageIndex: number,
-  setRenderPanelStage: any
+  title: string;
+  elements: any[];
+  duration: number;
+  scale: number;
+  treatment: any;
+  setTreatment: any;
+  sequence: string;
+  stageIndex: number;
+  setRenderPanelStage: any;
 }) {
   const addElementOptions = [
-    {"question": "Name", "responseType": "text"},
-    {"question": "Type", "responseType": "dropdown", "options": ["prompt", "survey", "audioElement", "kitchenTimer", "qualtrics", "separator", "submitButton", "trainingVideo"]},
-  ]
+    { question: "Name", responseType: "text" },
+    {
+      question: "Type",
+      responseType: "dropdown",
+      options: [
+        "prompt",
+        "survey",
+        "audioElement",
+        "kitchenTimer",
+        "qualtrics",
+        "separator",
+        "submitButton",
+        "trainingVideo",
+      ],
+    },
+  ];
   const addStageOptions = [
-    {"question": "Name", "responseType": "text"},
-    {"question": "Duration", "responseType": "text"},
-    {"question": "Discussion", "responseType": "text"},
-  ]
+    { question: "Name", responseType: "text" },
+    { question: "Duration", responseType: "text" },
+    { question: "Discussion", responseType: "text" },
+  ];
 
   const width = duration ? scale * duration : "auto";
 
   function handleStageClick() {
-    setRenderPanelStage(
-      {
-        title: title,
-        elements: elements,
-        duration: duration,
-        stageIndex: stageIndex
-      }
-    )
+    setRenderPanelStage({
+      title: title,
+      elements: elements,
+      duration: duration,
+      stageIndex: stageIndex,
+    });
   }
 
   return (
@@ -58,48 +69,92 @@ export function StageCard({
       )}
       style={{ width: scale * duration }}
       onClick={handleStageClick}
-      data-cy={"stage-"+stageIndex}
+      data-cy={"stage-" + stageIndex}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h3 className="mx-3 my-2">{title}</h3>
-        <button data-cy={"edit-stage-button-"+stageIndex} className="my-3 mx-3 btn h-5 bg-gray-300" style={{ minHeight: 'unset'}} onClick={()=>document.getElementById("editStage"+stageIndex)}>Edit</button>
-        <dialog id={"editStage"+stageIndex} className="modal">
+        <button
+          data-cy={"edit-stage-button-" + stageIndex}
+          className="my-3 mx-3 btn h-5 bg-gray-300"
+          style={{ minHeight: "unset" }}
+          onClick={() =>
+            (
+              document.getElementById(
+                "editStage" + stageIndex
+              ) as HTMLDialogElement | null
+            )?.showModal()
+          }
+        >
+          Edit
+        </button>
+        <dialog id={"editStage" + stageIndex} className="modal">
           <div className="modal-box">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+              </button>
             </form>
-            <AddPopup type="editStage" questions={addStageOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex} elementIndex={""}/>
+            <AddPopup
+              type="editStage"
+              questions={addStageOptions}
+              treatment={treatment}
+              setTreatment={setTreatment}
+              stageIndex={stageIndex}
+              elementIndex={""}
+            />
           </div>
-          </dialog>
+        </dialog>
       </div>
 
       <div id="elementList" className="flex flex-col gap-y-1">
-        {elements !== undefined && elements.map((element, index) => (
-          <ElementCard
-            key={`element ${index}`}
-            element={element}
-            scale={scale}
-            stageDuration={duration}
-            stageIndex={stageIndex}
-            elementIndex={index}
-            treatment={treatment}
-            setTreatment={setTreatment}
-            elementOptions={addElementOptions}
-            onSubmit={""}
-          />
-        ))}
+        {elements !== undefined &&
+          elements.map((element, index) => (
+            <ElementCard
+              key={`element ${index}`}
+              element={element}
+              scale={scale}
+              stageDuration={duration}
+              stageIndex={stageIndex}
+              elementIndex={index}
+              treatment={treatment}
+              setTreatment={setTreatment}
+              elementOptions={addElementOptions}
+              onSubmit={""}
+            />
+          ))}
         {/* Add Element Button*/}
         <div className="card bg-slate-100 opacity-50 shadow-md m-1 min-h-12 flex items-center">
-          <button data-cy={"add-element-button-"+stageIndex} className="btn h-full w-full" onClick={()=>document.getElementById("stage"+stageIndex)}>+</button>
-          <dialog id={"stage"+stageIndex} className="modal">  
-          <div className="modal-box">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <AddPopup type="addElement" questions={addElementOptions} treatment={treatment} setTreatment={setTreatment} stageIndex={stageIndex} elementIndex={""}/>
-          </div>
+          <button
+            data-cy={"add-element-button-" + stageIndex}
+            className="btn h-full w-full"
+            onClick={() =>
+              (
+                document.getElementById(
+                  "stage" + stageIndex
+                ) as HTMLDialogElement | null
+              )?.showModal()
+            }
+          >
+            +
+          </button>
+          <dialog id={"stage" + stageIndex} className="modal">
+            <div className="modal-box">
+              <form method="dialog">
+                {/* if there is a button in form, it will close the modal */}
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  ✕
+                </button>
+              </form>
+              <AddPopup
+                type="addElement"
+                questions={addElementOptions}
+                treatment={treatment}
+                setTreatment={setTreatment}
+                stageIndex={stageIndex}
+                elementIndex={""}
+              />
+            </div>
           </dialog>
         </div>
       </div>
