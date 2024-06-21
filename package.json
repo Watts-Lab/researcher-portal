@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build:deliberation-empirica": "(cd deliberation-empirica/client && npm install) && (cd deliberation-empirica/server && npm install)",
-    "predev": "npm run build:deliberation-empirica && rsync -ar --delete @empirica-mocks/ ./deliberation-empirica/client/node_modules/@empirica/ && rm -r ./.next",
+    "predev": "npm run build:deliberation-empirica && rsync -ar --delete @empirica-mocks/ ./deliberation-empirica/client/node_modules/@empirica/ && rm -rf ./.next",
     "dev": "next dev",
     "prebuild": "npm run predev",
     "build": "next build",
