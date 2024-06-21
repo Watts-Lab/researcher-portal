@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import TimePicker from "./TimePicker";
-import { Element } from "./Element";
+// import { Element } from "./../../../.././deliberation-empirica/client/src/elements/Element.jsx";
+import RenderDelibElement from "./RenderDelibElement";
 export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
   const [time, setTime] = useState(0);
   const elements = renderPanelStage.elements;
   const stageName = renderPanelStage.title;
   const stageDuration = renderPanelStage.duration;
+
   return (
     <div className="flex">
       {!stageName && (
@@ -32,7 +34,7 @@ export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
                 !element.displayTime) && (
                 <div key={index}>
                   {index != 0 && <div className="divider"></div>}
-                  <Element element={element} />
+                  <RenderDelibElement element={element} />
                 </div>
               )
           )}

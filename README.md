@@ -52,3 +52,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 Search docs:
 https://docs.github.com/en/rest/search/search?apiVersion=2022-11-28#search-repositories
+
+# to get the submodule if it doesn't automatically clone with the parent:
+
+in the local clone of the repo
+`git submodule init`
+`git submodule update`

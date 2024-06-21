@@ -4,16 +4,16 @@ jobs:
   cypress-run:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    # Runs tests in parallel with matrix strategy https://docs.cypress.io/guides/guides/parallelization
-    # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
-    # Also see warning here https://github.com/cypress-io/github-action#parallel
-    strategy:
-      fail-fast: false # https://github.com/cypress-io/github-action/issues/48
-      matrix:
-        containers: [1, 2] # Uses 2 parallel instances
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
       - name: Cypress run
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
@@ -22,9 +22,9 @@ jobs:
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
           build: npm run build
           start: npm run start
-          wait-on: 'http://localhost:3000' # Waits for above
+          wait-on: "http://localhost:3000" # Waits for above
           wait-on-timeout: 600
-          # Records to Cypress Cloud 
+          # Records to Cypress Cloud
           # https://docs.cypress.io/guides/cloud/projects#Set-up-a-project-to-record
           record: true
           parallel: true # Runs test in parallel using settings above
