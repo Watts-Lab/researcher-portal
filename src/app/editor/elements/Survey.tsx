@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Survey({ surveyName, onSubmit }) {
+export default function Survey({ surveyName, onSubmit } : { surveyName : any, onSubmit : any}) {
   return (
     <div>
       <h1> Survey </h1>

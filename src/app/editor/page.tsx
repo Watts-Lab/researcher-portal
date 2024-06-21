@@ -1,50 +1,47 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, {useState} from "react";
 import { useResizable } from "react-resizable-layout";
 import DraggableSplitter from "../components/DraggableSplitter";
-// import CodeEditor from "./components/CodeEditor";
 import CodeEditor from "./components/CodeEditor";
+import { RenderPanel } from "./components/RenderPanel";
 import Timeline from "./components/Timeline";
-import AddPopup from "./components/AddPopup";
 
 export default function EditorPage({}) {
   const { position: leftWidth, separatorProps: codeSeparatorProps } =
     useResizable({
       axis: "x",
-      initial: 400,
+      initial: 1000,
       min: 100,
     });
 
   const { position: upperLeftHeight, separatorProps: timelineSeparatorProps } =
     useResizable({
       axis: "y",
-      initial: 500,
-      min: 100,
+      initial: 500
     });
+  
+  const [renderElements, setRenderElements] = useState([])
+  const [renderPanelStage, setRenderPanelStage] = useState({})
 
   return (
     <div id="editor" className="flex flex-row h-full w-full">
       <div
         id="leftColumn"
         className="flex flex-col h-full w-full"
-        style={{ width: leftWidth }}
+        style={{ width: leftWidth }} 
       >
         <div
           id="upperLeft"
           className="overflow-auto h-full w-full"
-          style={{ height: upperLeftHeight }}
+          style={{minHeight: 200, height: upperLeftHeight }}
         >
-          <h1>Render Panel </h1>
-          <p>{"Lorem Ipsum ".repeat(100)}</p>
+          <RenderPanel renderPanelStage={renderPanelStage}/>
         </div>
 
         <DraggableSplitter dir="horizontal" {...timelineSeparatorProps} />
 
-        <div id="lowerLeft" className="grow">
-          <Timeline />
-        </div>
-        <div>
-          <AddPopup questions={[]} type={"stage"}/>
+        <div id="lowerLeft" className="grow overflow-auto">
+          <Timeline setRenderPanelStage={setRenderPanelStage} />
         </div>
       </div>
 
