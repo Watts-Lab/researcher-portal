@@ -1,18 +1,11 @@
 "use client";
 import YamlEditor from "@uiw/react-textarea-code-editor";
 import { useState, useEffect } from "react";
-// import styled from "styled-components";
-import { Button } from "./Button";
-import { parse, stringify } from "yaml";
-import Timeline from "./Timeline";
-// const ConfigEditor = styled.div`
-//   width: 40%;
-//   height: 100vh;
-//   border: solid 1px;
-// `;
+import { parse } from "yaml";
+
 export default function CodeEditor() {
   const [code, setCode] = useState("");
-  const [elements, setElements] = useState([]);
+
   useEffect(() => {
     let value;
     // Get the value from local storage if it exists
@@ -20,38 +13,21 @@ export default function CodeEditor() {
     setCode(value);
   }, []);
 
-  function handleChange(evn) {
-    setCode(evn.target.value);
-    localStorage.setItem("code", evn.target.value);
-    console.log(code);
+  function handleChange(evn: any) {
+    let entry = evn.target.value;
+    setCode(entry);
   }
 
-  function handleSave(e) {
+  function handleSave(e: any) {
+    //TODO validation should occur here
     e.preventDefault();
-    setCode(e.target.value);
-    // localStorage.setItem("code", code);
-    // const yamlObj = parse(code)[0];
-    // console.log(yamlObj)
-    // //Parse obj to extract components
-    // const gameStages = yamlObj["gameStages"]; //array of each stage
-    // console.log(gameStages);
-    // const stageElements = {}
-    // for (let i = 0; i < gameStages.length; i++) {
-    //   const stage = gameStages[i];
-    //   console.log(stage);
-    //   //stage has a name, duration, elements
-    //   const elts = stage.elements;
-    //   const eltComponents = [];
-    //   for (let j = 0; j < elts.length; j++) {
-    //     const elt = elts[j];
-    //     eltComponents.push(<Element key={j} element={elt} onSubmit={handleChange} />);
-    //   }
-    //   console.log(eltComponents)
-    //   stageElements[stage.name] = eltComponents
-    // }
-    // console.log(stageElements)
-    // localStorage.setItem("stageElements", JSON.stringify(stageElements))
-    // setElements(stageElements)
+    try {
+      parse(code);
+      localStorage.setItem("code", code);
+      window.location.reload(); //refresh page to make elements appear on screen
+    } catch (YAMLParseError) {
+      //TODO also display a little something went wrong pop up
+    }
   }
   return (
     <div>
@@ -59,9 +35,12 @@ export default function CodeEditor() {
         style={{ height: "95vh", overflow: "auto", backgroundColor: "#F0F2F6" }}
       >
         <YamlEditor
+          data-cy="code-editor"
           value={code}
           language="yaml"
-          placeholder="Please enter treatment configuration. Do not refresh the page before saving."
+          placeholder={
+            "Please enter treatment configuration. Do not refresh the page before saving."
+          }
           onChange={(env) => handleChange(env)}
           padding={5}
           style={{
@@ -73,7 +52,11 @@ export default function CodeEditor() {
         />
       </div>
       <div style={{ backgroundColor: "#F0F2F6" }}>
-        <button className="btn btn-primary" onClick={handleSave}>
+        <button
+          data-cy="yaml-save"
+          className="btn btn-primary"
+          onClick={handleSave}
+        >
           Save
         </button>
       </div>

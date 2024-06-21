@@ -1,4 +1,4 @@
-export default function Qualtrics({ url, params, onSubmit }) {
+export default function Qualtrics({ url, params, onSubmit } : { url : any, params : any, onSubmit : any }) {
   return (
     <div>
       <h1>Qualtrics</h1>

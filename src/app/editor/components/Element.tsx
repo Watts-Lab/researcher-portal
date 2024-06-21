@@ -2,9 +2,7 @@
 A base wrapper for all the elements
 
 */
-import React from 'react'
-
-// import { useStageTimer, useStage } from "@empirica/core/player/classic/react";
+import React from "react";
 import Prompt from "../elements/Prompt";
 import Separator from "../elements/Separator";
 import AudioElement from "../elements/AudioElement";
@@ -14,12 +12,9 @@ import KitchenTimer from "../elements/KitchenTimer";
 import TrainingVideo from "../elements/TrainingVideo";
 import Qualtrics from "../elements/Qualtrics";
 
-export function Element({ element, onSubmit }) {
-  //   const stageTimer = useStageTimer();
-  //   const stage = useStage();
-  console.log(element.type)
+export function Element({ element }: { element: any }) {
   switch (element.type) {
-    case "audio":
+    case "audioElement":
       return <AudioElement file={element.file} />;
 
     case "prompt":
@@ -30,7 +25,7 @@ export function Element({ element, onSubmit }) {
         <Qualtrics
           url={element.url}
           params={element.params}
-          onSubmit={onSubmit}
+          onSubmit={element.onSubmit}
         />
       );
 
@@ -39,24 +34,25 @@ export function Element({ element, onSubmit }) {
 
     case "submitButton":
       return (
-        <SubmitButton onSubmit={onSubmit} buttonText={element.buttonText} />
+        <SubmitButton
+          onSubmit={element.onSubmit}
+          buttonText={element.buttonText}
+        />
       );
 
     case "survey":
-      return <Survey surveyName={element.surveyName} onSubmit={onSubmit} />;
+      return <Survey surveyName={element.name} onSubmit={element.onSubmit} />;
 
     case "timer":
       return (
         <KitchenTimer
           startTime={element.startTime || element.displayTime || 0}
-          endTime={
-            element.endTime || element.hideTime || ""
-          }
+          endTime={element.endTime || element.hideTime || ""}
           warnTimeRemaining={element.warnTimeRemaining}
         />
       );
 
-    case "video":
+    case "trainingVideo":
       return <TrainingVideo url={element.url} />;
 
     default:
