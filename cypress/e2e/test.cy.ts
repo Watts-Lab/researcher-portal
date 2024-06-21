@@ -23,7 +23,6 @@ describe('test spec', () => {
     cy.get('[data-cy="add-element-button-0"]').click()
     cy.get('[data-cy="add-popup-name-addElement-0-"]').type("Element 1")
     cy.get('[data-cy="add-popup-type-addElement-0-"]').select("survey")
-    cy.get('[data-cy="add-popup-onSubmit-addElement-0-"]').type("Thanks!")
     cy.get('[data-cy="add-popup-save-addElement-0-"]').click()
 
     cy.get('[data-cy="element-0-0"]').contains("Survey").should("be.visible")
