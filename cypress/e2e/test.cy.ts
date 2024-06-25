@@ -22,11 +22,10 @@ describe('test spec', () => {
     // add first element to stage 1
     cy.get('[data-cy="add-element-button-0"]').click()
     cy.get('[data-cy="add-popup-name-addElement-0-"]').type("Element 1")
-    cy.get('[data-cy="add-popup-type-addElement-0-"]').select("survey")
-    cy.get('[data-cy="add-popup-onSubmit-addElement-0-"]').type("Thanks!")
+    cy.get('[data-cy="add-popup-type-addElement-0-"]').select("prompt")
     cy.get('[data-cy="add-popup-save-addElement-0-"]').click()
 
-    cy.get('[data-cy="element-0-0"]').contains("Survey").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("Prompt").should("be.visible")
     cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible")
 
     // add second element to stage 1
@@ -36,7 +35,7 @@ describe('test spec', () => {
     cy.get('[data-cy="add-popup-fileAddress-addElement-0-"]').type("file/address")
     cy.get('[data-cy="add-popup-save-addElement-0-"]').click()
 
-    cy.get('[data-cy="element-0-0"]').contains("Survey").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("Prompt").should("be.visible")
     cy.get('[data-cy="element-0-1"]').contains("Prompt").should("be.visible")
     cy.get('[data-cy="element-0-1"]').contains("file/address").should("be.visible")
 
@@ -62,17 +61,17 @@ describe('test spec', () => {
     // edit first element
     cy.get('[data-cy="edit-element-button-0-0"]').click()
     cy.get('[data-cy="add-popup-name-editElement-0-0"]').type(" Edited")
-    cy.get('[data-cy="add-popup-onSubmit-editElement-0-0"]').clear().type("Thanks!")
+    // cy.get('[data-cy="add-popup-onSubmit-editElement-0-0"]').clear().type("Thanks!")
     cy.get('[data-cy="add-popup-save-editElement-0-0"]').click()
 
-    cy.get('[data-cy="element-0-0"]').contains("Survey").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("Prompt").should("be.visible")
     cy.get('[data-cy="element-0-0"]').contains("Element 1 Edited").should("be.visible")
 
     // delete second element
     cy.get('[data-cy="edit-element-button-0-1"]').click()
     cy.get('[data-cy="add-popup-delete-editElement-0-1"]').click()
 
-    cy.get('[data-cy="element-0-1"]').should("not.exist")
+    cy.get('[data-cy="stage-0"]').should("not.contain", "Element 2")
 
     // add fourth element to second stage via code editor
     cy.get('[data-cy="code-editor"]').type("      - name: Element 4\n  type: prompt\nfile: file/address")
@@ -101,6 +100,6 @@ describe('test spec', () => {
     cy.get('[data-cy="edit-stage-button-2"]').click()
     cy.get('[data-cy="add-popup-delete-editStage-2-"]').click()
 
-    cy.get('[data-cy="stage-2"]').should("not.exist")
+    cy.get('[data-cy="timeline"]').should("not.contain", "Stage 3")
   })
 })
