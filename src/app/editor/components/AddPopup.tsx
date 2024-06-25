@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { stringify } from "yaml";
+import { useForm } from "react-hook-form";
 
 export default function AddPopup({
   type,
@@ -17,36 +18,71 @@ export default function AddPopup({
   stageIndex: any;
   elementIndex: any;
 }) {
+  var currComponent;
+  if (type === "editElement") {
+    currComponent = treatment.gameStages[stageIndex].elements[elementIndex];
+  } else if (type === "editStage") {
+    currComponent = treatment.gameStages[stageIndex];
+  }
+
+  const { register, watch } = useForm({
+    defaultValues: {
+      name:
+        currComponent !== undefined && currComponent.name !== undefined
+          ? currComponent.name
+          : "",
+      duration:
+        currComponent !== undefined && currComponent.duration !== undefined
+          ? currComponent.duration
+          : "",
+      selectedOption:
+        currComponent !== undefined && currComponent.type !== undefined
+          ? currComponent.type
+          : "Pick one",
+      file: "",
+      url: "",
+      params: "",
+      onSubmit: "",
+      style: "",
+      buttonText: "",
+      startTime: "",
+      endTime: "",
+    },
+  });
+
   function handleSave(saveType: string) {
     const updatedTreatment = { ...treatment };
 
     if (saveType === "addStage") {
       const inputs = {
-        name: nameValue,
-        duration: parseInt(durationValue),
+        name: watch("name"),
+        duration: parseInt(watch("duration")),
         elements: [],
       };
       updatedTreatment?.gameStages?.push(inputs);
     } else if (saveType === "editStage") {
       const stageElmts = updatedTreatment.gameStages[stageIndex].elements;
       const inputs = {
-        name: nameValue,
-        duration: parseInt(durationValue),
+        name: watch("name"),
+        duration: parseInt(watch("duration")),
         elements: [],
       };
       updatedTreatment.gameStages[stageIndex] = inputs;
       updatedTreatment.gameStages[stageIndex].elements = stageElmts;
     } else if (saveType === "addElement" || saveType === "editElement") {
       const inputs: { name: any; type: any; [key: string]: any } = {
-        name: nameValue,
-        type: selectedOption,
+        name: watch("name"),
+        type: watch("selectedOption"),
       };
-      for (const key in elementValues) {
-        const value = elementValues[key as keyof typeof elementValues];
-        if (value != "") {
-          inputs[key as keyof typeof elementValues] = value;
-        }
-      }
+      if (watch("file") !== "") inputs.file = watch("file");
+      if (watch("url") !== "") inputs.url = watch("url");
+      if (watch("params") !== "") inputs.params = watch("params");
+      if (watch("onSubmit") !== "") inputs.onSubmit = watch("onSubmit");
+      if (watch("style") !== "") inputs.style = watch("style");
+      if (watch("buttonText") !== "") inputs.buttonText = watch("buttonText");
+      if (watch("startTime") !== "") inputs.startTime = watch("startTime");
+      if (watch("endTime") !== "") inputs.endTime = watch("endTime");
+
       if (saveType === "addElement") {
         updatedTreatment?.gameStages[stageIndex]?.elements?.push(inputs);
       } else if (type === "editElement") {
@@ -74,10 +110,6 @@ export default function AddPopup({
       updatedTreatment.gameStages = newStages;
     }
 
-    setSelectedOption(null);
-    setNameValue("");
-    setDurationValue("");
-    setElementValues(defaultElementValues);
     setTreatment(updatedTreatment);
 
     /*
@@ -91,190 +123,89 @@ export default function AddPopup({
     window.location.reload();
   }
 
-  var currComponent;
-  if (type === "editElement") {
-    currComponent = treatment.gameStages[stageIndex].elements[elementIndex];
-  } else if (type === "editStage") {
-    currComponent = treatment.gameStages[stageIndex];
-  }
-
-  const [selectedOption, setSelectedOption] = useState(
-    currComponent !== undefined && currComponent.type !== undefined
-      ? currComponent.type
-      : "Pick one"
-  );
-  const [nameValue, setNameValue] = useState(
-    currComponent !== undefined && currComponent.name !== undefined
-      ? currComponent.name
-      : ""
-  );
-  const [durationValue, setDurationValue] = useState(
-    currComponent !== undefined && currComponent.duration !== undefined
-      ? currComponent.duration
-      : ""
-  );
-
-  const handleNameChange = (event: any) => {
-    setNameValue(event.target.value);
-  };
-
-  const handleDurationChange = (event: any) => {
-    setDurationValue(event.target.value);
-  };
-
-  const handleSelectChange = (event: any) => {
-    const selectedValues = event.target.selectedOptions[0].value;
-    setSelectedOption(selectedValues);
-    setElementValues(defaultElementValues);
-  };
-
-  const defaultElementValues = {
-    file: "",
-    url: "",
-    params: "",
-    onSubmit: "",
-    style: "",
-    buttonText: "",
-    startTime: "",
-    endTime: "",
-  };
-  const [elementValues, setElementValues] = useState<{
-    file: string;
-    url: string;
-    params: string;
-    onSubmit: string;
-    style: string;
-    buttonText: string;
-    startTime: string;
-    endTime: string;
-  }>(defaultElementValues);
-
-  const handleInputChange = (property: any, newValue: any) => {
-    setElementValues((prevValues) => ({
-      ...prevValues,
-      [property]: newValue,
-    }));
-  };
-
-  const handleFileChange = (newValue: any) =>
-    handleInputChange("file", newValue);
-  const handleURLChange = (newValue: any) => handleInputChange("url", newValue);
-  const handleParamsChange = (newValue: any) =>
-    handleInputChange("params", newValue);
-  const handleOnSubmitChange = (newValue: any) =>
-    handleInputChange("onSubmit", newValue);
-  const handleStyleChange = (newValue: any) =>
-    handleInputChange("style", newValue);
-  const handleButtonTextChange = (newValue: any) =>
-    handleInputChange("buttonText", newValue);
-  const handleStartTimeChange = (newValue: any) =>
-    handleInputChange("startTime", newValue);
-  const handleEndTimeChange = (newValue: any) =>
-    handleInputChange("endTime", newValue);
-
-  // DEFAULT QUESTIONS
-  //console.log(stageIndex)
+  // FORM QUESTIONS
   stageIndex = stageIndex !== undefined ? stageIndex : "";
 
   elementIndex = elementIndex !== undefined ? elementIndex : "";
 
   const htmlElements = [];
-  questions.forEach((q: any, index: any) => {
-    const question = q.question;
-    const responseType = q.responseType;
-    const options = q.options || [];
-    htmlElements.push(
-      <form key={"defaultq" + index}>
-        {question === "Name" && (
-          <div>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">{question}</span>
-              </div>
-              <input
-                data-cy={
-                  "add-popup-name-" +
-                  type +
-                  "-" +
-                  stageIndex +
-                  "-" +
-                  elementIndex
-                }
-                value={nameValue}
-                type="text"
-                placeholder="Enter text here."
-                className="input input-bordered w-full max-w-xs"
-                onChange={handleNameChange}
-              />
-            </label>
-          </div>
-        )}
-        {question === "Duration" && (
-          <div>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">{question}</span>
-              </div>
-              <input
-                data-cy={
-                  "add-popup-duration-" +
-                  type +
-                  "-" +
-                  stageIndex +
-                  "-" +
-                  elementIndex
-                }
-                value={durationValue}
-                type="text"
-                placeholder="Enter number here."
-                className="input input-bordered w-full max-w-xs"
-                onChange={handleDurationChange}
-              />
-            </label>
-          </div>
-        )}
-        {question === "Type" && (
-          <div>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">{question}</span>
-              </div>
-              <select
-                data-cy={
-                  "add-popup-type-" +
-                  type +
-                  "-" +
-                  stageIndex +
-                  "-" +
-                  elementIndex
-                }
-                className="select select-bordered"
-                multiple={responseType === "multiselect"}
-                onChange={handleSelectChange}
-                defaultValue={selectedOption}
-              >
-                <option disabled>Pick one</option>
-                {options.map((option: any, index: any) => (
-                  <option key={option + index}>{option}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-        )}
-      </form>
-    );
-  });
-
-  // ELEMENT ATTRIBUTE QUESTIONS
   htmlElements.push(
-    <form key={"elementAttributes:" + selectedOption}>
-      {(selectedOption === "prompt" || selectedOption === "audioElement") && (
+    <form>
+      <div>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">{"Name"}</span>
+          </div>
+          <input
+            {...register("name", { required: true })}
+            data-cy={
+              "add-popup-name-" + type + "-" + stageIndex + "-" + elementIndex
+            }
+            placeholder="Enter text here."
+            className="input input-bordered w-full max-w-xs"
+          />
+        </label>
+      </div>
+
+      {(type === "editStage" || type === "addStage") && (
+        <div>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Duration"}</span>
+            </div>
+            <input
+              {...register("duration", { required: true })}
+              data-cy={
+                "add-popup-duration-" +
+                type +
+                "-" +
+                stageIndex +
+                "-" +
+                elementIndex
+              }
+              placeholder="Enter number here."
+              className="input input-bordered w-full max-w-xs"
+            />
+          </label>
+        </div>
+      )}
+
+      {(type === "editElement" || type === "addElement") && (
+        <div>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Type"}</span>
+            </div>
+            <select
+              {...register("selectedOption", { required: true })}
+              data-cy={
+                "add-popup-type-" + type + "-" + stageIndex + "-" + elementIndex
+              }
+              className="select select-bordered"
+            >
+              <option disabled>Pick one</option>
+              <option value="prompt">Prompt</option>
+              <option value="survey">Survey</option>
+              <option value="audioElement">Audio Element</option>
+              <option value="kitchenTimer">Kitchen Timer</option>
+              <option value="qualtrics">Qualtrics</option>
+              <option value="separator">Separator</option>
+              <option value="submitButton">Submit Button</option>
+              <option value="trainingVideo">Training Video</option>
+            </select>
+          </label>
+        </div>
+      )}
+
+      {(watch("selectedOption") === "prompt" ||
+        watch("selectedOption") === "audioElement") && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text">{"File Address"}</span>
             </div>
             <input
+              {...register("file", { required: true })}
               data-cy={
                 "add-popup-fileAddress-" +
                 type +
@@ -283,16 +214,14 @@ export default function AddPopup({
                 "-" +
                 elementIndex
               }
-              value={elementValues.file}
-              type="text"
-              placeholder="Enter text here."
+              placeholder="Enter number here."
               className="input input-bordered w-full max-w-xs"
-              onChange={(e) => handleFileChange(e.target.value)}
             />
           </label>
         </div>
       )}
-      {selectedOption === "kitchenTimer" && (
+
+      {watch("selectedOption") === "kitchenTimer" && (
         <div>
           <div>
             <label className="form-control w-full max-w-xs">
@@ -300,11 +229,9 @@ export default function AddPopup({
                 <span className="label-text">{"Start Time"}</span>
               </div>
               <input
-                value={elementValues.startTime}
-                type="text"
+                {...register("startTime", { required: true })}
                 placeholder="Enter text here."
                 className="input input-bordered w-full max-w-xs"
-                onChange={(e) => handleStartTimeChange(e.target.value)}
               />
             </label>
           </div>
@@ -314,77 +241,74 @@ export default function AddPopup({
                 <span className="label-text">{"End Time"}</span>
               </div>
               <input
-                value={elementValues.endTime}
-                type="text"
+                {...register("endTime", { required: true })}
                 placeholder="Enter text here."
                 className="input input-bordered w-full max-w-xs"
-                onChange={(e) => handleEndTimeChange(e.target.value)}
               />
             </label>
           </div>
         </div>
       )}
-      {(selectedOption === "qualtrics" ||
-        selectedOption === "trainingVideo") && (
+
+      {(watch("selectedOption") === "qualtrics" ||
+        watch("selectedOption") === "trainingVideo") && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text">{"URL"}</span>
             </div>
             <input
+              {...register("url", { required: true })}
               data-cy={
                 "add-popup-URL-" + type + "-" + stageIndex + "-" + elementIndex
               }
-              value={elementValues.url}
-              type="text"
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
-              onChange={(e) => handleURLChange(e.target.value)}
             />
           </label>
         </div>
       )}
-      {selectedOption === "qualtrics" && (
+
+      {watch("selectedOption") === "qualtrics" && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text">{"Parameters"}</span>
             </div>
             <input
-              value={elementValues.params}
-              type="text"
+              {...register("params", { required: true })}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
-              onChange={(e) => handleParamsChange(e.target.value)}
             />
           </label>
         </div>
       )}
-      {selectedOption === "separator" && (
+
+      {watch("selectedOption") === "separator" && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text">{"Style"}</span>
             </div>
             <input
-              value={elementValues.style}
-              type="text"
+              {...register("style", { required: true })}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
-              onChange={(e) => handleStyleChange(e.target.value)}
             />
           </label>
         </div>
       )}
-      {(selectedOption === "survey" ||
-        selectedOption === "qualtrics" ||
-        selectedOption === "submitButton") && (
+
+      {(watch("selectedOption") === "survey" ||
+        watch("selectedOption") === "qualtrics" ||
+        watch("selectedOption") === "submitButton") && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text">{"On Submit"}</span>
             </div>
             <input
+              {...register("onSubmit", { required: true })}
               data-cy={
                 "add-popup-onSubmit-" +
                 type +
@@ -393,27 +317,23 @@ export default function AddPopup({
                 "-" +
                 elementIndex
               }
-              value={elementValues.onSubmit}
-              type="text"
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
-              onChange={(e) => handleOnSubmitChange(e.target.value)}
             />
           </label>
         </div>
       )}
-      {selectedOption === "submitButton" && (
+
+      {watch("selectedOption") === "submitButton" && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text">{"Button Text"}</span>
             </div>
             <input
-              value={elementValues.buttonText}
-              type="text"
+              {...register("buttonText", { required: true })}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
-              onChange={(e) => handleButtonTextChange(e.target.value)}
             />
           </label>
         </div>
@@ -432,6 +352,8 @@ export default function AddPopup({
     header = "Edit Stage";
   }
 
+  //console.log(watch()); // WATCH ALL INPUTS
+
   return (
     <div>
       <h1>{header}</h1>
@@ -444,8 +366,8 @@ export default function AddPopup({
         style={{ margin: "10px" }}
         onClick={() => handleSave(type)}
         disabled={
-          (durationValue === "" || nameValue === "") &&
-          (selectedOption === "Pick one" || nameValue === "")
+          (watch("duration") === "" || watch("name") === "") &&
+          (watch("selectedOption") === "Pick one" || watch("name") === "")
         }
       >
         Save
