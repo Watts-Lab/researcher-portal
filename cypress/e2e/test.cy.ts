@@ -25,7 +25,7 @@ describe('test spec', () => {
     cy.get('[data-cy="add-popup-type-addElement-0-"]').select("prompt")
     cy.get('[data-cy="add-popup-save-addElement-0-"]').click()
 
-    cy.get('[data-cy="element-0-0"]').contains("Prompt").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
     cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible")
 
     // add second element to stage 1
@@ -35,8 +35,8 @@ describe('test spec', () => {
     cy.get('[data-cy="add-popup-fileAddress-addElement-0-"]').type("file/address")
     cy.get('[data-cy="add-popup-save-addElement-0-"]').click()
 
-    cy.get('[data-cy="element-0-0"]').contains("Prompt").should("be.visible")
-    cy.get('[data-cy="element-0-1"]').contains("Prompt").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
+    cy.get('[data-cy="element-0-1"]').contains("prompt").should("be.visible")
     cy.get('[data-cy="element-0-1"]').contains("file/address").should("be.visible")
 
     // create second stage
@@ -55,7 +55,7 @@ describe('test spec', () => {
     cy.get('[data-cy="add-popup-URL-addElement-1-"]').type("youtube.com")
     cy.get('[data-cy="add-popup-save-addElement-1-"]').click()
 
-    cy.get('[data-cy="element-1-0"]').contains("Training Video").should("be.visible")
+    cy.get('[data-cy="element-1-0"]').contains("trainingVideo").should("be.visible")
     cy.get('[data-cy="element-1-0"]').contains("url").should("be.visible")
 
     // edit first element
@@ -64,7 +64,7 @@ describe('test spec', () => {
     // cy.get('[data-cy="add-popup-onSubmit-editElement-0-0"]').clear().type("Thanks!")
     cy.get('[data-cy="add-popup-save-editElement-0-0"]').click()
 
-    cy.get('[data-cy="element-0-0"]').contains("Prompt").should("be.visible")
+    cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
     cy.get('[data-cy="element-0-0"]').contains("Element 1 Edited").should("be.visible")
 
     // delete second element
@@ -78,7 +78,7 @@ describe('test spec', () => {
     cy.get('[data-cy="yaml-save"]').click()
 
     cy.get('[data-cy="code-editor"]').contains("- name: Element 4").should("be.visible")
-    cy.get('[data-cy="element-1-1"]').contains("Prompt").should("be.visible")
+    cy.get('[data-cy="element-1-1"]').contains("prompt").should("be.visible")
     cy.get('[data-cy="element-1-1"]').contains("Element 4").should("be.visible")
 
     // add third stage via code editor
