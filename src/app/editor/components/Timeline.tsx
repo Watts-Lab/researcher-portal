@@ -33,11 +33,7 @@ export default function Timeline({
 
   // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
 
-  const addStageOptions = [
-    { question: "Name", responseType: "text" },
-    { question: "Duration", responseType: "text" },
-    { question: "Discussion", responseType: "text" },
-  ];
+  //console.log("treatment", treatment)
 
   return (
     <div data-cy={"timeline"} id="timeline" className="h-full flex flex-col">
@@ -83,7 +79,6 @@ export default function Timeline({
                 </form>
                 <AddPopup
                   type="addStage"
-                  questions={addStageOptions}
                   treatment={treatment}
                   setTreatment={setTreatment}
                   stageIndex={""}

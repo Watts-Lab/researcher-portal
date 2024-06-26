@@ -5,14 +5,12 @@ import { useForm } from "react-hook-form";
 
 export default function AddPopup({
   type,
-  questions,
   treatment,
   setTreatment,
   stageIndex,
   elementIndex,
 }: {
   type: string;
-  questions: any;
   treatment: any;
   setTreatment: any;
   stageIndex: any;
@@ -25,7 +23,7 @@ export default function AddPopup({
     currComponent = treatment.gameStages[stageIndex];
   }
 
-  const { register, watch } = useForm({
+  const { register, watch, setValue } = useForm({
     defaultValues: {
       name:
         currComponent !== undefined && currComponent.name !== undefined
@@ -47,11 +45,13 @@ export default function AddPopup({
       buttonText: "",
       startTime: "",
       endTime: "",
+      surveyName: "Pick one",
     },
   });
 
   function handleSave(saveType: string) {
-    const updatedTreatment = { ...treatment };
+    //const updatedTreatment = { ...treatment };
+    const updatedTreatment = JSON.parse(JSON.stringify(treatment)); // deep copy
 
     if (saveType === "addStage") {
       const inputs = {
@@ -80,8 +80,10 @@ export default function AddPopup({
       if (watch("onSubmit") !== "") inputs.onSubmit = watch("onSubmit");
       if (watch("style") !== "") inputs.style = watch("style");
       if (watch("buttonText") !== "") inputs.buttonText = watch("buttonText");
-      if (watch("startTime") !== "") inputs.startTime = watch("startTime");
-      if (watch("endTime") !== "") inputs.endTime = watch("endTime");
+      if (watch("startTime") !== "")
+        inputs.startTime = parseInt(watch("startTime"));
+      if (watch("endTime") !== "") inputs.endTime = parseInt(watch("endTime"));
+      if (watch("surveyName") !== "") inputs.surveyName = watch("surveyName");
 
       if (saveType === "addElement") {
         updatedTreatment?.gameStages[stageIndex]?.elements?.push(inputs);
@@ -121,6 +123,19 @@ export default function AddPopup({
 
     localStorage.setItem("code", stringify(updatedTreatment));
     window.location.reload();
+  }
+
+  function setElementOptions(event: any) {
+    setValue("selectedOption", event.target.value);
+    setValue("file", "");
+    setValue("url", "");
+    setValue("params", "");
+    setValue("onSubmit", "");
+    setValue("style", "");
+    setValue("buttonText", "");
+    setValue("startTime", "");
+    setValue("endTime", "");
+    setValue("surveyName", "Pick one");
   }
 
   // FORM QUESTIONS
@@ -182,6 +197,7 @@ export default function AddPopup({
                 "add-popup-type-" + type + "-" + stageIndex + "-" + elementIndex
               }
               className="select select-bordered"
+              onChange={(e) => setElementOptions(e)}
             >
               <option disabled>Pick one</option>
               <option value="prompt">Prompt</option>
@@ -324,6 +340,45 @@ export default function AddPopup({
         </div>
       )}
 
+      {watch("selectedOption") === "survey" && (
+        <div>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{"Type"}</span>
+            </div>
+            <select
+              {...register("surveyName", { required: true })}
+              data-cy={
+                "add-popup-surveyName-" +
+                type +
+                "-" +
+                stageIndex +
+                "-" +
+                elementIndex
+              }
+              className="select select-bordered"
+            >
+              <option disabled>Pick one</option>
+              <option value="CRT">CRT</option>
+              <option value="SVI">SVI</option>
+              <option value="TIPI">TIPI</option>
+              <option value="AttitudeAttributes">AttitudeAttributes</option>
+              <option value="AutonomyNeedSatisfaction">
+                AutonomyNeedSatisfaction
+              </option>
+              <option value="AwarenessMonitoringGrowth">
+                AwarenessMonitoringGrowth
+              </option>
+              <option value="AwarenessOfArgumentsYN">
+                AwarenessOfArgumentsYN
+              </option>
+              <option value="ConflictAndViability">ConflictAndViability</option>
+              {/*TODO: add remaining surveys*/}
+            </select>
+          </label>
+        </div>
+      )}
+
       {watch("selectedOption") === "submitButton" && (
         <div>
           <label className="form-control w-full max-w-xs">
@@ -352,7 +407,7 @@ export default function AddPopup({
     header = "Edit Stage";
   }
 
-  //console.log(watch()); // WATCH ALL INPUTS
+  console.log(watch()); // WATCH ALL INPUTS
 
   return (
     <div>

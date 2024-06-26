@@ -25,29 +25,6 @@ export function StageCard({
   stageIndex: number;
   setRenderPanelStage: any;
 }) {
-  const addElementOptions = [
-    { question: "Name", responseType: "text" },
-    {
-      question: "Type",
-      responseType: "dropdown",
-      options: [
-        "prompt",
-        "survey",
-        "audioElement",
-        "kitchenTimer",
-        "qualtrics",
-        "separator",
-        "submitButton",
-        "trainingVideo",
-      ],
-    },
-  ];
-  const addStageOptions = [
-    { question: "Name", responseType: "text" },
-    { question: "Duration", responseType: "text" },
-    { question: "Discussion", responseType: "text" },
-  ];
-
   const width = duration ? scale * duration : "auto";
 
   function handleStageClick() {
@@ -97,7 +74,6 @@ export function StageCard({
             </form>
             <AddPopup
               type="editStage"
-              questions={addStageOptions}
               treatment={treatment}
               setTreatment={setTreatment}
               stageIndex={stageIndex}
@@ -119,7 +95,6 @@ export function StageCard({
               elementIndex={index}
               treatment={treatment}
               setTreatment={setTreatment}
-              elementOptions={addElementOptions}
               onSubmit={""}
             />
           ))}
@@ -148,7 +123,6 @@ export function StageCard({
               </form>
               <AddPopup
                 type="addElement"
-                questions={addElementOptions}
                 treatment={treatment}
                 setTreatment={setTreatment}
                 stageIndex={stageIndex}

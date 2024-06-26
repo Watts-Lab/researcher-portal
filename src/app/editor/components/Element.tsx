@@ -2,7 +2,7 @@
 A base wrapper for all the elements
 
 */
-import React from "react";
+/*import React from "react";
 import Prompt from "../elements/Prompt";
 import Separator from "../elements/Separator";
 import AudioElement from "../elements/AudioElement";
@@ -59,3 +59,4 @@ export function Element({ element }: { element: any }) {
       return undefined;
   }
 }
+*/
