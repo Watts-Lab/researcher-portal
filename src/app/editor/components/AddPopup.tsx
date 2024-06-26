@@ -6,14 +6,14 @@ export default function AddPopup({
   type,
   questions,
   treatment,
-  setTreatment,
+  setTreatment, 
   stageIndex,
   elementIndex,
 }: {
   type: string;
   questions: any;
-  treatment: any;
-  setTreatment: any;
+  treatment: TreatmentType;
+  setTreatment: (treatment: TreatmentType) => void;
   stageIndex: any;
   elementIndex: any;
 }) {

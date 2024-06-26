@@ -1,0 +1,3 @@
+[submodule "src/editor/schemas"]
+	path = src/editor/schemas
+	url = https://github.com/Watts-Lab/deliberation-empirica.git
