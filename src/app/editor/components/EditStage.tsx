@@ -29,11 +29,6 @@ export function EditStage({
   );
 
   //console.log(typeof editTreatment);
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    const parsedValue = type === "number" ? parseFloat(value) : value;
-    setValue(name as keyof StageType, parsedValue);
-  };
 
   async function saveEdits() {
     try {

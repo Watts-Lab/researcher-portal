@@ -16,57 +16,75 @@ export function EditElement({
   elementIndex: number;
 }) {
 
-  const [isValid, setIsValid] = useState(true)
-  var element = treatment.gameStages[stageIndex].elements[elementIndex];  // if elementIndex is undefine, is the whole thing undefined? or does it error?
+  //const [isValid, setIsValid] = useState(true)
+  //var element: ElementType = treatment.gameStages[stageIndex].elements[elementIndex];  // if elementIndex is undefine, is the whole thing undefined? or does it error?
    
 
-  const { register, watch } = useForm({
+  const { register, watch, handleSubmit,setValue, formState: {isValid, errors} } = useForm<ElementType>( 
+    elementIndex !== undefined 
+    ?{
     defaultValues: {
-      name: element?.name || "Enter Name",
-      type: element?.type || "Pick one",
-      file: element?.file || "",
-      url: element?.url || "",
-      params: element?.params || "",
-      style: element?.style || "",
-      buttonText: element?.buttonText || "",
-      startTime: element?.startTime || "",
-      endTime: element?.endTime || "",
+      name: treatment.gameStages[stageIndex].elements[elementIndex].name,
+      type: treatment.gameStages[stageIndex].elements[elementIndex].type,
+      file: treatment.gameStages[stageIndex].elements[elementIndex].file,
     },
     resolver: zodResolver(elementSchema),
-  });
+    mode: "onChange"
+  }
+  : {}
+);
 
   function saveEdits() {
+    try {
     const updatedTreatment = JSON.parse(JSON.stringify(treatment)); // deep copy
-    if (stageIndex === undefined) {
-        throw new Error("No stage index given")
-    }
-
-    const parseResult = elementSchema.safeParse({
-        name: watch("name"),
-        type: watch("type"),
-        file: watch("file"),
-        url: watch("url"),
-        params: watch("params"),
-        style: watch("style"),
-        buttonText: watch("buttonText"),
-        startTime: watch("startTime"),
-        endTime: watch("endTime")
-      })
-    if (!parseResult.success) {
-    console.log(parseResult.error)
-    window.alert( parseResult.error ) 
-    setIsValid(false);
-    return;
-    }
-      
-    setIsValid(true);
-    const newElement = parseResult.data
-    if (elementIndex === undefined) { // create new element
-    updatedTreatment.gameStages[stageIndex].elements.push(newElement)
+    if (isValid) {
+        if (stageIndex === undefined) {
+            throw new Error("No stage index given")
+        }
+        if (elementIndex === undefined) {
+            updatedTreatment.gameStages[stageIndex].elements.push({
+              name: watch("name"),
+              type: watch("type"),
+              file: watch("file")
+              //TODO: to add more fields here
+        });
+      } else { 
+        updatedTreatment.gameStages[stageIndex].elements[elementIndex].name = watch("name");
+        updatedTreatment.gameStages[stageIndex].elements[elementIndex].type = watch("type");
+        updatedTreatment.gameStages[stageIndex].elements[elementIndex].file = watch("file");
+        // TODO: add more fields here 
+      }
+      editTreatment(updatedTreatment);
     } else {
-    updatedTreatment.gameStages[stageIndex].elements[elementIndex] = newElement 
+        throw new Error("Form is not valid");
     }
-    editTreatment(updatedTreatment);
+  } catch (error) {
+    console.error(error);
+  }
+    
+    
+
+    // const parseResult = elementSchema.safeParse({
+    //     name: watch("name"),
+    //     type: watch("type"),
+    //     file: watch("file"),
+    //     url: watch("url"),
+    //     params: watch("params"),
+    //     style: watch("style"),
+    //     buttonText: watch("buttonText"),
+    //     startTime: watch("startTime"),
+    //     endTime: watch("endTime")
+    //   })
+    // if (!parseResult.success) {
+    // console.log(parseResult.error)
+    // window.alert( parseResult.error ) 
+    // setIsValid(false);
+    // return;
+    // }
+      
+    //setIsValid(true);
+
+
   }
 
   function deleteElement() {
@@ -154,9 +172,9 @@ export function EditElement({
 //   }
 
   // FORM QUESTIONS
-  stageIndex = stageIndex !== undefined ? stageIndex : "";
+  // stageIndex = stageIndex !== undefined ? stageIndex : "";
 
-  elementIndex = elementIndex !== undefined ? elementIndex : "";
+  // elementIndex = elementIndex !== undefined ? elementIndex : "";
 
   const htmlElements = [];
   htmlElements.push(
@@ -172,6 +190,7 @@ export function EditElement({
             placeholder="Enter text here."
             className="input input-bordered w-full max-w-xs"
           />
+          {errors.name && <span className="text-red-500">{errors.name.message}</span>}
         </label>
       </div>
 
@@ -212,6 +231,7 @@ export function EditElement({
               placeholder="Enter number here."
               className="input input-bordered w-full max-w-xs"
             />
+            {errors.file && <span className="text-red-500">{errors.file.message}</span>}
           </label>
         </div>
       )}
