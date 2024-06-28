@@ -1,26 +1,32 @@
 "use client";
 import AddPopup from "./AddPopup";
-import React from "react";
+import React, { useState } from "react";
 import { ElementCard } from "./ElementCard";
 import { cn } from "@/app/components/utils";
+import { Modal } from "./Modal";
+import { EditStage } from "./EditStage";
+import { EditElement } from "./EditElement";
+import { TreatmentType, DurationType} from "../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile";
 
-export function StageCard({
+export function StageCard({ 
   title,
   elements,
   duration,
   scale,
   treatment,
-  setTreatment,
+  setTreatment, //Todo: get rid of this entirely
+  editTreatment,
   sequence,
   stageIndex,
   setRenderPanelStage,
 }: {
   title: string;
   elements: any[];
-  duration: number;
+  duration: DurationType;
   scale: number;
   treatment: any;
   setTreatment: any;
+  editTreatment: (treatment: TreatmentType) => void;
   sequence: string;
   stageIndex: number;
   setRenderPanelStage: any;
@@ -44,7 +50,7 @@ export function StageCard({
   ];
   const addStageOptions = [
     { question: "Name", responseType: "text" },
-    { question: "Duration", responseType: "text" },
+    { question: "Duration", responseType: "number"},
     { question: "Discussion", responseType: "text" },
   ];
 
@@ -58,6 +64,8 @@ export function StageCard({
       stageIndex: stageIndex,
     });
   }
+
+  const newElementModalId = `modal-stage${stageIndex}-element-new`
 
   return (
     // TODO: reorder elements with drag and drop
@@ -77,20 +85,25 @@ export function StageCard({
           data-cy={"edit-stage-button-" + stageIndex}
           className="my-3 mx-3 btn h-5 bg-gray-300"
           style={{ minHeight: "unset" }}
-          onClick={() =>
-            (
-              document.getElementById(
-                "editStage" + stageIndex
-              ) as HTMLDialogElement | null
-            )?.showModal()
-          }
+          onClick={() => document.getElementById("modal-stage" + stageIndex)?.showModal()}
         >
           Edit
         </button>
-        <dialog id={"editStage" + stageIndex} className="modal">
+
+        <Modal
+          id={"modal-stage" + stageIndex}
+        >
+          <EditStage
+            treatment={treatment}
+            editTreatment={editTreatment}
+            stageIndex={stageIndex}
+          />
+        </Modal>
+
+        {/* <dialog id={"editStage" + stageIndex} className="modal">
           <div className="modal-box">
             <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
+              {/* if there is a button in form, it will close the modal 
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                 ✕
               </button>
@@ -104,7 +117,7 @@ export function StageCard({
               elementIndex={""}
             />
           </div>
-        </dialog>
+        </dialog> */}
       </div>
 
       <div id="elementList" className="flex flex-col gap-y-1">
@@ -131,17 +144,36 @@ export function StageCard({
             onClick={() =>
               (
                 document.getElementById(
-                  "stage" + stageIndex
+                  newElementModalId
                 ) as HTMLDialogElement | null
               )?.showModal()
             }
           >
             +
           </button>
-          <dialog id={"stage" + stageIndex} className="modal">
+
+          <Modal
+            id={"modal-stage" + stageIndex}
+          >
+            <EditStage
+              treatment={treatment}
+              editTreatment={editTreatment}
+              stageIndex={stageIndex}
+            />
+          </Modal>
+
+          <Modal id={newElementModalId}>
+          <EditElement
+            treatment={treatment}
+            editTreatment={editTreatment}
+            stageIndex={stageIndex}
+            />
+        </Modal>
+
+          {/* <dialog id={"stage" + stageIndex} className="modal">
             <div className="modal-box">
               <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
+                {/* if there is a button in form, it will close the modal 
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </button>
@@ -155,7 +187,7 @@ export function StageCard({
                 elementIndex={""}
               />
             </div>
-          </dialog>
+          </dialog> */}
         </div>
       </div>
     </div>

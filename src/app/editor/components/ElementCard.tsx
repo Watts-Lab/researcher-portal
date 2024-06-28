@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import { Element } from "./Element";
 import AddPopup from "./AddPopup";
+import { Modal } from "./Modal"
+import { EditElement } from "./EditElement"
+import { TreatmentType } from "@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile";
 
 export function ElementCard({
   element,
@@ -10,7 +13,7 @@ export function ElementCard({
   stageIndex,
   elementIndex,
   treatment,
-  setTreatment,
+  editTreatment,
   elementOptions,
 }: {
   element: any;
@@ -20,12 +23,15 @@ export function ElementCard({
   stageIndex: number;
   elementIndex: number;
   treatment: any;
-  setTreatment: any;
+  editTreatment: (treatment : TreatmentType) => void;
   elementOptions: any;
 }) {
   const startTime = element.displayTime || 0;
   const endTime = element.hideTime || stageDuration;
+  const [modalOpen, setModalOpen] = useState(false);
 
+
+  const editModalId = `modal-stage${stageIndex}-element-${elementIndex}`
   return (
     <div
       className="card bg-base-200 shadow-md min-h-12 min-w-[10px] justify-center px-5"
@@ -39,35 +45,23 @@ export function ElementCard({
         style={{ minHeight: "unset" }}
         onClick={() =>
           (
-            document.getElementById(
-              "stage" + stageIndex + "element" + elementIndex
+            document.getElementById(editModalId
             ) as HTMLDialogElement | null
           )?.showModal()
         }
       >
         Edit
       </button>
-      <dialog
-        id={"stage" + stageIndex + "element" + elementIndex}
-        className="modal"
-      >
-        <div className="modal-box">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-          <AddPopup
-            type="editElement"
-            questions={elementOptions}
+      
+        <Modal id={editModalId}>
+          <EditElement
             treatment={treatment}
-            setTreatment={setTreatment}
+            editTreatment={editTreatment}
             stageIndex={stageIndex}
             elementIndex={elementIndex}
-          />
-        </div>
-      </dialog>
+            />
+        </Modal>
+      
     </div>
   );
 }

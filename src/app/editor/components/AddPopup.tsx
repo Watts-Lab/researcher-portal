@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { stringify } from "yaml";
 import { useForm } from "react-hook-form";
+import { TreatmentType } from "@/deliberation-empirica/server/src/preFlight/validateTreatmentFile";
 
 export default function AddPopup({
   type,
@@ -13,7 +14,7 @@ export default function AddPopup({
 }: {
   type: string;
   questions: any;
-  treatment: any;
+  treatment: TreatmentType;
   setTreatment: any;
   stageIndex: any;
   elementIndex: any;
@@ -32,11 +33,11 @@ export default function AddPopup({
           ? currComponent.name
           : "",
       duration:
-        currComponent !== undefined && currComponent.duration !== undefined
+        currComponent !== undefined && "duration" in currComponent && currComponent.duration !== undefined
           ? currComponent.duration
           : "",
       selectedOption:
-        currComponent !== undefined && currComponent.type !== undefined
+        currComponent !== undefined && "type" in currComponent && currComponent.type !== undefined
           ? currComponent.type
           : "Pick one",
       file: "",

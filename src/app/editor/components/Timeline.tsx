@@ -5,6 +5,10 @@ import { StageCard } from "./StageCard";
 import AddPopup from "./AddPopup";
 import TimelineTools from "./TimelineTools";
 import TimePicker from "./TimePicker";
+import { stringify } from "yaml";
+import { Modal } from "./Modal"
+import { EditStage } from "./EditStage";
+import { TreatmentType } from "../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile";
 
 export default function Timeline({
   setRenderPanelStage,
@@ -13,6 +17,13 @@ export default function Timeline({
 }) {
   const [scale, setScale] = useState(1); // pixels per second
   const [treatment, setTreatment] = useState<any | null>(null);
+
+  function editTreatment(newTreatment: TreatmentType) {
+    setTreatment(newTreatment)
+    localStorage.setItem("code", stringify(newTreatment));
+    window.location.reload();
+  } 
+  // Todo: think about using 'useContext' here instead of passing editTreatment all the way down
 
   useEffect(() => {
     // Access localStorage only on the client side
@@ -54,6 +65,7 @@ export default function Timeline({
                 scale={scale}
                 treatment={treatment}
                 setTreatment={setTreatment}
+                editTreatment={editTreatment}
                 sequence={"gameStage"}
                 stageIndex={index}
                 setRenderPanelStage={setRenderPanelStage}
@@ -66,17 +78,25 @@ export default function Timeline({
               onClick={() =>
                 (
                   document.getElementById(
-                    "add-stage"
+                    "modal-add-stage"
                   ) as HTMLDialogElement | null
                 )?.showModal()
               }
             >
               +
             </button>
-            <dialog id="add-stage" className="modal">
+            <Modal
+            id={"modal-add-stage"}
+          >
+            <EditStage
+              treatment={treatment}
+              editTreatment={editTreatment}
+            />
+          </Modal>
+            {/* <dialog id="add-stage" className="modal">
               <div className="modal-box">
                 <form method="dialog">
-                  {/* if there is a button in form, it will close the modal */}
+                  {/* if there is a button in form, it will close the modal 
                   <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                     ✕
                   </button>
@@ -90,7 +110,7 @@ export default function Timeline({
                   elementIndex={""}
                 />
               </div>
-            </dialog>
+            </dialog> */}
           </div>
         </div>
       </div>

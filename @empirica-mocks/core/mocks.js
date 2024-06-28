@@ -1,6 +1,6 @@
 export function usePlayer() {
   // This is a mock function that returns a mock player object
-  console.log("loaded usePlayer() from react-mocks.js");
+  // console.log("loaded usePlayer() from react-mocks.js");
   const player = {
     isMock: true,
     introDone: true,
