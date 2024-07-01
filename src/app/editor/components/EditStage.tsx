@@ -28,13 +28,14 @@ export function EditStage({
       : {}
   );
 
-  //console.log(typeof editTreatment);
-
+  console.log(typeof editTreatment);
   async function saveEdits() {
     try {
     const updatedTreatment = JSON.parse(JSON.stringify(treatment)); // deep copy
-    console.log(typeof watch("duration"));
+    console.log("Hereeee");
+    console.log(typeof editTreatment);
     if (isValid){
+      console.log("Form is valid");
       if (stageIndex === undefined) { // create new stage
       updatedTreatment?.gameStages?.push({
         name: watch("name"),
@@ -47,7 +48,7 @@ export function EditStage({
       updatedTreatment.gameStages[stageIndex].duration = watch("duration");
       // todo: add discussion component
       }
-    console.log(typeof editTreatment);
+      console.log(typeof editTreatment);
     editTreatment(updatedTreatment);
     } else {
     throw new Error("Form is not valid");
