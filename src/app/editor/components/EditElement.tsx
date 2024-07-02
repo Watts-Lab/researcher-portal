@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import {
   TreatmentType,
   ElementType,
   elementSchema,
-} from "@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
+} from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
 
 export function EditElement({
   treatment,
@@ -14,14 +14,11 @@ export function EditElement({
   stageIndex,
   elementIndex,
 }: {
-  treatment: TreatmentType;
-  editTreatment: (treatment : TreatmentType) => void;
-  stageIndex: number;
-  elementIndex: number;
+  treatment: TreatmentType
+  editTreatment: (treatment: TreatmentType) => void
+  stageIndex: number
+  elementIndex: number
 }) {
-  //const [isValid, setIsValid] = useState(true)
-  //var element: ElementType = treatment.gameStages[stageIndex].elements[elementIndex];  // if elementIndex is undefine, is the whole thing undefined? or does it error?
-
   const {
     register,
     watch,
@@ -32,97 +29,73 @@ export function EditElement({
     elementIndex !== undefined
       ? {
           defaultValues: {
-            name: treatment.gameStages[stageIndex]?.elements?.[elementIndex]?.name,
-            type: treatment.gameStages[stageIndex]?.elements?.[elementIndex]?.type,
-            file: treatment.gameStages[stageIndex]?.elements?.[elementIndex]?.file,
+            name: treatment.gameStages[stageIndex]?.elements?.[elementIndex]
+              ?.name,
+            type: treatment.gameStages[stageIndex]?.elements?.[elementIndex]
+              ?.type,
+            file: treatment.gameStages[stageIndex]?.elements?.[elementIndex]
+              ?.file,
           },
           resolver: zodResolver(elementSchema),
-          mode: "onChange",
+          mode: 'onChange',
         }
       : {}
-  );
+  )
 
-
-  console.log(typeof editTreatment); // Here it's a function 
   function saveEdits() {
-    //console.log(typeof editTreatment); // here it's undefined 
     try {
-      const updatedTreatment = JSON.parse(JSON.stringify(treatment)); // deep copy
-      if (isValid) {
-        //console.log("HEEERREEE")
-        if (stageIndex === undefined) {
-          throw new Error("No stage index given");
-        }
-        if (elementIndex === undefined) {
-          updatedTreatment.gameStages[stageIndex].elements.push({
-            name: watch("name"),
-            type: watch("type"),
-            file: watch("file"),
-            //TODO: to add more fields here
-          });
-        } else {
-          updatedTreatment.gameStages[stageIndex].elements[elementIndex].name =
-            watch("name");
-          updatedTreatment.gameStages[stageIndex].elements[elementIndex].type =
-            watch("type");
-          updatedTreatment.gameStages[stageIndex].elements[elementIndex].file =
-            watch("file");
-          // TODO: add more fields here
-        }
-        console.log(typeof editTreatment);
-      editTreatment(updatedTreatment);
-      } else {
-        throw new Error("Form is not valid");
+      const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
+
+      if (stageIndex === undefined) {
+        throw new Error('No stage index given')
       }
+
+      if (elementIndex === undefined) {
+        updatedTreatment.gameStages[stageIndex].elements.push({
+          name: watch('name'),
+          type: watch('type'),
+          file: watch('file'),
+          //TODO: to add more fields here
+        })
+      } else {
+        updatedTreatment.gameStages[stageIndex].elements[elementIndex].name =
+          watch('name')
+        updatedTreatment.gameStages[stageIndex].elements[elementIndex].type =
+          watch('type')
+        updatedTreatment.gameStages[stageIndex].elements[elementIndex].file =
+          watch('file')
+        // TODO: add more fields here
+      }
+      editTreatment(updatedTreatment)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
-    // const parseResult = elementSchema.safeParse({
-    //     name: watch("name"),
-    //     type: watch("type"),
-    //     file: watch("file"),
-    //     url: watch("url"),
-    //     params: watch("params"),
-    //     style: watch("style"),
-    //     buttonText: watch("buttonText"),
-    //     startTime: watch("startTime"),
-    //     endTime: watch("endTime")
-    //   })
-    // if (!parseResult.success) {
-    // console.log(parseResult.error)
-    // window.alert( parseResult.error )
-    // setIsValid(false);
-    // return;
-    // }
-
-    //setIsValid(true);
-
   function deleteElement() {
     const confirm = window.confirm(
-      "Are you sure you want to delete the element?"
-    );
+      'Are you sure you want to delete the element?'
+    )
     if (confirm) {
-      const updatedTreatment = JSON.parse(JSON.stringify(treatment)); // deep copy
-      updatedTreatment.gameStages[stageIndex].elements.splice(elementIndex, 1); // delete in place
-      editTreatment(updatedTreatment);
+      const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
+      updatedTreatment.gameStages[stageIndex].elements.splice(elementIndex, 1) // delete in place
+      editTreatment(updatedTreatment)
     }
   }
 
   // FORM QUESTIONS
-  const htmlElements = [];
+  const htmlElements = []
   htmlElements.push(
-    <form onSubmit={handleSubmit(saveEdits())}>
+    <form onSubmit={handleSubmit(saveEdits)}>
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
-            <span className="label-text">{"Name"}</span>
+            <span className="label-text">{'Name'}</span>
           </div>
           <input
-            {...register("name", { required: true })}
+            {...register('name', { required: true })}
             data-cy={`edit-element-name-stage${stageIndex}-element${
-              elementIndex || "new"
+              elementIndex || 'new'
             }`}
             placeholder="Enter text here."
             className="input input-bordered w-full max-w-xs"
@@ -136,12 +109,12 @@ export function EditElement({
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
-            <span className="label-text">{"Type"}</span>
+            <span className="label-text">{'Type'}</span>
           </div>
           <select
-            {...register("type", { required: true })}
+            {...register('type', { required: true })}
             data-cy={`edit-element-type-stage${stageIndex}-element${
-              elementIndex || "new"
+              elementIndex || 'new'
             }`}
             className="select select-bordered"
           >
@@ -158,16 +131,16 @@ export function EditElement({
         </label>
       </div>
 
-      {(watch("type") === "prompt" || watch("type") === "audioElement") && (
+      {(watch('type') === 'prompt' || watch('type') === 'audioElement') && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">{"File Address"}</span>
+              <span className="label-text">{'File Address'}</span>
             </div>
             <input
-              {...register("file", { required: true })}
+              {...register('file', { required: true })}
               data-cy={`edit-element-file-stage${stageIndex}-element${
-                elementIndex || "new"
+                elementIndex || 'new'
               }`}
               placeholder="Enter number here."
               className="input input-bordered w-full max-w-xs"
@@ -179,17 +152,17 @@ export function EditElement({
         </div>
       )}
 
-      {watch("selectedOption") === "kitchenTimer" && (
+      {watch('selectedOption') === 'kitchenTimer' && (
         <div>
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">{"Start Time"}</span>
+                <span className="label-text">{'Start Time'}</span>
               </div>
               <input
-                {...register("startTime", { required: true })}
+                {...register('startTime', { required: true })}
                 data-cy={`edit-element-start-time-stage${stageIndex}-element${
-                  elementIndex || "new"
+                  elementIndex || 'new'
                 }`}
                 placeholder="Enter text here."
                 className="input input-bordered w-full max-w-xs"
@@ -199,12 +172,12 @@ export function EditElement({
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">{"End Time"}</span>
+                <span className="label-text">{'End Time'}</span>
               </div>
               <input
-                {...register("endTime", { required: true })}
+                {...register('endTime', { required: true })}
                 data-cy={`edit-element-end-time-stage${stageIndex}-element${
-                  elementIndex || "new"
+                  elementIndex || 'new'
                 }`}
                 placeholder="Enter text here."
                 className="input input-bordered w-full max-w-xs"
@@ -214,17 +187,17 @@ export function EditElement({
         </div>
       )}
 
-      {(watch("selectedOption") === "qualtrics" ||
-        watch("selectedOption") === "trainingVideo") && (
+      {(watch('selectedOption') === 'qualtrics' ||
+        watch('selectedOption') === 'trainingVideo') && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">{"URL"}</span>
+              <span className="label-text">{'URL'}</span>
             </div>
             <input
-              {...register("url", { required: true })}
+              {...register('url', { required: true })}
               data-cy={`edit-element-url-stage${stageIndex}-element${
-                elementIndex || "new"
+                elementIndex || 'new'
               }`}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
@@ -233,16 +206,16 @@ export function EditElement({
         </div>
       )}
 
-      {watch("selectedOption") === "qualtrics" && (
+      {watch('selectedOption') === 'qualtrics' && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">{"Parameters"}</span>
+              <span className="label-text">{'Parameters'}</span>
             </div>
             <input
-              {...register("params", { required: true })}
+              {...register('params', { required: true })}
               data-cy={`edit-element-params-stage${stageIndex}-element${
-                elementIndex || "new"
+                elementIndex || 'new'
               }`}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
@@ -251,16 +224,16 @@ export function EditElement({
         </div>
       )}
 
-      {watch("selectedOption") === "separator" && (
+      {watch('selectedOption') === 'separator' && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">{"Style"}</span>
+              <span className="label-text">{'Style'}</span>
             </div>
             <input
-              {...register("style", { required: true })}
+              {...register('style', { required: true })}
               data-cy={`edit-element-style-stage${stageIndex}-element${
-                elementIndex || "new"
+                elementIndex || 'new'
               }`}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
@@ -269,16 +242,16 @@ export function EditElement({
         </div>
       )}
 
-      {watch("selectedOption") === "submitButton" && (
+      {watch('selectedOption') === 'submitButton' && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">{"Button Text"}</span>
+              <span className="label-text">{'Button Text'}</span>
             </div>
             <input
-              {...register("buttonText", { required: true })}
+              {...register('buttonText', { required: true })}
               data-cy={`edit-element-button-text-stage${stageIndex}-element${
-                elementIndex || "new"
+                elementIndex || 'new'
               }`}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
@@ -287,19 +260,19 @@ export function EditElement({
         </div>
       )}
     </form>
-  );
+  )
 
   return (
     <div>
-      <h1>{elementIndex !== undefined ? "Edit Element" : "Add Element"}</h1>
+      <h1>{elementIndex !== undefined ? 'Edit Element' : 'Add Element'}</h1>
       {htmlElements}
       <button
         data-cy={`save-edits-stage-${stageIndex}-element-${
-          elementIndex || "new"
+          elementIndex || 'new'
         }`}
         className="btn btn-primary"
-        style={{ margin: "10px" }}
-        onClick={saveEdits()}
+        style={{ margin: '10px' }}
+        onClick={saveEdits}
         disabled={!isValid}
       >
         Save
@@ -308,14 +281,14 @@ export function EditElement({
       {/* Todo: Do we want to hide the delete button when creating a new element? */}
       <button
         data-cy={`delete-element-stage-${stageIndex}-element-${
-          elementIndex || "new"
+          elementIndex || 'new'
         }`}
         className="btn btn-secondary"
-        style={{ margin: "10px" }}
+        style={{ margin: '10px' }}
         onClick={deleteElement}
       >
-        {"Delete"}
+        {'Delete'}
       </button>
     </div>
-  );
+  )
 }

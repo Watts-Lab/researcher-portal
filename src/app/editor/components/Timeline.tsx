@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { parse } from "yaml";
 import { StageCard } from "./StageCard";
-import AddPopup from "./AddPopup";
+import AddPopup from "./AddPopup"; 
 import TimelineTools from "./TimelineTools";
 import TimePicker from "./TimePicker";
 import { stringify } from "yaml";
