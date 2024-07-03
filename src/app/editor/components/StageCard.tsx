@@ -1,5 +1,5 @@
 'use client'
-import AddPopup from './AddPopup'
+//import AddPopup from './AddPopup'
 import React, { useState } from 'react'
 import { ElementCard } from './ElementCard'
 import { cn } from '@/app/components/utils'
@@ -89,8 +89,8 @@ export function StageCard({
           className="my-3 mx-3 btn h-5 bg-gray-300"
           style={{ minHeight: 'unset' }}
           onClick={() =>
-            document.getElementById('modal-stage' + stageIndex)?.showModal()
-          }
+          (document.getElementById(newElementModalId) as HTMLDialogElement | null )?.showModal()
+  }
         >
           Edit
         </button>
@@ -168,6 +168,7 @@ export function StageCard({
               treatment={treatment}
               editTreatment={editTreatment}
               stageIndex={stageIndex}
+              elementIndex={0}
             />
           </Modal>
 

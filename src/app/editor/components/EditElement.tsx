@@ -25,7 +25,7 @@ export function EditElement({
     handleSubmit,
     setValue,
     formState: { isValid, errors },
-  } = useForm<ElementType>(
+  } = useForm(
     elementIndex !== undefined
       ? {
           defaultValues: {
@@ -101,7 +101,7 @@ export function EditElement({
             className="input input-bordered w-full max-w-xs"
           />
           {errors.name && (
-            <span className="text-red-500">{errors.name.message}</span>
+            <span className="text-red-500">{typeof errors.name.message === 'string' && errors.name.message}</span>
           )}
         </label>
       </div>
@@ -146,7 +146,7 @@ export function EditElement({
               className="input input-bordered w-full max-w-xs"
             />
             {errors.file && (
-              <span className="text-red-500">{errors.file.message}</span>
+              <span className="text-red-500">{typeof errors.file.message === 'string' && errors.file.message}</span>
             )}
           </label>
         </div>

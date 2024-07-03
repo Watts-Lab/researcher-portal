@@ -31,7 +31,7 @@ export function EditStage({
             name: treatment.gameStages[stageIndex].name,
             duration: treatment.gameStages[stageIndex].duration,
           },
-          resolver: zodResolver<StageType>(stageSchema),
+          resolver: zodResolver(stageSchema),
           mode: 'onChange',
         }
       : {}

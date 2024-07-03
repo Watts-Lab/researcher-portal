@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Element } from './Element'
-import AddPopup from './AddPopup'
+//import AddPopup from './AddPopup'
 import { Modal } from './Modal'
 import { EditElement } from './EditElement'
 import { TreatmentType } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'

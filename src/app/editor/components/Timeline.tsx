@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { parse } from "yaml";
-import { StageCard } from "./StageCard";
-import AddPopup from "./AddPopup"; 
+import { StageCard } from "./StageCard"; 
 import TimelineTools from "./TimelineTools";
 import TimePicker from "./TimePicker";
 import { stringify } from "yaml";
@@ -91,6 +90,7 @@ export default function Timeline({
             <EditStage
               treatment={treatment}
               editTreatment={editTreatment}
+              stageIndex={0}
             />
           </Modal>
             {/* <dialog id="add-stage" className="modal">
