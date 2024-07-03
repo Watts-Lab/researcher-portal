@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import { Element } from './Element'
-//import AddPopup from './AddPopup'
 import { Modal } from './Modal'
 import { EditElement } from './EditElement'
 import { TreatmentType } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
@@ -37,7 +35,13 @@ export function ElementCard({
       style={{ left: startTime * scale, width: scale * (endTime - startTime) }}
       data-cy={'element-' + stageIndex + '-' + elementIndex}
     >
-      <Element element={element} />
+      <div>
+        {Object.keys(element).map((key) => (
+          <p key={key}>
+            {key}: {element[key]}
+          </p>
+        ))}
+      </div>
       <button
         data-cy={'edit-element-button-' + stageIndex + '-' + elementIndex}
         className="btn h-5 flex bg-gray-300"

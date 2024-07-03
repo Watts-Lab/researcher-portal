@@ -1,5 +1,4 @@
 'use client'
-//import AddPopup from './AddPopup'
 import React, { useState } from 'react'
 import { ElementCard } from './ElementCard'
 import { cn } from '@/app/components/utils'
@@ -89,38 +88,23 @@ export function StageCard({
           className="my-3 mx-3 btn h-5 bg-gray-300"
           style={{ minHeight: 'unset' }}
           onClick={() =>
-          (document.getElementById(newElementModalId) as HTMLDialogElement | null )?.showModal()
-  }
+            (
+              document.getElementById(
+                'modal-edit-stage-' + stageIndex
+              ) as HTMLDialogElement | null
+            )?.showModal()
+          }
         >
           Edit
         </button>
 
-        <Modal id={'modal-stage' + stageIndex}>
+        <Modal id={'modal-edit-stage-' + stageIndex}>
           <EditStage
             treatment={treatment}
             editTreatment={editTreatment}
             stageIndex={stageIndex}
           />
         </Modal>
-
-        {/* <dialog id={"editStage" + stageIndex} className="modal">
-          <div className="modal-box">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal 
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                ✕
-              </button>
-            </form>
-            <AddPopup
-              type="editStage"
-              questions={addStageOptions}
-              treatment={treatment}
-              setTreatment={setTreatment}
-              stageIndex={stageIndex}
-              elementIndex={""}
-            />
-          </div>
-        </dialog> */}
       </div>
 
       <div id="elementList" className="flex flex-col gap-y-1">
@@ -155,41 +139,14 @@ export function StageCard({
             +
           </button>
 
-          <Modal id={'modal-stage' + stageIndex}>
-            <EditStage
-              treatment={treatment}
-              editTreatment={editTreatment}
-              stageIndex={stageIndex}
-            />
-          </Modal>
-
           <Modal id={newElementModalId}>
             <EditElement
               treatment={treatment}
               editTreatment={editTreatment}
               stageIndex={stageIndex}
-              elementIndex={0}
+              elementIndex={-1}
             />
           </Modal>
-
-          {/* <dialog id={"stage" + stageIndex} className="modal">
-            <div className="modal-box">
-              <form method="dialog">
-                {/* if there is a button in form, it will close the modal 
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                  ✕
-                </button>
-              </form>
-              <AddPopup
-                type="addElement"
-                questions={addElementOptions}
-                treatment={treatment}
-                setTreatment={setTreatment}
-                stageIndex={stageIndex}
-                elementIndex={""}
-              />
-            </div>
-          </dialog> */}
         </div>
       </div>
     </div>

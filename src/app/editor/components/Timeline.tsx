@@ -1,40 +1,40 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { parse } from "yaml";
-import { StageCard } from "./StageCard"; 
-import TimelineTools from "./TimelineTools";
-import TimePicker from "./TimePicker";
-import { stringify } from "yaml";
-import { Modal } from "./Modal"
-import { EditStage } from "./EditStage";
-import { TreatmentType } from "../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile";
+'use client'
+import React, { useEffect, useState } from 'react'
+import { parse } from 'yaml'
+import { StageCard } from './StageCard'
+import TimelineTools from './TimelineTools'
+import TimePicker from './TimePicker'
+import { stringify } from 'yaml'
+import { Modal } from './Modal'
+import { EditStage } from './EditStage'
+import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 
 export default function Timeline({
   setRenderPanelStage,
 }: {
-  setRenderPanelStage: any;
+  setRenderPanelStage: any
 }) {
-  const [scale, setScale] = useState(1); // pixels per second
-  const [treatment, setTreatment] = useState<any | null>(null);
+  const [scale, setScale] = useState(1) // pixels per second
+  const [treatment, setTreatment] = useState<any | null>(null)
 
   function editTreatment(newTreatment: TreatmentType) {
     setTreatment(newTreatment)
-    localStorage.setItem("code", stringify(newTreatment));
-    window.location.reload();
-  } 
+    localStorage.setItem('code', stringify(newTreatment))
+    window.location.reload()
+  }
   // Todo: think about using 'useContext' here instead of passing editTreatment all the way down
 
   useEffect(() => {
     // Access localStorage only on the client side
-    if (typeof window !== "undefined") {
-      const codeStr = localStorage.getItem("code") || "";
-      const parsedCode = parse(codeStr);
-      setTreatment(parsedCode);
+    if (typeof window !== 'undefined') {
+      const codeStr = localStorage.getItem('code') || ''
+      const parsedCode = parse(codeStr)
+      setTreatment(parsedCode)
     }
-  }, []);
+  }, [])
 
   if (!treatment) {
-    return null;
+    return null
   }
 
   //const parsedCode = "";
@@ -44,13 +44,13 @@ export default function Timeline({
   // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
 
   const addStageOptions = [
-    { question: "Name", responseType: "text" },
-    { question: "Duration", responseType: "text" },
-    { question: "Discussion", responseType: "text" },
-  ];
+    { question: 'Name', responseType: 'text' },
+    { question: 'Duration', responseType: 'text' },
+    { question: 'Discussion', responseType: 'text' },
+  ]
 
   return (
-    <div data-cy={"timeline"} id="timeline" className="h-full flex flex-col">
+    <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
       <div id="timelineCanvas" className="grow min-h-10 bg-slate-600 p-2">
         <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
@@ -65,7 +65,7 @@ export default function Timeline({
                 treatment={treatment}
                 setTreatment={setTreatment}
                 editTreatment={editTreatment}
-                sequence={"gameStage"}
+                sequence={'gameStage'}
                 stageIndex={index}
                 setRenderPanelStage={setRenderPanelStage}
               />
@@ -77,43 +77,23 @@ export default function Timeline({
               onClick={() =>
                 (
                   document.getElementById(
-                    "modal-add-stage"
+                    'modal-add-stage'
                   ) as HTMLDialogElement | null
                 )?.showModal()
               }
             >
               +
             </button>
-            <Modal
-            id={"modal-add-stage"}
-          >
-            <EditStage
-              treatment={treatment}
-              editTreatment={editTreatment}
-              stageIndex={0}
-            />
-          </Modal>
-            {/* <dialog id="add-stage" className="modal">
-              <div className="modal-box">
-                <form method="dialog">
-                  {/* if there is a button in form, it will close the modal 
-                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                    ✕
-                  </button>
-                </form>
-                <AddPopup
-                  type="addStage"
-                  questions={addStageOptions}
-                  treatment={treatment}
-                  setTreatment={setTreatment}
-                  stageIndex={""}
-                  elementIndex={""}
-                />
-              </div>
-            </dialog> */}
+            <Modal id={'modal-add-stage'}>
+              <EditStage
+                treatment={treatment}
+                editTreatment={editTreatment}
+                stageIndex={-1}
+              />
+            </Modal>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -12,55 +12,64 @@ import * as zod from 'zod'
 export function EditStage({
   treatment,
   editTreatment,
-  stageIndex, // a number if the stage already exists, otherwise undefined
+  stageIndex, // an index if the stage already exists, otherwise -1
 }: {
   treatment: TreatmentType
   editTreatment: (treatment: TreatmentType) => void
   stageIndex: number
 }) {
+  var currComponent: StageType
+  if (stageIndex !== -1) {
+    currComponent = treatment.gameStages[stageIndex]
+  } else {
+    currComponent = undefined
+  }
+
   const {
     register,
     watch,
     handleSubmit,
     setValue,
     formState: { isValid, errors },
-  } = useForm<StageType>(
-    stageIndex !== undefined
-      ? {
-          defaultValues: {
-            name: treatment.gameStages[stageIndex].name,
-            duration: treatment.gameStages[stageIndex].duration,
-          },
-          resolver: zodResolver(stageSchema),
-          mode: 'onChange',
-        }
-      : {}
-  )
+  } = useForm<StageType>({
+    defaultValues: {
+      name:
+        stageIndex !== -1 && currComponent.name !== undefined
+          ? currComponent.name
+          : '',
+      duration:
+        stageIndex !== -1 && currComponent.duration !== undefined
+          ? currComponent.duration
+          : '',
+    },
+    resolver: zodResolver(stageSchema),
+    mode: 'onChange',
+  })
 
   async function saveEdits() {
     try {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      if (isValid) {
-        console.log('Form is valid')
-        if (stageIndex === undefined) {
-          // create new stage
-          updatedTreatment?.gameStages?.push({
-            name: watch('name'),
-            duration: watch('duration'),
-            // todo: add discussion component
-            elements: [],
-          })
-        } else {
-          // modify existing stage
-          updatedTreatment.gameStages[stageIndex].name = watch('name')
-          updatedTreatment.gameStages[stageIndex].duration = watch('duration')
+      //if (isValid) {
+      console.log('Form is valid')
+      if (stageIndex === -1) {
+        // create new stage
+        updatedTreatment?.gameStages?.push({
+          name: watch('name'),
+          duration: watch('duration'),
           // todo: add discussion component
-        }
-        console.log(typeof editTreatment)
-        editTreatment(updatedTreatment)
+          elements: [],
+        })
       } else {
-        throw new Error('Form is not valid')
+        // modify existing stage
+        updatedTreatment.gameStages[stageIndex].name = watch('name')
+        updatedTreatment.gameStages[stageIndex].duration = watch('duration')
+        // todo: add discussion component
       }
+      console.log(typeof editTreatment)
+      editTreatment(updatedTreatment)
+      /*} else {
+        throw new Error('Form is not valid')
+      }*/
     } catch (error) {
       console.error(error)
     }
@@ -81,7 +90,9 @@ export function EditStage({
 
   const htmlElements = []
   htmlElements.push(
-    <form onSubmit={handleSubmit(saveEdits)}>
+    <form>
+      {' '}
+      {/* onSubmit={handleSubmit(saveEdits)}> */}
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
@@ -94,11 +105,12 @@ export function EditStage({
             className="input input-bordered w-full max-w-xs"
           />
           {errors.name && (
-            <span className="text-red-500">{errors.name.message}</span>
+            <span className="text-red-500">
+              {typeof errors.name.message === 'string' && errors.name.message}
+            </span>
           )}
         </label>
       </div>
-
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
@@ -112,7 +124,10 @@ export function EditStage({
             type="number"
           />
           {errors.duration && (
-            <span className="text-red-500">{errors.duration.message}</span>
+            <span className="text-red-500">
+              {typeof errors.duration.message === 'string' &&
+                errors.duration.message}
+            </span>
           )}
         </label>
       </div>
@@ -123,7 +138,7 @@ export function EditStage({
 
   return (
     <div>
-      <h1>{stageIndex !== undefined ? 'Edit Stage' : 'Add Stage'}</h1>
+      <h1>{stageIndex !== -1 ? 'Edit Stage' : 'Add Stage'}</h1>
       {htmlElements}
 
       <button
@@ -136,15 +151,16 @@ export function EditStage({
         Save
       </button>
 
-      {/* Todo: Do we want to hide the delete button when creating a new stage? */}
-      <button
-        data-cy={`delete-stage-${stageIndex || 'new'}`}
-        className="btn btn-secondary"
-        style={{ margin: '10px' }}
-        onClick={deleteStage}
-      >
-        Delete
-      </button>
+      {stageIndex !== -1 && (
+        <button
+          data-cy={`delete-stage-${stageIndex || 'new'}`}
+          className="btn btn-secondary"
+          style={{ margin: '10px' }}
+          onClick={deleteStage}
+        >
+          Delete
+        </button>
+      )}
     </div>
   )
 }

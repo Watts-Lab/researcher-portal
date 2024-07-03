@@ -12,35 +12,49 @@ export function EditElement({
   treatment,
   editTreatment,
   stageIndex,
-  elementIndex,
+  elementIndex, // -1 if adding element
 }: {
   treatment: TreatmentType
   editTreatment: (treatment: TreatmentType) => void
   stageIndex: number
   elementIndex: number
 }) {
+  var currComponent: ElementType
+  if (elementIndex !== -1) {
+    currComponent = treatment.gameStages[stageIndex].elements[elementIndex]
+  } else {
+    currComponent = undefined
+  }
+
   const {
     register,
     watch,
     handleSubmit,
     setValue,
     formState: { isValid, errors },
-  } = useForm(
-    elementIndex !== undefined
-      ? {
-          defaultValues: {
-            name: treatment.gameStages[stageIndex]?.elements?.[elementIndex]
-              ?.name,
-            type: treatment.gameStages[stageIndex]?.elements?.[elementIndex]
-              ?.type,
-            file: treatment.gameStages[stageIndex]?.elements?.[elementIndex]
-              ?.file,
-          },
-          resolver: zodResolver(elementSchema),
-          mode: 'onChange',
-        }
-      : {}
-  )
+  } = useForm({
+    defaultValues: {
+      name:
+        elementIndex !== -1 && currComponent.name !== undefined
+          ? currComponent.name
+          : '',
+      selectedOption:
+        elementIndex !== -1 && currComponent.type !== undefined
+          ? currComponent.type
+          : 'Pick one',
+      file: '',
+      url: '',
+      params: '',
+      onSubmit: '',
+      style: '',
+      buttonText: '',
+      startTime: '',
+      endTime: '',
+      surveyName: 'Pick one',
+    },
+    resolver: zodResolver(elementSchema),
+    mode: 'onChange',
+  })
 
   function saveEdits() {
     try {
@@ -50,22 +64,29 @@ export function EditElement({
         throw new Error('No stage index given')
       }
 
-      if (elementIndex === undefined) {
-        updatedTreatment.gameStages[stageIndex].elements.push({
-          name: watch('name'),
-          type: watch('type'),
-          file: watch('file'),
-          //TODO: to add more fields here
-        })
-      } else {
-        updatedTreatment.gameStages[stageIndex].elements[elementIndex].name =
-          watch('name')
-        updatedTreatment.gameStages[stageIndex].elements[elementIndex].type =
-          watch('type')
-        updatedTreatment.gameStages[stageIndex].elements[elementIndex].file =
-          watch('file')
-        // TODO: add more fields here
+      const inputs: { name: any; type: any; [key: string]: any } = {
+        name: watch('name'),
+        type: watch('selectedOption'),
       }
+
+      if (watch('file') !== '') inputs.file = watch('file')
+      if (watch('url') !== '') inputs.url = watch('url')
+      if (watch('params') !== '') inputs.params = watch('params')
+      if (watch('onSubmit') !== '') inputs.onSubmit = watch('onSubmit')
+      if (watch('style') !== '') inputs.style = watch('style')
+      if (watch('buttonText') !== '') inputs.buttonText = watch('buttonText')
+      if (watch('startTime') !== '')
+        inputs.startTime = parseInt(watch('startTime'))
+      if (watch('endTime') !== '') inputs.endTime = parseInt(watch('endTime'))
+      if (watch('surveyName') !== 'Pick one')
+        inputs.surveyName = watch('surveyName')
+
+      if (elementIndex === -1) {
+        updatedTreatment?.gameStages[stageIndex]?.elements?.push(inputs)
+      } else {
+        updatedTreatment.gameStages[stageIndex].elements[elementIndex] = inputs
+      }
+
       editTreatment(updatedTreatment)
     } catch (error) {
       console.error(error)
@@ -83,10 +104,25 @@ export function EditElement({
     }
   }
 
+  function setElementOptions(event: any) {
+    setValue('selectedOption', event.target.value)
+    setValue('file', '')
+    setValue('url', '')
+    setValue('params', '')
+    setValue('onSubmit', '')
+    setValue('style', '')
+    setValue('buttonText', '')
+    setValue('startTime', '')
+    setValue('endTime', '')
+    setValue('surveyName', 'Pick one')
+  }
+
   // FORM QUESTIONS
   const htmlElements = []
   htmlElements.push(
-    <form onSubmit={handleSubmit(saveEdits)}>
+    <form>
+      {' '}
+      {/* onSubmit={handleSubmit(saveEdits)}> */}
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
@@ -101,22 +137,24 @@ export function EditElement({
             className="input input-bordered w-full max-w-xs"
           />
           {errors.name && (
-            <span className="text-red-500">{typeof errors.name.message === 'string' && errors.name.message}</span>
+            <span className="text-red-500">
+              {typeof errors.name.message === 'string' && errors.name.message}
+            </span>
           )}
         </label>
       </div>
-
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">{'Type'}</span>
           </div>
           <select
-            {...register('type', { required: true })}
+            {...register('selectedOption', { required: true })}
             data-cy={`edit-element-type-stage${stageIndex}-element${
               elementIndex || 'new'
             }`}
             className="select select-bordered"
+            onChange={(e) => setElementOptions(e)}
           >
             <option disabled>Pick one</option>
             <option value="prompt">Prompt</option>
@@ -130,8 +168,8 @@ export function EditElement({
           </select>
         </label>
       </div>
-
-      {(watch('type') === 'prompt' || watch('type') === 'audioElement') && (
+      {(watch('selectedOption') === 'prompt' ||
+        watch('selectedOption') === 'audioElement') && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -146,12 +184,13 @@ export function EditElement({
               className="input input-bordered w-full max-w-xs"
             />
             {errors.file && (
-              <span className="text-red-500">{typeof errors.file.message === 'string' && errors.file.message}</span>
+              <span className="text-red-500">
+                {typeof errors.file.message === 'string' && errors.file.message}
+              </span>
             )}
           </label>
         </div>
       )}
-
       {watch('selectedOption') === 'kitchenTimer' && (
         <div>
           <div>
@@ -186,7 +225,6 @@ export function EditElement({
           </div>
         </div>
       )}
-
       {(watch('selectedOption') === 'qualtrics' ||
         watch('selectedOption') === 'trainingVideo') && (
         <div>
@@ -205,7 +243,6 @@ export function EditElement({
           </label>
         </div>
       )}
-
       {watch('selectedOption') === 'qualtrics' && (
         <div>
           <label className="form-control w-full max-w-xs">
@@ -223,7 +260,6 @@ export function EditElement({
           </label>
         </div>
       )}
-
       {watch('selectedOption') === 'separator' && (
         <div>
           <label className="form-control w-full max-w-xs">
@@ -241,7 +277,36 @@ export function EditElement({
           </label>
         </div>
       )}
-
+      {watch('selectedOption') === 'survey' && (
+        <div>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">{'Type'}</span>
+            </div>
+            <select
+              {...register('surveyName', { required: true })}
+              className="select select-bordered"
+            >
+              <option disabled>Pick one</option>
+              <option value="CRT">CRT</option>
+              <option value="SVI">SVI</option>
+              <option value="TIPI">TIPI</option>
+              <option value="AttitudeAttributes">AttitudeAttributes</option>
+              <option value="AutonomyNeedSatisfaction">
+                AutonomyNeedSatisfaction
+              </option>
+              <option value="AwarenessMonitoringGrowth">
+                AwarenessMonitoringGrowth
+              </option>
+              <option value="AwarenessOfArgumentsYN">
+                AwarenessOfArgumentsYN
+              </option>
+              <option value="ConflictAndViability">ConflictAndViability</option>
+              {/*TODO: add remaining surveys*/}
+            </select>
+          </label>
+        </div>
+      )}
       {watch('selectedOption') === 'submitButton' && (
         <div>
           <label className="form-control w-full max-w-xs">
@@ -264,7 +329,7 @@ export function EditElement({
 
   return (
     <div>
-      <h1>{elementIndex !== undefined ? 'Edit Element' : 'Add Element'}</h1>
+      <h1>{elementIndex !== -1 ? 'Edit Element' : 'Add Element'}</h1>
       {htmlElements}
       <button
         data-cy={`save-edits-stage-${stageIndex}-element-${
@@ -273,22 +338,25 @@ export function EditElement({
         className="btn btn-primary"
         style={{ margin: '10px' }}
         onClick={saveEdits}
-        disabled={!isValid}
+        disabled={
+          watch('selectedOption') === 'Pick one' || watch('name') === '' // !isValid <- fix elementSchema
+        }
       >
         Save
       </button>
 
-      {/* Todo: Do we want to hide the delete button when creating a new element? */}
-      <button
-        data-cy={`delete-element-stage-${stageIndex}-element-${
-          elementIndex || 'new'
-        }`}
-        className="btn btn-secondary"
-        style={{ margin: '10px' }}
-        onClick={deleteElement}
-      >
-        {'Delete'}
-      </button>
+      {elementIndex !== -1 && (
+        <button
+          data-cy={`delete-element-stage-${stageIndex}-element-${
+            elementIndex || 'new'
+          }`}
+          className="btn btn-secondary"
+          style={{ margin: '10px' }}
+          onClick={deleteElement}
+        >
+          {'Delete'}
+        </button>
+      )}
     </div>
   )
 }
