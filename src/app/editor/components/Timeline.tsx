@@ -52,7 +52,10 @@ export default function Timeline({
   return (
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
-      <div id="timelineCanvas" className="grow min-h-10 bg-slate-600 p-2">
+      <div
+        id="timelineCanvas"
+        className="grow min-h-10 bg-slate-600 p-2 overflow-y-auto overflow-x-auto"
+      >
         <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
           {treatment &&
             treatment?.gameStages?.map((stage: any, index: any) => (
