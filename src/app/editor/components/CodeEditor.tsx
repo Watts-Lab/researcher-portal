@@ -1,94 +1,97 @@
 'use client'
 import YamlEditor from '@uiw/react-textarea-code-editor'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { parse } from 'yaml'
 import { stringify } from 'yaml'
 
 export default function CodeEditor() {
   const [code, setCode] = useState('')
 
-  const defaultTreatment = {
-    name: 'Example Treatment',
-    desc: 'Run through the entire negotiation sequence.',
-    playerCount: 3,
-    assignPositionsBy: 'random',
-    gameStages: [
-      {
-        name: 'Role Assignment and General Instructions',
-        duration: 300,
-        desc: 'Assign participants a role',
-        elements: [
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/01a_instructions_3_way_negotiation.md',
-            showToPositions: [0],
-          },
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/01b_instructions_3_way_negotiation.md',
-            showToPositions: [1],
-          },
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/01c_instructions_3_way_negotiation.md',
-            showToPositions: [2],
-          },
-          {
-            type: 'submitButton',
-          },
-        ],
-      },
-      {
-        name: 'Main Discussion',
-        duration: 600,
-        desc: 'Main Discussion Time',
-        discussion: {
-          chatType: 'text',
-          showNickname: false,
-          showTitle: true,
+  const defaultTreatment = useMemo(
+    () => ({
+      name: 'Example Treatment',
+      desc: 'Run through the entire negotiation sequence.',
+      playerCount: 3,
+      assignPositionsBy: 'random',
+      gameStages: [
+        {
+          name: 'Role Assignment and General Instructions',
+          duration: 300,
+          desc: 'Assign participants a role',
+          elements: [
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/01a_instructions_3_way_negotiation.md',
+              showToPositions: [0],
+            },
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/01b_instructions_3_way_negotiation.md',
+              showToPositions: [1],
+            },
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/01c_instructions_3_way_negotiation.md',
+              showToPositions: [2],
+            },
+            {
+              type: 'submitButton',
+            },
+          ],
         },
-        elements: [
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/03a_rep_a.md',
-            showToPositions: [0],
+        {
+          name: 'Main Discussion',
+          duration: 600,
+          desc: 'Main Discussion Time',
+          discussion: {
+            chatType: 'text',
+            showNickname: false,
+            showTitle: true,
           },
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/03b_rep_b.md',
-            showToPositions: [1],
-          },
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/03c_rep_c.md',
-            showToPositions: [2],
-          },
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/05_response_submission.md',
-          },
-          {
-            type: 'separator',
-            style: 'thin',
-          },
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/06_multipleChoice_agreement_submission.md',
-            name: 'dealsheet1',
-          },
-          {
-            type: 'prompt',
-            file: 'projects/3-way-negotiation/06_multipleChoice_agreement_submission_inclusion.md',
-            name: 'dealsheet2',
-          },
-          {
-            type: 'submitButton',
-            buttonText: 'Submit Now and End Negotiation',
-          },
-        ],
-      },
-    ],
-  }
+          elements: [
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/03a_rep_a.md',
+              showToPositions: [0],
+            },
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/03b_rep_b.md',
+              showToPositions: [1],
+            },
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/03c_rep_c.md',
+              showToPositions: [2],
+            },
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/05_response_submission.md',
+            },
+            {
+              type: 'separator',
+              style: 'thin',
+            },
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/06_multipleChoice_agreement_submission.md',
+              name: 'dealsheet1',
+            },
+            {
+              type: 'prompt',
+              file: 'projects/3-way-negotiation/06_multipleChoice_agreement_submission_inclusion.md',
+              name: 'dealsheet2',
+            },
+            {
+              type: 'submitButton',
+              buttonText: 'Submit Now and End Negotiation',
+            },
+          ],
+        },
+      ],
+    }),
+    []
+  )
 
   useEffect(() => {
     let value

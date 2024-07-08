@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import {
   TreatmentType,
   ElementType,
-  elementSchema,
+  elementBaseSchema,
 } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
@@ -19,7 +19,7 @@ export function EditElement({
   stageIndex: number
   elementIndex: number
 }) {
-  var currComponent: ElementType
+  var currComponent: ElementType | undefined
   if (elementIndex !== -1) {
     currComponent = treatment.gameStages[stageIndex].elements[elementIndex]
   } else {
@@ -35,11 +35,11 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       name:
-        elementIndex !== -1 && currComponent.name !== undefined
+        elementIndex !== -1 && currComponent?.name !== undefined
           ? currComponent.name
           : '',
       selectedOption:
-        elementIndex !== -1 && currComponent.type !== undefined
+        elementIndex !== -1 && currComponent?.type !== undefined
           ? currComponent.type
           : 'Pick one',
       file: '',
@@ -52,7 +52,7 @@ export function EditElement({
       endTime: '',
       surveyName: 'Pick one',
     },
-    resolver: zodResolver(elementSchema),
+    resolver: zodResolver(elementBaseSchema),
     mode: 'onChange',
   })
 
