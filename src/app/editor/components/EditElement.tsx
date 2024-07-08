@@ -339,7 +339,7 @@ export function EditElement({
         style={{ margin: '10px' }}
         onClick={saveEdits}
         disabled={
-          watch('selectedOption') === 'Pick one' || watch('name') === '' // !isValid <- fix elementSchema
+          watch('selectedOption') === 'Pick one' || watch('name') === '' // || !isValid <------ commented out because of validation
         }
       >
         Save
