@@ -19,7 +19,7 @@ export function EditElement({
   stageIndex: number
   elementIndex: number
 }) {
-  var currComponent: ElementType
+  var currComponent: ElementType | undefined
   if (elementIndex !== -1) {
     currComponent = treatment.gameStages[stageIndex].elements[elementIndex]
   } else {
@@ -35,11 +35,11 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       name:
-        elementIndex !== -1 && currComponent.name !== undefined
+        elementIndex !== -1 && currComponent?.name !== undefined
           ? currComponent.name
           : '',
       selectedOption:
-        elementIndex !== -1 && currComponent.type !== undefined
+        elementIndex !== -1 && currComponent?.type !== undefined
           ? currComponent.type
           : 'Pick one',
       file: '',

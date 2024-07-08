@@ -18,6 +18,13 @@ export function EditStage({
   editTreatment: (treatment: TreatmentType) => void
   stageIndex: number
 }) {
+  var currComponent: StageType | undefined
+  if (stageIndex !== -1) {
+    currComponent = treatment.gameStages[stageIndex]
+  } else {
+    currComponent = undefined
+  }
+
   const {
     register,
     watch,
@@ -25,14 +32,15 @@ export function EditStage({
     setValue,
     formState: { isValid, errors },
   } = useForm<StageType>({
-    defaultValues: stageIndex !== undefined
-    ? {
-      name: treatment?.gameStages[stageIndex]?.name || '',
-      duration: treatment?.gameStages[stageIndex]?.duration || 0,
-    }
-  : {
-      name: '',
-      duration: 0,
+    defaultValues: {
+      name:
+        stageIndex !== -1 && currComponent?.name !== undefined
+          ? currComponent.name
+          : '',
+      duration:
+        stageIndex !== -1 && currComponent?.duration !== undefined
+          ? currComponent.duration
+          : undefined,
     },
     resolver: zodResolver(stageSchema),
     mode: 'onChange',
