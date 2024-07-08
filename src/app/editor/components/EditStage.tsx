@@ -49,27 +49,27 @@ export function EditStage({
   async function saveEdits() {
     try {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      //if (isValid) {
-      console.log('Form is valid')
-      if (stageIndex === -1) {
-        // create new stage
-        updatedTreatment?.gameStages?.push({
-          name: watch('name'),
-          duration: watch('duration'),
+      if (isValid) {
+        console.log('Form is valid')
+        if (stageIndex === -1) {
+          // create new stage
+          updatedTreatment?.gameStages?.push({
+            name: watch('name'),
+            duration: watch('duration'),
+            // todo: add discussion component
+            elements: [],
+          })
+        } else {
+          // modify existing stage
+          updatedTreatment.gameStages[stageIndex].name = watch('name')
+          updatedTreatment.gameStages[stageIndex].duration = watch('duration')
           // todo: add discussion component
-          elements: [],
-        })
+        }
+        console.log(typeof editTreatment)
+        editTreatment(updatedTreatment)
       } else {
-        // modify existing stage
-        updatedTreatment.gameStages[stageIndex].name = watch('name')
-        updatedTreatment.gameStages[stageIndex].duration = watch('duration')
-        // todo: add discussion component
-      }
-      console.log(typeof editTreatment)
-      editTreatment(updatedTreatment)
-      /*} else {
         throw new Error('Form is not valid')
-      }*/
+      }
     } catch (error) {
       console.error(error)
     }
@@ -146,7 +146,7 @@ export function EditStage({
         className="btn btn-primary"
         style={{ margin: '10px' }}
         onClick={saveEdits}
-        disabled={watch('duration') === 0 || watch('name') === ''}
+        disabled={watch('duration') === undefined || watch('name') === ''}
       >
         Save
       </button>

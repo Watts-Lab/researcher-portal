@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import {
   TreatmentType,
   ElementType,
-  elementBaseSchema,
+  elementSchema,
 } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
@@ -52,7 +52,7 @@ export function EditElement({
       endTime: '',
       surveyName: 'Pick one',
     },
-    resolver: zodResolver(elementBaseSchema),
+    resolver: zodResolver(elementSchema),
     mode: 'onChange',
   })
 
@@ -339,7 +339,7 @@ export function EditElement({
         style={{ margin: '10px' }}
         onClick={saveEdits}
         disabled={
-          watch('selectedOption') === 'Pick one' || watch('name') === '' // !isValid <- fix elementSchema
+          watch('selectedOption') === 'Pick one' || watch('name') === '' // || !isValid <------ commented out because of validation
         }
       >
         Save
