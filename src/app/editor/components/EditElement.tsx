@@ -130,8 +130,8 @@ export function EditElement({
           </div>
           <input
             {...register('name', { required: true })}
-            data-cy={`edit-element-name-stage${stageIndex}-element${
-              elementIndex || 'new'
+            data-cy={`edit-element-name-${stageIndex}-${
+              elementIndex === -1 ? 'new' : elementIndex
             }`}
             placeholder="Enter text here."
             className="input input-bordered w-full max-w-xs"
@@ -150,8 +150,8 @@ export function EditElement({
           </div>
           <select
             {...register('selectedOption', { required: true })}
-            data-cy={`edit-element-type-stage${stageIndex}-element${
-              elementIndex || 'new'
+            data-cy={`edit-element-type-${stageIndex}-${
+              elementIndex === -1 ? 'new' : elementIndex
             }`}
             className="select select-bordered"
             onChange={(e) => setElementOptions(e)}
@@ -177,10 +177,10 @@ export function EditElement({
             </div>
             <input
               {...register('file', { required: true })}
-              data-cy={`edit-element-file-stage${stageIndex}-element${
-                elementIndex || 'new'
+              data-cy={`edit-element-file-${stageIndex}-${
+                elementIndex === -1 ? 'new' : elementIndex
               }`}
-              placeholder="Enter number here."
+              placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
             />
             {errors.file && (
@@ -234,8 +234,8 @@ export function EditElement({
             </div>
             <input
               {...register('url', { required: true })}
-              data-cy={`edit-element-url-stage${stageIndex}-element${
-                elementIndex || 'new'
+              data-cy={`edit-element-url-${stageIndex}-${
+                elementIndex === -1 ? 'new' : elementIndex
               }`}
               placeholder="Enter text here."
               className="input input-bordered w-full max-w-xs"
@@ -285,6 +285,9 @@ export function EditElement({
             </div>
             <select
               {...register('surveyName', { required: true })}
+              data-cy={`edit-element-surveyName-${stageIndex}-${
+                elementIndex === -1 ? 'new' : elementIndex
+              }`}
               className="select select-bordered"
             >
               <option disabled>Pick one</option>
@@ -332,8 +335,8 @@ export function EditElement({
       <h1>{elementIndex !== -1 ? 'Edit Element' : 'Add Element'}</h1>
       {htmlElements}
       <button
-        data-cy={`save-edits-stage-${stageIndex}-element-${
-          elementIndex || 'new'
+        data-cy={`edit-element-save-${stageIndex}-${
+          elementIndex === -1 ? 'new' : elementIndex
         }`}
         className="btn btn-primary"
         style={{ margin: '10px' }}
@@ -347,8 +350,8 @@ export function EditElement({
 
       {elementIndex !== -1 && (
         <button
-          data-cy={`delete-element-stage-${stageIndex}-element-${
-            elementIndex || 'new'
+          data-cy={`edit-element-delete-${stageIndex}-${
+            elementIndex === -1 ? 'new' : elementIndex
           }`}
           className="btn btn-secondary"
           style={{ margin: '10px' }}

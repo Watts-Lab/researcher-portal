@@ -49,27 +49,27 @@ export function EditStage({
   async function saveEdits() {
     try {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      if (isValid) {
-        console.log('Form is valid')
-        if (stageIndex === -1) {
-          // create new stage
-          updatedTreatment?.gameStages?.push({
-            name: watch('name'),
-            duration: watch('duration'),
-            // todo: add discussion component
-            elements: [],
-          })
-        } else {
-          // modify existing stage
-          updatedTreatment.gameStages[stageIndex].name = watch('name')
-          updatedTreatment.gameStages[stageIndex].duration = watch('duration')
+      //if (isValid) {      <------- commented out because of validation
+      console.log('Form is valid')
+      if (stageIndex === -1) {
+        // create new stage
+        updatedTreatment?.gameStages?.push({
+          name: watch('name'),
+          duration: watch('duration'),
           // todo: add discussion component
-        }
-        console.log(typeof editTreatment)
-        editTreatment(updatedTreatment)
+          elements: [],
+        })
       } else {
-        throw new Error('Form is not valid')
+        // modify existing stage
+        updatedTreatment.gameStages[stageIndex].name = watch('name')
+        updatedTreatment.gameStages[stageIndex].duration = watch('duration')
+        // todo: add discussion component
       }
+      console.log(typeof editTreatment)
+      editTreatment(updatedTreatment)
+      /* } else {
+        throw new Error('Form is not valid')  <------- commented out because of validation
+      } */
     } catch (error) {
       console.error(error)
     }
@@ -100,7 +100,9 @@ export function EditStage({
           </div>
           <input
             {...register('name', { required: true })}
-            data-cy={`edit-stage-name-${stageIndex || 'new'}`}
+            data-cy={`edit-stage-name-${
+              stageIndex === -1 ? 'new' : stageIndex
+            }`}
             placeholder="Enter text here."
             className="input input-bordered w-full max-w-xs"
           />
@@ -118,7 +120,9 @@ export function EditStage({
           </div>
           <input
             {...register('duration', { required: true, valueAsNumber: true })}
-            data-cy={`edit-stage-duration-${stageIndex || 'new'}`}
+            data-cy={`edit-stage-duration-${
+              stageIndex === -1 ? 'new' : stageIndex
+            }`}
             placeholder="Enter number here."
             className="input input-bordered w-full max-w-xs"
             type="number"
@@ -142,7 +146,7 @@ export function EditStage({
       {htmlElements}
 
       <button
-        data-cy={`save-edits-stage-${stageIndex || 'new'}`}
+        data-cy={`edit-stage-save-${stageIndex === -1 ? 'new' : stageIndex}`}
         className="btn btn-primary"
         style={{ margin: '10px' }}
         onClick={saveEdits}
@@ -153,7 +157,7 @@ export function EditStage({
 
       {stageIndex !== -1 && (
         <button
-          data-cy={`delete-stage-${stageIndex || 'new'}`}
+          data-cy={`edit-stage-delete-${stageIndex}`}
           className="btn btn-secondary"
           style={{ margin: '10px' }}
           onClick={deleteStage}
