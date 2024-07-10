@@ -17,7 +17,7 @@ describe('test spec', () => {
     // create first stage
     cy.get('[data-cy="add-stage-button"]').click()
     cy.get('[data-cy="edit-stage-name-new"]').type("Stage 1")
-    cy.get('[data-cy="edit-stage-duration-new"]').type("300")
+    cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300")
     cy.get('[data-cy="edit-stage-save-new"]').click()
 
     cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
@@ -25,7 +25,7 @@ describe('test spec', () => {
     // add first element to stage 1
     cy.get('[data-cy="add-element-button-0"]').click()
     cy.get('[data-cy="edit-element-name-0-new"]').type("Element 1")
-    cy.get('[data-cy="edit-element-type-0-new"]').select("prompt")
+    cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt")
     cy.get('[data-cy="edit-element-file-0-new"]').type("file/address")
     cy.get('[data-cy="edit-element-save-0-new"]').click()
 
@@ -35,7 +35,7 @@ describe('test spec', () => {
     // add second element to stage 1
     cy.get('[data-cy="add-element-button-0"]').click()
     cy.get('[data-cy="edit-element-name-0-new"]').type("Element 2")
-    cy.get('[data-cy="edit-element-type-0-new"]').select("survey")
+    cy.get('[data-cy="edit-element-type-0-new"]').select("Survey")
     cy.get('[data-cy="edit-element-surveyName-0-new"]').select("TIPI")
     cy.get('[data-cy="edit-element-save-0-new"]').click()
 
@@ -46,7 +46,7 @@ describe('test spec', () => {
     // create second stage
     cy.get('[data-cy="add-stage-button"]').click()
     cy.get('[data-cy="edit-stage-name-new"]').type("Stage 2")
-    cy.get('[data-cy="edit-stage-duration-new"]').type("200")
+    cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200")
     cy.get('[data-cy="edit-stage-save-new"]').click()
 
     cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
@@ -55,12 +55,12 @@ describe('test spec', () => {
     // add third element to stage 2
     cy.get('[data-cy="add-element-button-1"]').click()
     cy.get('[data-cy="edit-element-name-1-new"]').type("Element 3")
-    cy.get('[data-cy="edit-element-type-1-new"]').select("trainingVideo")
-    cy.get('[data-cy="edit-element-url-1-new"]').type("youtube.com")
+    cy.get('[data-cy="edit-element-type-1-new"]').select("Training Video")
+    cy.get('[data-cy="edit-element-url-1-new"]').type("https://www.youtube.com/")
     cy.get('[data-cy="edit-element-save-1-new"]').click()
 
-    cy.get('[data-cy="element-1-0"]').contains("trainingVideo").should("be.visible")
-    cy.get('[data-cy="element-1-0"]').contains("youtube.com").should("be.visible")
+    cy.get('[data-cy="element-1-0"]').contains("video").should("be.visible")
+    cy.get('[data-cy="element-1-0"]').contains("https://www.youtube.com/").should("be.visible")
 
     // edit first element
     cy.get('[data-cy="edit-element-button-0-0"]').click()

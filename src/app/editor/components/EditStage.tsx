@@ -32,16 +32,18 @@ export function EditStage({
     setValue,
     formState: { isValid, errors },
   } = useForm<StageType>({
-    defaultValues: {
-      name:
-        stageIndex !== -1 && currComponent?.name !== undefined
-          ? currComponent.name
-          : '',
-      duration:
-        stageIndex !== -1 && currComponent?.duration !== undefined
-          ? currComponent.duration
-          : undefined,
-    },
+    defaultValues:
+      stageIndex !== undefined
+        ? {
+            name: treatment?.gameStages[stageIndex]?.name || '',
+            duration: treatment?.gameStages[stageIndex]?.duration || 0,
+            elements: treatment?.gameStages[stageIndex]?.elements || [],
+          }
+        : {
+            name: '',
+            duration: 0,
+            elements: [],
+          },
     resolver: zodResolver(stageSchema),
     mode: 'onChange',
   })
@@ -49,27 +51,27 @@ export function EditStage({
   async function saveEdits() {
     try {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      //if (isValid) {      <------- commented out because of validation
-      console.log('Form is valid')
-      if (stageIndex === -1) {
-        // create new stage
-        updatedTreatment?.gameStages?.push({
-          name: watch('name'),
-          duration: watch('duration'),
+      if (isValid) {
+        console.log('Form is valid')
+        if (stageIndex === -1) {
+          // create new stage
+          updatedTreatment?.gameStages?.push({
+            name: watch('name'),
+            duration: watch('duration'),
+            // todo: add discussion component
+            elements: [],
+          })
+        } else {
+          // modify existing stage
+          updatedTreatment.gameStages[stageIndex].name = watch('name')
+          updatedTreatment.gameStages[stageIndex].duration = watch('duration')
           // todo: add discussion component
-          elements: [],
-        })
+        }
+        console.log(typeof editTreatment)
+        editTreatment(updatedTreatment)
       } else {
-        // modify existing stage
-        updatedTreatment.gameStages[stageIndex].name = watch('name')
-        updatedTreatment.gameStages[stageIndex].duration = watch('duration')
-        // todo: add discussion component
+        throw new Error('Form is not valid')
       }
-      console.log(typeof editTreatment)
-      editTreatment(updatedTreatment)
-      /* } else {
-        throw new Error('Form is not valid')  <------- commented out because of validation
-      } */
     } catch (error) {
       console.error(error)
     }
