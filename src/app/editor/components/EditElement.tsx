@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
 import {
   TreatmentType,
   ElementType,
   elementSchema,
+  elementBaseSchema
 } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+
+
 
 export function EditElement({
   treatment,
@@ -19,32 +22,26 @@ export function EditElement({
   stageIndex: number
   elementIndex: number
 }) {
-  var currComponent: ElementType | undefined
-  if (elementIndex !== -1) {
-    currComponent = treatment.gameStages[stageIndex].elements[elementIndex]
-  } else {
-    currComponent = undefined
-  }
+  // var currComponent: ElementType | undefined
+  // if (elementIndex !== -1) {
+  //   currComponent = treatment.gameStages[stageIndex].elements[elementIndex]
+  // } else {
+  //   currComponent = undefined
+  // }
 
   const {
     register,
     watch,
     handleSubmit,
     setValue,
-    formState: { isValid, errors },
+    formState: { errors },
   } = useForm({
     defaultValues: {
-      name:
-        elementIndex !== -1 && currComponent?.name !== undefined
-          ? currComponent.name
-          : '',
-      selectedOption:
-        elementIndex !== -1 && currComponent?.type !== undefined
-          ? currComponent.type
-          : 'Pick one',
-      file: '',
+      name: treatment?.gameStages[stageIndex]?.elements[elementIndex]?.name || '',
+      selectedOption: treatment?.gameStages[stageIndex]?.elements[elementIndex]?.type || 'Pick one',
+      file: treatment?.gameStages[stageIndex]?.elements[elementIndex]?.file || '',
       url: '',
-      params: '',
+      params: [],
       onSubmit: '',
       style: '',
       buttonText: '',
@@ -56,13 +53,19 @@ export function EditElement({
     mode: 'onChange',
   })
 
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: 'params',
+  // });
+  //const isValid = false;
+ //const elementType = watch('selectedOption'); 
   function saveEdits() {
-    try {
-      const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
+    
+    const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
 
-      if (stageIndex === undefined) {
+    if (stageIndex === undefined) {
         throw new Error('No stage index given')
-      }
+    }
 
       const inputs: { name: any; type: any; [key: string]: any } = {
         name: watch('name'),
@@ -71,7 +74,7 @@ export function EditElement({
 
       if (watch('file') !== '') inputs.file = watch('file')
       if (watch('url') !== '') inputs.url = watch('url')
-      if (watch('params') !== '') inputs.params = watch('params')
+      if (JSON.stringify(watch('params')) !== JSON.stringify([])) inputs.params = []
       if (watch('onSubmit') !== '') inputs.onSubmit = watch('onSubmit')
       if (watch('style') !== '') inputs.style = watch('style')
       if (watch('buttonText') !== '') inputs.buttonText = watch('buttonText')
@@ -81,6 +84,13 @@ export function EditElement({
       if (watch('surveyName') !== 'Pick one')
         inputs.surveyName = watch('surveyName')
 
+      const result = elementSchema.safeParse(inputs);
+      if (!result.success) {
+      console.log("Error message below:");
+      console.error(result.error.errors);
+      return;
+     }
+
       if (elementIndex === -1) {
         updatedTreatment?.gameStages[stageIndex]?.elements?.push(inputs)
       } else {
@@ -88,9 +98,7 @@ export function EditElement({
       }
 
       editTreatment(updatedTreatment)
-    } catch (error) {
-      console.error(error)
-    }
+    
   }
 
   function deleteElement() {
@@ -107,22 +115,20 @@ export function EditElement({
   function setElementOptions(event: any) {
     setValue('selectedOption', event.target.value)
     setValue('file', '')
-    setValue('url', '')
-    setValue('params', '')
-    setValue('onSubmit', '')
-    setValue('style', '')
-    setValue('buttonText', '')
-    setValue('startTime', '')
-    setValue('endTime', '')
-    setValue('surveyName', 'Pick one')
+    // setValue('url', '')
+    // setValue('params', '')
+    // setValue('onSubmit', '')
+    // setValue('style', '')
+    // setValue('buttonText', '')
+    // setValue('startTime', '')
+    // setValue('endTime', '')
+    // setValue('surveyName', 'Pick one')
   }
 
   // FORM QUESTIONS
   const htmlElements = []
   htmlElements.push(
-    <form>
-      {' '}
-      {/* onSubmit={handleSubmit(saveEdits)}> */}
+    <form onSubmit={handleSubmit(saveEdits)}>
       <div>
         <label className="form-control w-full max-w-xs">
           <div className="label">
@@ -159,17 +165,17 @@ export function EditElement({
             <option disabled>Pick one</option>
             <option value="prompt">Prompt</option>
             <option value="survey">Survey</option>
-            <option value="audioElement">Audio Element</option>
-            <option value="kitchenTimer">Kitchen Timer</option>
+            <option value="audio">Audio Element</option>
+            <option value="timer">Kitchen Timer</option>
             <option value="qualtrics">Qualtrics</option>
             <option value="separator">Separator</option>
             <option value="submitButton">Submit Button</option>
-            <option value="trainingVideo">Training Video</option>
+            <option value="video">Training Video</option>
           </select>
         </label>
       </div>
       {(watch('selectedOption') === 'prompt' ||
-        watch('selectedOption') === 'audioElement') && (
+        watch('selectedOption') === 'audio') && ( 
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -180,7 +186,7 @@ export function EditElement({
               data-cy={`edit-element-file-stage${stageIndex}-element${
                 elementIndex || 'new'
               }`}
-              placeholder="Enter number here."
+              placeholder="Enter file address here."
               className="input input-bordered w-full max-w-xs"
             />
             {errors.file && (
@@ -191,7 +197,7 @@ export function EditElement({
           </label>
         </div>
       )}
-      {watch('selectedOption') === 'kitchenTimer' && (
+      {watch('selectedOption') === 'timer' && (
         <div>
           <div>
             <label className="form-control w-full max-w-xs">
@@ -226,7 +232,7 @@ export function EditElement({
         </div>
       )}
       {(watch('selectedOption') === 'qualtrics' ||
-        watch('selectedOption') === 'trainingVideo') && (
+        watch('selectedOption') === 'video') && (
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -250,7 +256,7 @@ export function EditElement({
               <span className="label-text">{'Parameters'}</span>
             </div>
             <input
-              {...register('params', { required: true })}
+              {...register('params', { required: false })}
               data-cy={`edit-element-params-stage${stageIndex}-element${
                 elementIndex || 'new'
               }`}
@@ -261,21 +267,27 @@ export function EditElement({
         </div>
       )}
       {watch('selectedOption') === 'separator' && (
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">{'Style'}</span>
-            </div>
-            <input
-              {...register('style', { required: true })}
-              data-cy={`edit-element-style-stage${stageIndex}-element${
-                elementIndex || 'new'
-              }`}
-              placeholder="Enter text here."
-              className="input input-bordered w-full max-w-xs"
-            />
-          </label>
-        </div>
+      <div>
+      <label className="form-control w-full max-w-xs">
+      <div className="label">
+        <span className="label-text">{'Style'}</span>
+      </div>
+      <select
+        {...register('style', { required: true })}
+        data-cy={`edit-element-style-stage${stageIndex}-element${elementIndex || 'new'}`}
+        className="select select-bordered"
+      >
+        <option value="thin">Thin</option>
+        <option value="thick">Thick</option>
+        <option value="regular">Regular</option>
+      </select>
+      {errors.style && (
+        <span className="text-red-500">
+          {typeof errors.style.message === 'string' && errors.style.message}
+        </span>
+      )}
+      </label>
+      </div>
       )}
       {watch('selectedOption') === 'survey' && (
         <div>
@@ -338,9 +350,7 @@ export function EditElement({
         className="btn btn-primary"
         style={{ margin: '10px' }}
         onClick={saveEdits}
-        disabled={
-          watch('selectedOption') === 'Pick one' || watch('name') === '' // || !isValid <------ commented out because of validation
-        }
+        disabled={watch('name') === ''}
       >
         Save
       </button>

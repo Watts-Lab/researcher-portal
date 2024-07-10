@@ -32,32 +32,41 @@ export function EditStage({
     setValue,
     formState: { isValid, errors },
   } = useForm<StageType>({
-    defaultValues: {
-      name:
-        stageIndex !== -1 && currComponent?.name !== undefined
-          ? currComponent.name
-          : '',
-      duration:
-        stageIndex !== -1 && currComponent?.duration !== undefined
-          ? currComponent.duration
-          : undefined,
-    },
+    defaultValues: //{
+    //   name:
+    //     stageIndex !== -1 && currComponent?.name !== undefined
+    //       ? currComponent.name
+    //       : '',
+    //   duration:
+    //     stageIndex !== -1 && currComponent?.duration !== undefined
+    //       ? currComponent.duration
+    //       : undefined,
+    // },
+    stageIndex !== undefined
+      ? {
+          name: treatment?.gameStages[stageIndex]?.name || '',
+          duration: treatment?.gameStages[stageIndex]?.duration || 0,
+          elements: treatment?.gameStages[stageIndex]?.elements || [],
+        }
+      : {
+          name: '',
+          duration: 0,
+          elements: [],
+        },
     resolver: zodResolver(stageSchema),
     mode: 'onChange',
     });
 
-  //console.log(isValid);
+  
   async function saveEdits() {
+  console.log(watch('name'));
+  console.log(watch('duration'));
     try {
-      console.log("inside saveEdits",isValid)
+      //console.log("inside saveEdits",isValid)
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
       if (isValid) {
         console.log('Form is valid')
-<<<<<<< HEAD
-        if (stageIndex === undefined) {
-=======
         if (stageIndex === -1) {
->>>>>>> eff85369733f57f5aadef409cf3f3d36c5d2ec1d
           // create new stage
           updatedTreatment?.gameStages?.push({
             name: watch('name'),
@@ -74,7 +83,7 @@ export function EditStage({
         console.log(typeof editTreatment)
         editTreatment(updatedTreatment)
       } else {
-        throw new Error('Form is not valid')
+       throw new Error('Form is not valid')
       }
     } catch (error) {
       console.error(error)
@@ -146,11 +155,7 @@ export function EditStage({
         className="btn btn-primary"
         style={{ margin: '10px' }}
         onClick={saveEdits}
-<<<<<<< HEAD
-        disabled={watch('duration') === 0 || watch('name') === '' || !isValid}
-=======
         disabled={watch('duration') === undefined || watch('name') === ''}
->>>>>>> eff85369733f57f5aadef409cf3f3d36c5d2ec1d
       >
         Save
       </button>
