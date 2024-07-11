@@ -1,5 +1,5 @@
-import React from "react";
-import dynamic from "next/dynamic.js";
+import React from 'react'
+import dynamic from 'next/dynamic.js'
 
 // import { Element } from "./../../../.././deliberation-empirica/client/src/elements/Element.jsx";
 // import {
@@ -11,15 +11,15 @@ import dynamic from "next/dynamic.js";
 const Element = dynamic(
   () =>
     import(
-      "./../../../.././deliberation-empirica/client/src/elements/Element.jsx"
+      './../../../.././deliberation-empirica/client/src/elements/Element.jsx'
     ).then((mod) => mod.Element) as any,
   {
     ssr: false,
   }
-);
+)
 
 interface DelibElement {
-  element: any; // Replace 'any' with the appropriate type for 'element'
+  element: any // Replace 'any' with the appropriate type for 'element'
 }
 
 export default function RenderDelibElement(
@@ -33,12 +33,12 @@ export default function RenderDelibElement(
   // TODO: Set necessary stuff in player, game, and stage
 
   return (
-    <div>
+    <div className=" max-w-100 max-h-100">
       <Element
         // @ts-ignore
         element={element.element as any}
-        onSubmit={() => console.log("submit")}
+        onSubmit={() => console.log('submit')}
       />
     </div>
-  );
+  )
 }
