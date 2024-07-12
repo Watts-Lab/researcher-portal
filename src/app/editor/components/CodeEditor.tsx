@@ -102,7 +102,7 @@ export default function CodeEditor() {
     } else {
       setCode(value)
     }
-  }, [])
+  }, [defaultTreatment])
 
   function handleChange(evn: any) {
     let entry = evn.target.value

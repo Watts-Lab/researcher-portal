@@ -69,12 +69,17 @@ export function EditStage({
     // if (watch('discussion') !== null) inputs.discussion = watch('discussion')
     // if (watch('desc') !== "") inputs.desc = watch('desc')
     // if (watch('elements') !== null) inputs.elements = watch('elements')
-        
-    const result = stageSchema.safeParse( { ...inputs, elements: [] })
+    console.log("stageIndex",stageIndex);
+    const result = stageSchema.safeParse(inputs)
     if (!result.success) {
-      console.log("Error message below:");
-      console.error(result.error.errors);
-      return;
+      const parsedError = result.error.errors;
+      if (parsedError[0].message === 'Array must contain at least 1 element(s)' && stageIndex === -1) {
+        // do nothing --> ignore the error 
+      } else {
+        console.error("Error described below:");
+        console.error(result.error.errors);
+        return;
+      }
     }
     
     if (stageIndex === -1) {
