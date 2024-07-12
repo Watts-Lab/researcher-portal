@@ -66,7 +66,6 @@ export default function Timeline({
                 duration={stage.duration}
                 scale={scale}
                 treatment={treatment}
-                setTreatment={setTreatment}
                 editTreatment={editTreatment}
                 sequence={'gameStage'}
                 stageIndex={index}

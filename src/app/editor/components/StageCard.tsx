@@ -26,7 +26,6 @@ export function StageCard({
   duration: DurationType
   scale: number
   treatment: any
-  setTreatment: any
   editTreatment: (treatment: TreatmentType) => void
   sequence: string
   stageIndex: number
