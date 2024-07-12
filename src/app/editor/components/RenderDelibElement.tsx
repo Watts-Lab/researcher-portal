@@ -33,7 +33,7 @@ export default function RenderDelibElement(
   // TODO: Set necessary stuff in player, game, and stage
 
   return (
-    <div className=" max-w-100 max-h-100">
+    <div className=" max-w-100 max-h-100 ">
       <Element
         // @ts-ignore
         element={element.element as any}

@@ -20,13 +20,6 @@ export function EditElement({
   stageIndex: number
   elementIndex: number
 }) {
-  /*var currComponent: ElementType | undefined
-  if (elementIndex !== -1) {
-    currComponent = treatment.gameStages[stageIndex].elements[elementIndex]
-  } else {
-    currComponent = undefined
-  }*/
-
   const {
     register,
     watch,
@@ -351,7 +344,7 @@ export function EditElement({
         className="btn btn-primary"
         style={{ margin: '10px' }}
         onClick={saveEdits}
-        disabled={watch('name') === ''}
+        disabled={watch('name') === ''} // || watch('selectedOption') === 'Pick one' (pick one isnt in element type?)
       >
         Save
       </button>

@@ -5,6 +5,7 @@ import {
   TreatmentType,
   stageSchema,
   StageType,
+  ElementType,
 } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
@@ -18,63 +19,68 @@ export function EditStage({
   editTreatment: (treatment: TreatmentType) => void
   stageIndex: number
 }) {
-  var currComponent: StageType | undefined
-  if (stageIndex !== -1) {
-    currComponent = treatment.gameStages[stageIndex]
-  } else {
-    currComponent = undefined
-  }
-
   const {
     register,
     watch,
     handleSubmit,
     setValue,
-    formState: { isValid, errors },
+    formState: { errors },
   } = useForm<StageType>({
-    defaultValues:
-      stageIndex !== undefined
-        ? {
-            name: treatment?.gameStages[stageIndex]?.name || '',
-            duration: treatment?.gameStages[stageIndex]?.duration || 0,
-            elements: treatment?.gameStages[stageIndex]?.elements || [],
-          }
-        : {
-            name: '',
-            duration: 0,
-            elements: [],
-          },
+    defaultValues: {
+      name: treatment?.gameStages[stageIndex]?.name || '',
+      duration: treatment?.gameStages[stageIndex]?.duration || 0,
+      elements: treatment?.gameStages[stageIndex]?.elements || [],
+      // desc: "",
+      // discussion: {
+      //   chatType: "text",
+      //   showNickname: true,
+      //   showTitle: false,
+      // },
+    },
     resolver: zodResolver(stageSchema),
     mode: 'onChange',
   })
 
   async function saveEdits() {
-    try {
-      const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      if (isValid) {
-        console.log('Form is valid')
-        if (stageIndex === -1) {
-          // create new stage
-          updatedTreatment?.gameStages?.push({
-            name: watch('name'),
-            duration: watch('duration'),
-            // todo: add discussion component
-            elements: [],
-          })
-        } else {
-          // modify existing stage
-          updatedTreatment.gameStages[stageIndex].name = watch('name')
-          updatedTreatment.gameStages[stageIndex].duration = watch('duration')
-          // todo: add discussion component
-        }
-        console.log(typeof editTreatment)
-        editTreatment(updatedTreatment)
-      } else {
-        throw new Error('Form is not valid')
-      }
-    } catch (error) {
-      console.error(error)
+    const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
+
+    const inputs: { name: any; duration: any; elements: ElementType[] } = {
+      name: watch('name'),
+      duration: watch('duration'),
+      elements: [],
+      // discussion: undefined,
+      // desc: watch('desc'),
     }
+
+    // if (watch('discussion') !== null) inputs.discussion = watch('discussion')
+    // if (watch('desc') !== "") inputs.desc = watch('desc')
+    // if (watch('elements') !== null) inputs.elements = watch('elements')
+
+    const result = stageSchema.safeParse(inputs)
+    if (!result.success) {
+      const parsedError = result.error.errors
+      if (
+        parsedError[0].message === 'Array must contain at least 1 element(s)' &&
+        stageIndex === -1
+      ) {
+        // do nothing --> ignore the error
+      } else {
+        console.error('Error described below:')
+        console.error(result.error.errors)
+        return
+      }
+    }
+
+    if (stageIndex === -1) {
+      // create new stage
+      updatedTreatment?.gameStages?.push(inputs)
+    } else {
+      // modify existing stage
+      updatedTreatment.gameStages[stageIndex].name = watch('name')
+      updatedTreatment.gameStages[stageIndex].duration = watch('duration')
+      // todo: add discussion component
+    }
+    editTreatment(updatedTreatment)
   }
 
   function deleteStage() {

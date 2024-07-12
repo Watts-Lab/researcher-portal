@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import TimePicker from "./TimePicker";
-// import { Element } from "./../../../.././deliberation-empirica/client/src/elements/Element.jsx";
-import RenderDelibElement from "./RenderDelibElement";
+import React, { useEffect, useState } from 'react'
+import TimePicker from './TimePicker'
+import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
+import RenderDelibElement from './RenderDelibElement'
 export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
-  const [time, setTime] = useState(0);
-  const elements = renderPanelStage.elements;
-  const stageName = renderPanelStage.title;
-  const stageDuration = renderPanelStage.duration;
+  const [time, setTime] = useState(0)
+  const elements = renderPanelStage.elements
+  const stageName = renderPanelStage.title
+  const stageDuration = renderPanelStage.duration
 
   return (
     <div className="flex">
@@ -19,14 +19,14 @@ export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
         <div>
           <h1>Preview of {stageName} </h1>
           <TimePicker
-            value={time + " s"}
+            value={time + ' s'}
             setValue={setTime}
             maxValue={stageDuration}
           />
         </div>
       )}
       {stageName && <div className="divider divider-horizontal"></div>}
-      <div>
+      {/* <div>
         {elements !== undefined &&
           elements.map(
             (element: any, index: any) =>
@@ -38,7 +38,11 @@ export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
                 </div>
               )
           )}
+      </div> */}
+      <div className="page-display-container">
+        {stageName && <Stage />}{' '}
+        {/* Replace custom rendering logic with Stage component */}
       </div>
     </div>
-  );
+  )
 }

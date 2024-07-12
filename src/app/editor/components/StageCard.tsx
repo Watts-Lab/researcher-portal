@@ -16,7 +16,6 @@ export function StageCard({
   duration,
   scale,
   treatment,
-  setTreatment, //Todo: get rid of this entirely
   editTreatment,
   sequence,
   stageIndex,
