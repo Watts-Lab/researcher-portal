@@ -40,6 +40,7 @@ export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
           )}
       </div>
 
+      {/* Currently causes build to fail */}
       {/*
       <div className="page-display-container">
         {stageName && <Stage />}{' '}

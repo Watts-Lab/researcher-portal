@@ -47,7 +47,7 @@ export function EditStage({
     const inputs: { name: any; duration: any; elements: ElementType[] } = {
       name: watch('name'),
       duration: watch('duration'),
-      elements: [],
+      elements: treatment?.gameStages[stageIndex]?.elements || [],
       // discussion: undefined,
       // desc: watch('desc'),
     }
