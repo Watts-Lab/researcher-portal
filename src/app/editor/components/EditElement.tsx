@@ -22,13 +22,6 @@ export function EditElement({
   stageIndex: number
   elementIndex: number
 }) {
-  // var currComponent: ElementType | undefined
-  // if (elementIndex !== -1) {
-  //   currComponent = treatment.gameStages[stageIndex].elements[elementIndex]
-  // } else {
-  //   currComponent = undefined
-  // }
-
   const {
     register,
     watch,
@@ -36,10 +29,24 @@ export function EditElement({
     setValue,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      name: treatment?.gameStages[stageIndex]?.elements[elementIndex]?.name || '',
-      selectedOption: treatment?.gameStages[stageIndex]?.elements[elementIndex]?.type || 'Pick one',
-      file: treatment?.gameStages[stageIndex]?.elements[elementIndex]?.file || '',
+    defaultValues: 
+    elementIndex !== undefined 
+    ?{
+      name: treatment?.gameStages[stageIndex]?.elements?.[elementIndex]?.name || '',  // can use the '?.' optional chaining operator to preclude index selection if the array is undefined
+      selectedOption: treatment?.gameStages[stageIndex]?.elements?.[elementIndex]?.type || 'Pick one',
+      file: treatment?.gameStages[stageIndex]?.elements?.[elementIndex]?.file || '',
+      url: '',
+      params: [],
+      onSubmit: '',
+      style: '',
+      buttonText: '',
+      startTime: '',
+      endTime: '',
+      surveyName: 'Pick one',
+    } : {
+      name: '', 
+      selectedOption: 'Pick one',
+      file: '',
       url: '',
       params: [],
       onSubmit: '',
@@ -350,7 +357,7 @@ export function EditElement({
         className="btn btn-primary"
         style={{ margin: '10px' }}
         onClick={saveEdits}
-        disabled={watch('name') === ''}
+        disabled={watch('selectedOption') === 'Pick One' || watch('name') === ''}
       >
         Save
       </button>
