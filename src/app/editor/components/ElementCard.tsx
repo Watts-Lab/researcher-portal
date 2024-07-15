@@ -1,6 +1,7 @@
-import React from "react";
-import { Element } from "./Element";
-import AddPopup from "./AddPopup";
+import React, { useState } from 'react'
+import { Modal } from './Modal'
+import { EditElement } from './EditElement'
+import { TreatmentType } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 
 export function ElementCard({
   element,
@@ -10,64 +11,58 @@ export function ElementCard({
   stageIndex,
   elementIndex,
   treatment,
-  setTreatment,
+  editTreatment,
   elementOptions,
 }: {
-  element: any;
-  scale: number;
-  stageDuration: number;
-  onSubmit: any;
-  stageIndex: number;
-  elementIndex: number;
-  treatment: any;
-  setTreatment: any;
-  elementOptions: any;
+  element: any
+  scale: number
+  stageDuration: number
+  onSubmit: any
+  stageIndex: number
+  elementIndex: number
+  treatment: any
+  editTreatment: (treatment: TreatmentType) => void
+  elementOptions: any
 }) {
-  const startTime = element.displayTime || 0;
-  const endTime = element.hideTime || stageDuration;
+  const startTime = element.displayTime || 0
+  const endTime = element.hideTime || stageDuration
+  const [modalOpen, setModalOpen] = useState(false)
 
+  const editModalId = `modal-stage${stageIndex}-element-${elementIndex}`
   return (
     <div
       className="card bg-base-200 shadow-md min-h-12 min-w-[10px] justify-center px-5"
       style={{ left: startTime * scale, width: scale * (endTime - startTime) }}
-      data-cy={"element-" + stageIndex + "-" + elementIndex}
+      data-cy={'element-' + stageIndex + '-' + elementIndex}
     >
-      <Element element={element} />
+      <div>
+        {Object.keys(element).map((key) => (
+          <p key={key}>
+            {key}: {element[key]}
+          </p>
+        ))}
+      </div>
       <button
-        data-cy={"edit-element-button-" + stageIndex + "-" + elementIndex}
+        data-cy={'edit-element-button-' + stageIndex + '-' + elementIndex}
         className="btn h-5 flex bg-gray-300"
-        style={{ minHeight: "unset" }}
+        style={{ minHeight: 'unset' }}
         onClick={() =>
           (
-            document.getElementById(
-              "stage" + stageIndex + "element" + elementIndex
-            ) as HTMLDialogElement | null
+            document.getElementById(editModalId) as HTMLDialogElement | null
           )?.showModal()
         }
       >
         Edit
       </button>
-      <dialog
-        id={"stage" + stageIndex + "element" + elementIndex}
-        className="modal"
-      >
-        <div className="modal-box">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-          <AddPopup
-            type="editElement"
-            questions={elementOptions}
-            treatment={treatment}
-            setTreatment={setTreatment}
-            stageIndex={stageIndex}
-            elementIndex={elementIndex}
-          />
-        </div>
-      </dialog>
+
+      <Modal id={editModalId}>
+        <EditElement
+          treatment={treatment}
+          editTreatment={editTreatment}
+          stageIndex={stageIndex}
+          elementIndex={elementIndex}
+        />
+      </Modal>
     </div>
-  );
+  )
 }

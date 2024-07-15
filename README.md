@@ -1,11 +1,14 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## To Run the App 
+## To Run the App
+
 ```bash
-npm install next@13 react@latest react-dom@latest
+npm install
+git submodule update --init --recursive
 npm run dev
 ```
-*(Next 14 currently does not support Cypress testing.)*
+
+_(Next 14 currently does not support Cypress testing.)_
 
 Navigate to `localhost:3000/editor` to use the treatment editor.
 
