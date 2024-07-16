@@ -1,32 +1,59 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import dynamic from 'next/dynamic.js'
 import TimePicker from './TimePicker'
-//import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
+import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
-export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
+
+import { StageContext } from '../../../.././@empirica-mocks/core/stageContext'
+
+{
+  /*const Stage = dynamic(
+  () =>
+    import('./../../../.././deliberation-empirica/client/src/Stage.jsx').then(
+      (mod) => mod.Stage
+    ) as any,
+  {
+    ssr: false,
+  }
+)*/
+}
+
+export function RenderPanel() {
   const [time, setTime] = useState(0)
-  const elements = renderPanelStage.elements
-  const stageName = renderPanelStage.title
-  const stageDuration = renderPanelStage.duration
+
+  const { currentStageIndex, setCurrentStageIndex, elapsed, setElapsed } =
+    useContext(StageContext)
+  console.log('RenderPanel.tsx current stage index', currentStageIndex)
+
+  // const currentStageIndex = Number(localStorage.getItem('currentStageIndex'))
+
+  //const treatment =
+  //const currentStage = treatment?.gameStages.?[currentStageIndex]
+
+  //console.log('Current stage', localStorage.getItem('currentStageIndex'))
 
   return (
     <div className="flex">
-      {!stageName && (
+      {currentStageIndex === 'default' && (
         <h1>
           Click on a stage card to preview the stage from a participant view.
         </h1>
       )}
-      {stageName && (
+      {currentStageIndex !== 'default' && (
         <div>
-          <h1>Preview of {stageName} </h1>
+          <h1>Preview of stage {currentStageIndex} </h1>
           <TimePicker
             value={time + ' s'}
-            setValue={setTime}
-            maxValue={stageDuration}
+            setValue={setElapsed}
+            maxValue={300}
           />
+          {/* need to retrieve stage duration from treatment */}
         </div>
       )}
-      {stageName && <div className="divider divider-horizontal"></div>}
-      <div>
+      {currentStageIndex !== 'default' && (
+        <div className="divider divider-horizontal"></div>
+      )}
+      {/* <div>
         {elements !== undefined &&
           elements.map(
             (element: any, index: any) =>
@@ -38,15 +65,13 @@ export function RenderPanel({ renderPanelStage }: { renderPanelStage: any }) {
                 </div>
               )
           )}
-      </div>
+      </div> */}
 
-      {/* Currently causes build to fail */}
-      {/*
+      {/* Currently causes build to fail*/}
+
       <div className="page-display-container">
-        {stageName && <Stage />}{' '}
-        Replace custom rendering logic with Stage component
+        {currentStageIndex !== 'default' ?? <Stage />}
       </div>
-      */}
     </div>
   )
 }
