@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Modal } from './Modal'
 import { EditElement } from './EditElement'
-import { TreatmentType } from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 
 export function ElementCard({
   element,

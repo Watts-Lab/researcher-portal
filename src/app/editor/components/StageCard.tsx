@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useContext } from 'react'
 import { ElementCard } from './ElementCard'
-import { cn } from '@/app/components/utils'
+import { cn } from '@/components/utils'
 import { Modal } from './Modal'
 import { EditStage } from './EditStage'
 import { EditElement } from './EditElement'
@@ -12,7 +12,7 @@ import {
 import { setCurrentStageIndex } from './utils'
 import { useStage } from '../../../../@empirica-mocks/core/mocks'
 
-import { StageContext } from '../../../.././@empirica-mocks/core/stageContext'
+import { StageContext } from '../stageContext.jsx'
 
 export function StageCard({
   title,

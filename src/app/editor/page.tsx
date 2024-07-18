@@ -6,7 +6,7 @@ import CodeEditor from './components/CodeEditor'
 import { RenderPanel } from './components/RenderPanel'
 import Timeline from './components/Timeline'
 
-import { StageProvider } from '../../../@empirica-mocks/core/stageContext.js'
+import { StageProvider } from './stageContext.jsx'
 
 const defaultStageContext = {
   currentStageIndex: undefined,

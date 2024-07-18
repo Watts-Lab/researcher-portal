@@ -1,5 +1,8 @@
 import { useContext } from 'react';
-import { StageContext } from './stageContext';
+// import { StageContext } from '@/editor/stageContext';
+
+// file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
+import { StageContext } from "../../../../../src/app/editor/stageContext"
 
 export function usePlayer() {
   // This is a mock function that returns a mock player object

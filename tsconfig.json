@@ -18,10 +18,11 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/api/*": ["./src/app/api/*"],
-      "@deliberation-empirica": ["./deliberation-empirica"]
+      "@/*": ["src/app/*"],
+      "@/api/*": ["src/app/api/*"],
+      "@deliberation-empirica": ["deliberation-empirica"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
