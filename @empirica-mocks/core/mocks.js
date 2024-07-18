@@ -1,8 +1,10 @@
 import { useContext } from 'react';
-// import { StageContext } from '@/editor/stageContext';
+// import { StageContext } from '@/editor/stageContext'; # don't know why this doesn't work
 
 // file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
 import { StageContext } from "../../../../../src/app/editor/stageContext"
+
+
 
 export function usePlayer() {
   // This is a mock function that returns a mock player object
@@ -56,16 +58,24 @@ export function useStageTimer() {
 export function useStage() {
   // This is a mock function that returns a mock stage object
 
-  const stage1 = useContext(StageContext);
-  console.log("useStageMock", stage1)
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+  } = useContext(StageContext)
+  // const stage1 = useContext(StageContext);
+  // console.log("useStageMock", stage1)
 
   const stage = {
     isMock: true,
     get: function (varName) {
-      const currentStageIndex = int(localStorage.getItem("currentStageIndex"));
+      //const currentStageIndex = int(localStorage.getItem("currentStageIndex"));
       
-      const treatmentString = localStorage.getItem("treatment");
-      const treatment = JSON.parse(treatmentString);
+      //const treatmentString = localStorage.getItem("treatment");
+      //const treatment = JSON.parse(treatmentString);
       if (varName === "elements") {
         return treatment.gameStages[currentStageIndex]?.elements
       } else if (varName === "discussion") {

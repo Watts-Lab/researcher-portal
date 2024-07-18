@@ -1,3 +1,4 @@
+//import { set } from 'node_modules/cypress/types/lodash';
 import { createContext, useState } from 'react';
 
 // export const StageContext = createContext({
@@ -10,12 +11,15 @@ const StageContext = createContext();
 const StageProvider = ({ children }) => {
   const [currentStageIndex, setCurrentStageIndex] = useState('default');
   const [elapsed, setElapsed] = useState('default');
+  const [treatment, setTreatment] = useState(null);
 
   const contextValue = {
     currentStageIndex,
     setCurrentStageIndex,
     elapsed,
-    setElapsed
+    setElapsed,
+    treatment,
+    setTreatment
   };
 
   return (

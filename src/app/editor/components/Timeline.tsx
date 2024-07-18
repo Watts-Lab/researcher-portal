@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { parse } from 'yaml'
 import { StageCard } from './StageCard'
 import TimelineTools from './TimelineTools'
@@ -8,6 +8,7 @@ import { stringify } from 'yaml'
 import { Modal } from './Modal'
 import { EditStage } from './EditStage'
 import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { StageContext } from '@/editor/stageContext'
 
 export default function Timeline({
   setRenderPanelStage,
@@ -15,7 +16,15 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   const [scale, setScale] = useState(1) // pixels per second
-  const [treatment, setTreatment] = useState<any | null>(null)
+  //const [treatment, setTreatment] = useState<any | null>(null)
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+  } = useContext(StageContext)
 
   function editTreatment(newTreatment: TreatmentType) {
     setTreatment(newTreatment)
@@ -31,7 +40,7 @@ export default function Timeline({
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
     }
-  }, [])
+  }, [setTreatment])
 
   if (!treatment) {
     return null

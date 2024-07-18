@@ -21,9 +21,16 @@ import { StageContext } from '@/editor/stageContext'
 export function RenderPanel() {
   const [time, setTime] = useState(0)
 
-  const { currentStageIndex, setCurrentStageIndex, elapsed, setElapsed } =
-    useContext(StageContext)
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+  } = useContext(StageContext)
   console.log('RenderPanel.tsx current stage index', currentStageIndex)
+  console.log('Current Treatment', treatment)
 
   // const currentStageIndex = Number(localStorage.getItem('currentStageIndex'))
 
@@ -45,7 +52,7 @@ export function RenderPanel() {
           <TimePicker
             value={time + ' s'}
             setValue={setElapsed}
-            maxValue={300}
+            maxValue={treatment.gameStages[currentStageIndex]?.duration ?? 0}
           />
           {/* need to retrieve stage duration from treatment */}
         </div>
@@ -67,10 +74,8 @@ export function RenderPanel() {
           )}
       </div> */}
 
-      {/* Currently causes build to fail*/}
-
       <div className="page-display-container">
-        {currentStageIndex !== 'default' ?? <Stage />}
+        {currentStageIndex !== 'default' && <Stage />}
       </div>
     </div>
   )
