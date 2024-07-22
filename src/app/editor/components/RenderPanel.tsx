@@ -38,7 +38,7 @@ export function RenderPanel() {
   //console.log('Current stage', localStorage.getItem('currentStageIndex'))
 
   return (
-    <div className="flex h-full w-full" data-cy="render-panel">
+    <div className="flex" data-cy="render-panel">
       {currentStageIndex === 'default' && (
         <h1>
           Click on a stage card to preview the stage from a participant view.
@@ -72,7 +72,7 @@ export function RenderPanel() {
           )}
       </div> */}
 
-      <div className="page-display-container max-w-full overflow-auto">
+      <div className="w-full">
         {currentStageIndex !== 'default' && <Stage />}
       </div>
     </div>
