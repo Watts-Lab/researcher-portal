@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react'
 import dynamic from 'next/dynamic.js'
 import TimePicker from './TimePicker'
-import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
+//import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
 
 import { StageContext } from '@/editor/stageContext'
 
-{
-  /*const Stage = dynamic(
+
+  const Stage = dynamic(
   () =>
     import('./../../../.././deliberation-empirica/client/src/Stage.jsx').then(
       (mod) => mod.Stage
@@ -15,8 +15,8 @@ import { StageContext } from '@/editor/stageContext'
   {
     ssr: false,
   }
-)*/
-}
+)
+
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
