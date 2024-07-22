@@ -6,8 +6,7 @@ import RenderDelibElement from './RenderDelibElement'
 
 import { StageContext } from '@/editor/stageContext'
 
-
-  const Stage = dynamic(
+const Stage = dynamic(
   () =>
     import('./../../../.././deliberation-empirica/client/src/Stage.jsx').then(
       (mod) => mod.Stage
@@ -16,7 +15,6 @@ import { StageContext } from '@/editor/stageContext'
     ssr: false,
   }
 )
-
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
@@ -40,14 +38,14 @@ export function RenderPanel() {
   //console.log('Current stage', localStorage.getItem('currentStageIndex'))
 
   return (
-    <div className="flex">
+    <div className="flex h-full w-full" data-cy="render-panel">
       {currentStageIndex === 'default' && (
         <h1>
           Click on a stage card to preview the stage from a participant view.
         </h1>
       )}
       {currentStageIndex !== 'default' && (
-        <div>
+        <div className="min-w-fit">
           <h1>Preview of stage {currentStageIndex} </h1>
           <TimePicker
             value={time + ' s'}
@@ -74,7 +72,7 @@ export function RenderPanel() {
           )}
       </div> */}
 
-      <div className="page-display-container">
+      <div className="page-display-container max-w-full overflow-auto">
         {currentStageIndex !== 'default' && <Stage />}
       </div>
     </div>

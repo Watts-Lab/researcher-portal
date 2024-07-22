@@ -42,7 +42,7 @@ export default function EditorPage({}) {
         >
           <div
             id="upperLeft"
-            className="overflow-auto h-full w-full"
+            className="overflow-auto"
             style={{ minHeight: 200, height: upperLeftHeight }}
           >
             <RenderPanel />

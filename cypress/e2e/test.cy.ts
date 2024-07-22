@@ -43,6 +43,12 @@ describe('test spec', () => {
     cy.get('[data-cy="element-0-1"]').contains("survey").should("be.visible")
     cy.get('[data-cy="element-0-1"]').contains("TIPI").should("be.visible")
 
+    // view first stage in render panel
+    cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
+    cy.get('[data-cy="stage-0"]').click(0, 0)
+    cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
+    cy.get('[data-cy="render-panel"]').contains("Here are a number of personality traits").should("be.visible")
+
     // create second stage
     cy.get('[data-cy="add-stage-button"]').click()
     cy.get('[data-cy="edit-stage-name-new"]').type("Stage 2")
@@ -61,6 +67,11 @@ describe('test spec', () => {
 
     cy.get('[data-cy="element-1-0"]').contains("video").should("be.visible")
     cy.get('[data-cy="element-1-0"]').contains("https://www.youtube.com/").should("be.visible")
+
+    // view second stage in render panel
+    cy.get('[data-cy="stage-1"]').click(0, 0)
+    cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
+    cy.get('[data-cy="render-panel"]').contains("Click to continue the video").should("be.visible")
 
     // edit first element
     cy.get('[data-cy="edit-element-button-0-0"]').click()
