@@ -1,3 +1,5 @@
+import { isFunctionDeclaration } from "typescript";
+
 export function usePlayer() {
   // This is a mock function that returns a mock player object
   console.log("loaded usePlayer() from react-mocks.js");
@@ -72,4 +74,22 @@ export function usePlayers() {
   };
 
   return players;
+}
+
+// Mock implementation of useGlobal
+export function useGlobal() {
+  // This is a mock function that returns a mock global object
+  const global = {
+    isMock: true,
+    recruitingBatchConfig: {
+      cdn: 'local',
+    },
+    resourceLookup: {
+      cdn: 'local',
+    },
+    get: (varName) => {
+      return this[varName];
+    }
+  };
+  return global;
 }
