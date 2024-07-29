@@ -3,7 +3,8 @@ import dynamic from 'next/dynamic.js'
 import TimePicker from './TimePicker'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
-
+import DeliberationWrapper from './DeliberationWrapper'
+import 'virtual:windi.css'; // Ensure WindiCSS is imported
 import { StageContext } from '@/editor/stageContext'
 
 
@@ -75,8 +76,15 @@ export function RenderPanel() {
       </div> */}
 
       <div className="page-display-container">
-        {currentStageIndex !== 'default' && <Stage />}
+        {currentStageIndex !== 'default' && 
+        (<div> 
+          <Stage />
+          <DeliberationWrapper />
+        </div>
+        )
+      }
       </div>
+      
     </div>
   )
 }
