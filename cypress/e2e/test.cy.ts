@@ -26,7 +26,7 @@ describe('test spec', () => {
     cy.get('[data-cy="add-element-button-0"]').click()
     cy.get('[data-cy="edit-element-name-0-new"]').type("Element 1")
     cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt")
-    cy.get('[data-cy="edit-element-file-0-new"]').type("file/address")
+    cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md")
     cy.get('[data-cy="edit-element-save-0-new"]').click()
 
     cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
@@ -76,7 +76,7 @@ describe('test spec', () => {
     // edit first element
     cy.get('[data-cy="edit-element-button-0-0"]').click()
     cy.get('[data-cy="edit-element-name-0-0"]').should("have.value", "Element 1").should("be.visible").type(" Edited")
-    cy.get('[data-cy="edit-element-file-0-0"]').type("edited/file/address")
+    cy.get('[data-cy="edit-element-file-0-0"]').type("projects/example/discussionInstructions.md")
     cy.get('[data-cy="edit-element-save-0-0"]').click()
 
     cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
