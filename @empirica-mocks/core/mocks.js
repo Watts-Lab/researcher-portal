@@ -79,6 +79,7 @@ export function usePlayers() {
 // Mock implementation of useGlobal
 export function useGlobal() {
   // This is a mock function that returns a mock global object
+  //console.log("useGlobal")
   const global = {
     isMock: true,
     recruitingBatchConfig: {
@@ -87,9 +88,19 @@ export function useGlobal() {
     resourceLookup: {
       cdn: 'local',
     },
-    get: (varName) => {
+    cdnList: {
+      test: "http://localhost:9091",
+      local: "http://localhost:9090",
+      prod: "https://s3.amazonaws.com/assets.deliberation-lab.org",
+    },
+    get: function (varName) {
       return this[varName];
     }
   };
   return global;
+}
+
+// Mock implementation of Loading
+export function Loading() {
+  return "Loading...";
 }
