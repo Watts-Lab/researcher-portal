@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { isFunctionDeclaration } from "typescript";
 // import { StageContext } from '@/editor/stageContext'; # don't know why this doesn't work
 
 // file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
@@ -105,4 +106,31 @@ export function usePlayers() {
   };
 
   return players;
+}
+
+export function useGlobal() {
+  // This is a mock function that returns a mock global object
+  const global = {
+    isMock: true,
+    recruitingBatchConfig: {
+      cdn: 'local',
+    },
+    resourceLookup: {
+      cdn: 'local',
+    },
+    cdnList: {
+      test: "http://localhost:9091",
+      local: "http://localhost:9090",
+      prod: "https://s3.amazonaws.com/assets.deliberation-lab.org",
+    },
+    get: function (varName) {
+      return this[varName];
+    }
+  };
+  return global;
+}
+
+// Mock implementation of Loading
+export function Loading() {
+  return "Loading...";
 }
