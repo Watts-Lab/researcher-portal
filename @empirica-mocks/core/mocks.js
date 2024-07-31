@@ -113,10 +113,10 @@ export function useGlobal() {
   const global = {
     isMock: true,
     recruitingBatchConfig: {
-      cdn: 'local',
+      cdn: 'prod',
     },
     resourceLookup: {
-      cdn: 'local',
+      cdn: 'prod',
     },
     cdnList: {
       test: "http://localhost:9091",
