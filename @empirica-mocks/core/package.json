@@ -39,7 +39,7 @@
       "require": "./dist/player.cjs"
     },
     "./player/react": {
-      "import": "./react-mocks.js"
+      "import": "./mocks.js"
     },
     "./player/classic": {
       "types": "./dist/player-classic.d.ts",
