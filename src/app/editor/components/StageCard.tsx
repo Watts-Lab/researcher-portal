@@ -1,7 +1,7 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { ElementCard } from './ElementCard'
-import { cn } from '@/app/components/utils'
+import { cn } from '@/components/utils'
 import { Modal } from './Modal'
 import { EditStage } from './EditStage'
 import { EditElement } from './EditElement'
@@ -9,6 +9,10 @@ import {
   TreatmentType,
   DurationType,
 } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { setCurrentStageIndex } from './utils'
+import { useStage } from '../../../../@empirica-mocks/core/mocks'
+
+import { StageContext } from '../stageContext.jsx'
 
 export function StageCard({
   title,
@@ -31,6 +35,9 @@ export function StageCard({
   stageIndex: number
   setRenderPanelStage: any
 }) {
+  const { currentStageIndex, setCurrentStageIndex, elapsed, setElapsed } =
+    useContext(StageContext)
+
   const addElementOptions = [
     { question: 'Name', responseType: 'text' },
     {
@@ -57,12 +64,19 @@ export function StageCard({
   const width = duration ? scale * duration : 'auto'
 
   function handleStageClick() {
-    setRenderPanelStage({
-      title: title,
-      elements: elements,
-      duration: duration,
-      stageIndex: stageIndex,
-    })
+    // setCurrentStageIndex(stageIndex)
+    // console.log('setting current stage to ', stageIndex)
+    //@ts-ignore
+
+    console.log('setting current stage to ', stageIndex)
+    setCurrentStageIndex(stageIndex)
+
+    // setRenderPanelStage({
+    //   title: title,
+    //   elements: elements,
+    //   duration: duration,
+    //   stageIndex: stageIndex,
+    // })
   }
 
   const newElementModalId = `modal-stage${stageIndex}-element-new`

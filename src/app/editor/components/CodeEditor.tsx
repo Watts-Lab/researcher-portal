@@ -44,7 +44,6 @@ export default function CodeEditor() {
           duration: 600,
           desc: 'Main Discussion Time',
           discussion: {
-            chatType: 'text',
             showNickname: false,
             showTitle: true,
           },
@@ -117,6 +116,7 @@ export default function CodeEditor() {
       localStorage.setItem('code', code)
       window.location.reload() //refresh page to make elements appear on screen
     } catch (YAMLParseError) {
+      console.log('Parse Error on Save', YAMLParseError)
       //TODO also display a little something went wrong pop up
     }
   }

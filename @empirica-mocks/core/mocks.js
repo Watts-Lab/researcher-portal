@@ -1,3 +1,12 @@
+import { useContext } from 'react';
+import { isFunctionDeclaration } from "typescript";
+// import { StageContext } from '@/editor/stageContext'; # don't know why this doesn't work
+
+// file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
+import { StageContext } from "../../../../../src/app/editor/stageContext"
+
+
+
 export function usePlayer() {
   // This is a mock function that returns a mock player object
   // console.log("loaded usePlayer() from react-mocks.js");
@@ -5,6 +14,7 @@ export function usePlayer() {
     isMock: true,
     introDone: true,
     exitStep: 0, //TODO,
+    gameID: 21,
     position: 0, //TODO - set with toggle
     get: function (varName) {
       return this[varName];
@@ -34,10 +44,13 @@ export function useGame() {
 }
 
 export function useStageTimer() {
-  //TODO implement?
+  const stage = useContext(StageContext);
+  console.log("useStageTimerMock", stage)
+  
   // This is a mock function that returns a mock stage timer object
   const stageTimer = {
     isMock: true,
+    elapsed: stage.elapsed // problem: this will be called every render cycle...
   };
 
   return stageTimer;
@@ -45,15 +58,36 @@ export function useStageTimer() {
 
 export function useStage() {
   // This is a mock function that returns a mock stage object
+
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+  } = useContext(StageContext)
+  // const stage1 = useContext(StageContext);
+  // console.log("useStageMock", stage1)
+
   const stage = {
     isMock: true,
-    index: 0, //TODO
     get: function (varName) {
-      return this[varName];
+      //const currentStageIndex = int(localStorage.getItem("currentStageIndex"));
+      
+      //const treatmentString = localStorage.getItem("treatment");
+      //const treatment = JSON.parse(treatmentString);
+      if (varName === "elements") {
+        return treatment.gameStages[currentStageIndex]?.elements
+      } else if (varName === "discussion") {
+        return treatment.gameStages[currentStageIndex]?.discussion
+      } else if (varName === "name") {
+        return treatment.gameStages[currentStageIndex]?.name
+      } else if (varName === "index") {
+        return currentStageIndex
+      }
     },
-    set: function (varName, value) {
-      this[varName] = value;
-    },
+    
   };
 
   return stage;
@@ -72,4 +106,31 @@ export function usePlayers() {
   };
 
   return players;
+}
+
+export function useGlobal() {
+  // This is a mock function that returns a mock global object
+  const global = {
+    isMock: true,
+    recruitingBatchConfig: {
+      cdn: 'prod',
+    },
+    resourceLookup: {
+      cdn: 'prod',
+    },
+    cdnList: {
+      test: "http://localhost:9091",
+      local: "http://localhost:9090",
+      prod: "https://s3.amazonaws.com/assets.deliberation-lab.org",
+    },
+    get: function (varName) {
+      return this[varName];
+    }
+  };
+  return global;
+}
+
+// Mock implementation of Loading
+export function Loading() {
+  return "Loading...";
 }

@@ -6,7 +6,7 @@ import {
   stageSchema,
   StageType,
   ElementType,
-} from '@/../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+} from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 
