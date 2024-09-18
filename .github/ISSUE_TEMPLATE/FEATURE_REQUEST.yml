@@ -2,6 +2,7 @@ name: Feature request
 description: Suggest an idea for this project
 title: "[FEATURE]: "
 labels: [enhancement]
+projects: ["Watts-Lab/12"]
 body:
   - type: textarea
     id: user_story
