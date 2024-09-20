@@ -17,6 +17,7 @@
     "@empirica/core": "^1.11.0",
     "@hello-pangea/dnd": "^16.6.0",
     "@hookform/resolvers": "^3.6.0",
+    "@monaco-editor/react": "^4.6.0",
     "@uiw/react-textarea-code-editor": "^2.1.9",
     "@watts-lab/surveys": "^1.13.4",
     "next": "^13.5.6",

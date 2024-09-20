@@ -1,5 +1,5 @@
 'use client'
-import YamlEditor from '@uiw/react-textarea-code-editor'
+import Editor from '@monaco-editor/react'
 import { useState, useEffect, useMemo } from 'react'
 import { parse } from 'yaml'
 import { stringify } from 'yaml'
@@ -103,9 +103,9 @@ export default function CodeEditor() {
     }
   }, [defaultTreatment])
 
-  function handleChange(evn: any) {
-    let entry = evn.target.value
-    setCode(entry)
+  function handleChange(newValue: any) {
+    console.log('newValue from editor OnChange: ', newValue)
+    setCode(newValue)
   }
 
   function handleSave(e: any) {
@@ -125,14 +125,18 @@ export default function CodeEditor() {
       <div
         style={{ height: '95vh', overflow: 'auto', backgroundColor: '#F0F2F6' }}
       >
-        <YamlEditor
+        <Editor
           data-cy="code-editor"
           value={code}
           language="yaml"
-          placeholder={
+          options={{
+            wordWrap: 'on',
+            showFoldingControls: 'always',
+          }}
+          defaulValue={
             'Please enter treatment configuration. Do not refresh the page before saving.'
           }
-          onChange={(env) => handleChange(env)}
+          onChange={(newValue) => handleChange(newValue)}
           padding={5}
           style={{
             fontSize: 12,
