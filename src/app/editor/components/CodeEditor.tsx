@@ -1,6 +1,6 @@
 'use client'
 import Editor from '@monaco-editor/react'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { parse } from 'yaml'
 import { stringify } from 'yaml'
 
@@ -132,18 +132,13 @@ export default function CodeEditor() {
           options={{
             wordWrap: 'on',
             showFoldingControls: 'always',
+            wrappingIndent: 'same',
+            minimap: {
+              enabled: true,
+            },
+            automaticLayout: true,
           }}
-          defaulValue={
-            'Please enter treatment configuration. Do not refresh the page before saving.'
-          }
           onChange={(newValue) => handleChange(newValue)}
-          padding={5}
-          style={{
-            fontSize: 12,
-            fontFamily:
-              'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-            backgroundColor: '#F0F2F6',
-          }}
         />
       </div>
       <div style={{ backgroundColor: '#F0F2F6' }}>
