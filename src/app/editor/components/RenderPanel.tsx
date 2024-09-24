@@ -37,6 +37,12 @@ export function RenderPanel() {
 
   //console.log('Current stage', localStorage.getItem('currentStageIndex'))
 
+  useEffect(() => {
+    // Updates value of timeline slider when elapsed time changes
+    console.log('Elapsed time changed:', elapsed)
+    setTime(elapsed)
+  }, [elapsed])
+
   return (
     <div className="flex" data-cy="render-panel">
       {currentStageIndex === 'default' && (

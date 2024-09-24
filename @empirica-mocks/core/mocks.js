@@ -110,6 +110,7 @@ export function usePlayers() {
 
 export function useGlobal() {
   // This is a mock function that returns a mock global object
+  // UPDATE CDN IF TESTING LOCALLY / DEPLOYING
   const global = {
     isMock: true,
     recruitingBatchConfig: {
