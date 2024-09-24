@@ -50,7 +50,8 @@ export function useStageTimer() {
   // This is a mock function that returns a mock stage timer object
   const stageTimer = {
     isMock: true,
-    elapsed: stage.elapsed // problem: this will be called every render cycle...
+    elapsed: stage.elapsed * 1000 // multiply by 1000 for conditionalRender component
+    // problem: this will be called every render cycle...
   };
 
   return stageTimer;
