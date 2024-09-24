@@ -124,9 +124,9 @@ export default function CodeEditor() {
     <div>
       <div
         style={{ height: '95vh', overflow: 'auto', backgroundColor: '#F0F2F6' }}
+        data-cy="code-editor"
       >
         <Editor
-          data-cy="code-editor"
           value={code}
           language="yaml"
           options={{
