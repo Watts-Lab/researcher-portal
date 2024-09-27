@@ -1,0 +1,62 @@
+templates:
+  - templateName: topicPrompt
+    templateContent:
+      type: prompt
+      name: "${topicName}_presurvey"
+      file: "shared/yesNo/${topicName}_survey.md"
+      tags: ["predictor"]
+
+  - templateName: crossPartisanDiscussion
+    templateDesc: for measuring the effect of topic on cross-party discussion outcomes
+    templateContent:
+      name: ${treatmentName}
+      playerCount: 2
+      groupComposition:
+        - position: 0
+          title: "Democrat"
+          conditions:
+            - reference: survey.partyAffiliation.result.normPosition
+              comparator: isBelow
+              value: 0.5
+        - position: 1
+          title: "Republican"
+          conditions:
+            - reference: survey.partyAffiliation.result.normPosition
+              comparator: isAbove
+              value: 0.5
+
+      gameStages:
+        - name: AttitudeAttributes
+          duration: 300
+          elements:
+            - type: audio
+              file: shared/westminster_short.mp3
+            - type: prompt
+              file: projects/css_lab/ct_topic/attitude_attribute_instructions_A.md
+            - type: prompt
+              file: "shared/yesNo/${topicName}_discussion.md"
+            - type: display
+              reference: prompt.${topicName}_presurvey
+              position: player
+            - type: prompt
+              file: projects/css_lab/ct_topic/attitude_attribute_instructions_B.md
+            - type: survey
+              name: attitudeAttributes
+              surveyName: AttitudeAttributes
+              tags: ["predictor"]
+
+      exitSequence:
+        - name: AttitudeChange # 1 question
+          elements:
+            - type: prompt
+              file: projects/css_lab/ct_topic/attitude_change_instructions.md
+            - type: prompt
+              name: discussionTopicPostAttitude
+              file: "shared/yesNo/${topicName}_survey.md"
+              tags: ["outcome"]
+            - type: prompt
+              file: projects/css_lab/ct_topic/all_mandatory.md
+            - type: submitButton
+              conditions:
+                - reference: prompt.discussionTopicPostAttitude
+                  comparator: exists
