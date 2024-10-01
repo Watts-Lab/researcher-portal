@@ -9,29 +9,9 @@ import { StageContext } from '@/editor/stageContext'
 import { Substitute } from 'styled-components/dist/types';
 
 const StyleContext = createContext({});
-
 const useStyle = () => useContext(StyleContext);
 
-const withCustomStyles = (Component: any) => {
-  // Use styled-components to create a styled version of the passed component
-  const StyledComponent = styled(Component)`
-    .min-w-sm.mx-auto.aspect-video.relative {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: auto; 
-      max-width: 100%; 
-      height: auto;
-      max-height: 100%;
-    }
-  `;
-  // eslint-disable-next-line react/display-name
-  return (props: React.JSX.IntrinsicAttributes & FastOmit<Substitute<FastOmit<any, never>, FastOmit<{}, never>>, keyof ExecutionProps> & FastOmit<ExecutionProps, "as" | "forwardedAs"> & { as?: void | undefined; forwardedAs?: void | undefined; }) => (<StyledComponent {...props} />);
-};
-
-
-const Stage = withCustomStyles(dynamic(
+const Stage = dynamic(
   () =>
     import('./../../../.././deliberation-empirica/client/src/Stage.jsx').then(
       (mod) => mod.Stage
@@ -39,7 +19,11 @@ const Stage = withCustomStyles(dynamic(
   {
     ssr: false,
   }
-))
+);
+
+const StyledStage = styled(Stage)`
+  .min-w-sm.mx-auto.aspect-video.relative
+`;
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
@@ -98,7 +82,7 @@ export function RenderPanel() {
       </div> */}
 
       <div className="w-full flex">
-        {currentStageIndex !== 'default' && <Stage />}
+        {currentStageIndex !== 'default' && <StyledStage />}
       </div>
     </div>
   )
