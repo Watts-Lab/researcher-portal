@@ -15,19 +15,15 @@ const useStyle = () => useContext(StyleContext);
 const withCustomStyles = (Component: any) => {
   // Use styled-components to create a styled version of the passed component
   const StyledComponent = styled(Component)`
-    min-height: 30%
-    max-width: 100%; 
-    overflow: hidden; 
-    trnasform: translate(-50%, -50%);
     .min-w-sm.mx-auto.aspect-video.relative {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: auto; // Ensures the video maintains aspect ratio
-      max-width: 100%; // Limits the video width to prevent overflow
-      height: auto; // Ensures the video maintains aspect ratio
-      max-height: 100%; // Limits the video height to prevent overflow
+      width: auto; 
+      max-width: 100%; 
+      height: auto;
+      max-height: 100%;
     }
   `;
   // eslint-disable-next-line react/display-name
