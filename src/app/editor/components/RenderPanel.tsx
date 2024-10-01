@@ -1,12 +1,41 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, createContext, useContext } from 'react'
 import dynamic from 'next/dynamic.js'
+import styled, { ExecutionProps, FastOmit } from 'styled-components';
 import TimePicker from './TimePicker'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
 
 import { StageContext } from '@/editor/stageContext'
+import { Substitute } from 'styled-components/dist/types';
 
-const Stage = dynamic(
+const StyleContext = createContext({});
+
+const useStyle = () => useContext(StyleContext);
+
+const withCustomStyles = (Component: any) => {
+  // Use styled-components to create a styled version of the passed component
+  const StyledComponent = styled(Component)`
+    min-height: 30%
+    max-width: 100%; 
+    overflow: hidden; 
+    trnasform: translate(-50%, -50%);
+    .min-w-sm.mx-auto.aspect-video.relative {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: auto; // Ensures the video maintains aspect ratio
+      max-width: 100%; // Limits the video width to prevent overflow
+      height: auto; // Ensures the video maintains aspect ratio
+      max-height: 100%; // Limits the video height to prevent overflow
+    }
+  `;
+  // eslint-disable-next-line react/display-name
+  return (props: React.JSX.IntrinsicAttributes & FastOmit<Substitute<FastOmit<any, never>, FastOmit<{}, never>>, keyof ExecutionProps> & FastOmit<ExecutionProps, "as" | "forwardedAs"> & { as?: void | undefined; forwardedAs?: void | undefined; }) => (<StyledComponent {...props} />);
+};
+
+
+const Stage = withCustomStyles(dynamic(
   () =>
     import('./../../../.././deliberation-empirica/client/src/Stage.jsx').then(
       (mod) => mod.Stage
@@ -14,7 +43,7 @@ const Stage = dynamic(
   {
     ssr: false,
   }
-)
+))
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
