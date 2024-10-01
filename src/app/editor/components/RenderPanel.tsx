@@ -72,7 +72,7 @@ export function RenderPanel() {
           )}
       </div> */}
 
-      <div className="w-full">
+      <div className="w-full flex">
         {currentStageIndex !== 'default' && <Stage />}
       </div>
     </div>
