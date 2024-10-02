@@ -4,7 +4,6 @@ import TimePicker from './TimePicker'
 import ReferenceData from './ReferenceData'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
-
 import { StageContext } from '@/editor/stageContext'
 
 const Stage = dynamic(
@@ -28,12 +27,6 @@ export function RenderPanel() {
     treatment,
     setTreatment,
   } = useContext(StageContext)
-
-  //const for reference data in sidebar
-  const [participantInfoName, setParticipantInfoName] = useState('')
-  const [guessPartnerParty, setGuessPartnerParty] = useState('')
-  const [guessPartnerPosition, setGuessPartnerPosition] = useState('')
-  const [stageName, setStageName] = useState('')
 
   console.log('RenderPanel.tsx current stage index', currentStageIndex)
   console.log('Current Treatment', treatment)
@@ -60,16 +53,7 @@ export function RenderPanel() {
             setValue={setElapsed}
             maxValue={treatment.gameStages[currentStageIndex]?.duration ?? 0}
           />
-          <ReferenceData
-            participantInfoName={participantInfoName}
-            guessPartnerParty={guessPartnerParty}
-            guessPartnerPosition={guessPartnerPosition}
-            stageName={stageName}
-            setParticipantInfoName={setParticipantInfoName}
-            setGuessPartnerParty={setGuessPartnerParty}
-            setGuessPartnerPosition={setGuessPartnerPosition}
-            setStageName={setStageName}
-          />
+          <ReferenceData />
           {/* need to retrieve stage duration from treatment */}
         </div>
       )}
