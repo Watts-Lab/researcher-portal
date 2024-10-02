@@ -11,8 +11,8 @@ import {
 } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { setCurrentStageIndex } from './utils'
 import { useStage } from '../../../../@empirica-mocks/core/mocks'
-
 import { StageContext } from '../stageContext.jsx'
+import { Droppable, Draggable, DragDropContext } from '@hello-pangea/dnd'
 
 export function StageCard({
   title,
@@ -79,6 +79,24 @@ export function StageCard({
     // })
   }
 
+  function onDragEnd(result: any) {
+    const { source, destination } = result
+    if (!destination) {
+      return
+    }
+
+    const sourceIndex = source.index
+    const destIndex = destination.index
+    const updatedElements = Array.from(elements)
+    const [removed] = updatedElements.splice(sourceIndex, 1)
+    updatedElements.splice(destIndex, 0, removed)
+
+    // update treatment
+    const updatedTreatment = JSON.parse(JSON.stringify(treatment))
+    updatedTreatment.gameStages[stageIndex].elements = updatedElements
+    editTreatment(updatedTreatment)
+  }
+
   const newElementModalId = `modal-stage${stageIndex}-element-new`
 
   return (
@@ -118,48 +136,75 @@ export function StageCard({
           />
         </Modal>
       </div>
+      
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId={`droppable-elements-${stageIndex}`} direction='vertical'>
+          {(provided) => (
+            <div
+              id="elementList"
+              className="flex flex-col gap-y-1"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {elements !== undefined &&
+                elements.map((element, index) => (
+                  <Draggable
+                    key={`element-${stageIndex}-${index}`}
+                    draggableId={`element-${stageIndex}-${index}`}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ElementCard
+                          key={`element ${index}`}
+                          element={element}
+                          scale={scale}
+                          stageDuration={duration}
+                          stageIndex={stageIndex}
+                          elementIndex={index}
+                          treatment={treatment}
+                          editTreatment={editTreatment}
+                          elementOptions={addElementOptions}
+                          onSubmit={''}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
-      <div id="elementList" className="flex flex-col gap-y-1">
-        {elements !== undefined &&
-          elements.map((element, index) => (
-            <ElementCard
-              key={`element ${index}`}
-              element={element}
-              scale={scale}
-              stageDuration={duration}
-              stageIndex={stageIndex}
-              elementIndex={index}
-              treatment={treatment}
-              editTreatment={editTreatment}
-              elementOptions={addElementOptions}
-              onSubmit={''}
-            />
-          ))}
-        {/* Add Element Button*/}
-        <div className="card bg-slate-100 opacity-50 shadow-md m-1 min-h-12 flex items-center">
-          <button
-            data-cy={'add-element-button-' + stageIndex}
-            className="btn h-full w-full"
-            onClick={() =>
-              (
-                document.getElementById(
-                  newElementModalId
-                ) as HTMLDialogElement | null
-              )?.showModal()
-            }
-          >
-            +
-          </button>
+      {/* Add Element Button*/}
+      <div className="card bg-slate-100 opacity-50 shadow-md m-1 min-h-12 flex items-center">
+        <button
+          data-cy={'add-element-button-' + stageIndex}
+          className="btn h-full w-full"
+          onClick={() =>
+            (
+              document.getElementById(
+                newElementModalId
+              ) as HTMLDialogElement | null
+            )?.showModal()
+          }
+        >
+          +
+        </button>
 
-          <Modal id={newElementModalId}>
-            <EditElement
-              treatment={treatment}
-              editTreatment={editTreatment}
-              stageIndex={stageIndex}
-              elementIndex={-1}
-            />
-          </Modal>
-        </div>
+        <Modal id={newElementModalId}>
+          <EditElement
+            treatment={treatment}
+            editTreatment={editTreatment}
+            stageIndex={stageIndex}
+            elementIndex={-1}
+          />
+        </Modal>
       </div>
     </div>
   )
