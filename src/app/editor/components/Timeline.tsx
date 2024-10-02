@@ -92,7 +92,7 @@ export default function Timeline({
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className="flex flex-row"
+                  className="flex flex-row gap-x-1"
                 >
                   {treatment?.gameStages?.map((stage: any, index: any) => (
                     <Draggable
