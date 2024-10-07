@@ -110,6 +110,7 @@ export function StageCard({
       style={{ width: scale * duration }}
       onClick={handleStageClick}
       data-cy={'stage-' + stageIndex}
+      tabIndex={0}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <h3 className="mx-3 my-2">{title}</h3>
