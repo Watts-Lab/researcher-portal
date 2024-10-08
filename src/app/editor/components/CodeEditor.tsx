@@ -136,13 +136,13 @@ export default function CodeEditor() {
       return [] // no errors
     } catch (e: any) {
       console.log(`not a valid schema, ${e.errors.length} errors: `, e.errors)
-      return formatZodError(e as ZodError)
+      return formatZodError(e)
     }
 
     return []
   }
 
-  function formatZodError(error: ZodError) {
+  function formatZodError(error: any) {
     return error.errors.map(
       (err: {
         path: any[]
