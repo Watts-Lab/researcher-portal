@@ -214,7 +214,9 @@ export default function CodeEditor() {
       endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
     }))
 
-    monaco.editor.setModelMarkers(model, 'yaml', markers)
+    if (model) {
+      monaco.editor.setModelMarkers(model, 'yaml', markers)
+    }
   }
 
   function handleChange(newValue: string) {
