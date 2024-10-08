@@ -211,7 +211,7 @@ export default function CodeEditor() {
     const markers = errors.map((error: { endLineNumber: any }) => ({
       ...error,
       startColumn: 1,
-      endColumn: model.getLineLength(error.endLineNumber),
+      endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
     }))
 
     monaco.editor.setModelMarkers(model, 'yaml', markers)
