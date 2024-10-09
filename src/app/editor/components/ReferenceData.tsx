@@ -49,7 +49,7 @@ const ReferenceData: React.FC = () => {
           showToPositions: [1]
 
         - type: display
-          reference: participantInfo.testing!!
+          reference: participantInfo.age
           position: 1
           showToPositions: [0]
 
@@ -68,9 +68,9 @@ const ReferenceData: React.FC = () => {
 
         - type: submitButton
           conditions:
-            - reference: prompt.wowCustomPromptHere
+            - reference: prompt.guessPartnerParty
               comparator: exists
-            - reference: prompt.guessPartnerAge
+            - reference: prompt.guessPartnerPosition
               comparator: exists
     `
 
@@ -87,7 +87,7 @@ const ReferenceData: React.FC = () => {
       <h2 className="text-lg font-semibold mb-4">
         Stage Refs and Dependencies
       </h2>
-      
+
       {references.map((reference, index) => (
         <div key={index} className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
