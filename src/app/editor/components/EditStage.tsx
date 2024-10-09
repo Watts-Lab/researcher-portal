@@ -27,9 +27,11 @@ export function EditStage({
     formState: { errors },
   } = useForm<StageType>({
     defaultValues: {
-      name: treatment?.gameStages[stageIndex]?.name || '',
-      duration: treatment?.gameStages[stageIndex]?.duration || 0,
-      elements: treatment?.gameStages[stageIndex]?.elements || [],
+      name: stageIndex != -1 ? treatment?.gameStages[stageIndex]?.name : '',
+      duration:
+        stageIndex != -1 ? treatment?.gameStages[stageIndex]?.duration : 0,
+      elements:
+        stageIndex != -1 ? treatment?.gameStages[stageIndex]?.elements : [],
       // desc: "",
       // discussion: {
       //   chatType: "text",

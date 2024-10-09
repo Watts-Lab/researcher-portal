@@ -24,7 +24,11 @@ export default function Timeline({
     setElapsed,
     treatment,
     setTreatment,
+    templatesMap,
+    setTemplatesMap,
   } = useContext(StageContext)
+
+  //setTreatment('')
 
   function editTreatment(newTreatment: TreatmentType) {
     setTreatment(newTreatment)
@@ -39,12 +43,23 @@ export default function Timeline({
       const codeStr = localStorage.getItem('code') || ''
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
+
+      if (parsedCode?.templates) {
+        const templates = new Map<string, any>()
+        parsedCode.templates.forEach((template: any) => {
+          templates.set(template.templateName, template)
+        })
+        setTemplatesMap(templates)
+      }
     }
   }, [setTreatment])
 
   if (!treatment) {
     return null
   }
+
+  console.log('treatment', treatment)
+  console.log('templatesMap', templatesMap)
 
   //const parsedCode = "";
 
@@ -66,7 +81,7 @@ export default function Timeline({
         className="grow min-h-10 bg-slate-600 p-2 overflow-y-auto overflow-x-auto"
       >
         <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
-          {treatment &&
+          {treatment.gameStages &&
             treatment?.gameStages?.map((stage: any, index: any) => (
               <StageCard
                 key={stage.name}

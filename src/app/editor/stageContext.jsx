@@ -12,6 +12,7 @@ const StageProvider = ({ children }) => {
   const [currentStageIndex, setCurrentStageIndex] = useState('default')
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
+  const [templatesMap, setTemplatesMap] = useState(new Map())
 
   const contextValue = {
     currentStageIndex,
@@ -20,6 +21,8 @@ const StageProvider = ({ children }) => {
     setElapsed,
     treatment,
     setTreatment,
+    templatesMap,
+    setTemplatesMap,
   }
 
   return (
