@@ -53,7 +53,7 @@ export function RenderPanel() {
             setValue={setElapsed}
             maxValue={treatment.gameStages[currentStageIndex]?.duration ?? 0}
           />
-          <ReferenceData />
+          <ReferenceData treatment={treatment} stageIndex={currentStageIndex} />
           {/* need to retrieve stage duration from treatment */}
         </div>
       )}
