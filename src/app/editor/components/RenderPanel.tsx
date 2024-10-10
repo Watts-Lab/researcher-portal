@@ -1,6 +1,5 @@
 import React, { useEffect, useState, createContext, useContext } from 'react'
 import dynamic from 'next/dynamic.js'
-import styled, { ExecutionProps, FastOmit } from 'styled-components';
 import TimePicker from './TimePicker'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
@@ -21,9 +20,13 @@ const Stage = dynamic(
   }
 );
 
-const StyledStage = styled(Stage)`
-  .min-w-sm.mx-auto.aspect-video.relative
-`;
+const StyledStage = () => {
+  return (
+    <div className="min-w-sm mx-auto aspect-video relative">
+      <Stage />
+    </div>
+  );
+};
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
