@@ -1,10 +1,14 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, createContext, useContext } from 'react'
 import dynamic from 'next/dynamic.js'
 import TimePicker from './TimePicker'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
 
 import { StageContext } from '@/editor/stageContext'
+import { Substitute } from 'styled-components/dist/types';
+
+const StyleContext = createContext({});
+const useStyle = () => useContext(StyleContext);
 
 const Stage = dynamic(
   () =>
@@ -14,7 +18,15 @@ const Stage = dynamic(
   {
     ssr: false,
   }
-)
+);
+
+const StyledStage = () => {
+  return (
+    <div className="min-w-sm mx-auto aspect-video relative">
+      <Stage />
+    </div>
+  );
+};
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
@@ -72,8 +84,8 @@ export function RenderPanel() {
           )}
       </div> */}
 
-      <div className="w-full">
-        {currentStageIndex !== 'default' && <Stage />}
+      <div className="w-full flex">
+        {currentStageIndex !== 'default' && <StyledStage />}
       </div>
     </div>
   )
