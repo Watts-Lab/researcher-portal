@@ -143,57 +143,47 @@ export default function CodeEditor() {
   }
 
   function formatZodError(error: any) {
-    return error.errors.map(
-      (err: {
-        path: any[]
-        code: any
-        expected: any
-        received: any
-        message: string
-        minimum: any
-        maximum: any
-      }) => {
-        // create human-readable path
-        const path = err.path.reduce((acc: any, segment: any) => {
-          if (typeof segment === 'number') {
-            return `${acc}[${segment}]`
-          } else if (acc) {
-            return `${acc}.${segment}`
-          } else {
-            // first segment, no leading dot
-            return segment
-          }
-        }, '')
-
-        const location = path.length > 0 ? path : 'root'
-
-        const code = err.code // type of the Zod error (invalid_type, too_small, etc.)
-
-        // extract more detailed info depending on the error code
-        let details = ''
-        switch (code) {
-          case 'invalid_type':
-            details = `Expected ${err.expected}, received ${err.received}`
-            break
-          case 'too_small':
-          case 'too_big':
-            details = `${err.message} (minimum: ${err.minimum}, maximum: ${err.maximum})`
-            break
-          default:
-            details = err.message
-            break
+    return error.errors.map((err: any) => {
+      // create human-readable path
+      const path = err.path.reduce((acc: any, segment: any) => {
+        if (typeof segment === 'number') {
+          return `${acc}[${segment}]`
+        } else if (acc) {
+          return `${acc}.${segment}`
+        } else {
+          // first segment, no leading dot
+          return segment
         }
+      }, '')
 
-        return {
-          message: `${path}: ${details}`,
-          startLineNumber: 1,
-          endLineNumber: 1,
-          startColumn: 1,
-          endColumn: 1,
-          path: location,
-        }
+      const location = path.length > 0 ? path : 'root'
+
+      const code = err.code // type of the Zod error (invalid_type, too_small, etc.)
+
+      // extract more detailed info depending on the error code
+      let details = ''
+      switch (code) {
+        case 'invalid_type':
+          details = `Expected ${err.expected}, received ${err.received}`
+          break
+        case 'too_small':
+        case 'too_big':
+          details = `${err.message} (minimum: ${err.minimum}, maximum: ${err.maximum})`
+          break
+        default:
+          details = err.message
+          break
       }
-    )
+
+      return {
+        message: `${path}: ${details}`,
+        startLineNumber: 1,
+        endLineNumber: 1,
+        startColumn: 1,
+        endColumn: 1,
+        path: location,
+      }
+    })
   }
 
   function markErrors(
@@ -291,7 +281,10 @@ export default function CodeEditor() {
             automaticLayout: true,
           }}
           onChange={(newValue: any) => handleChange(newValue)}
-          onMount={(editor: null, monaco: null) => {
+          onMount={(
+            editor: Monaco.editor.IStandaloneCodeEditor,
+            monaco: Monaco
+          ) => {
             editorRef.current = editor
             monacoRef.current = monaco
           }}

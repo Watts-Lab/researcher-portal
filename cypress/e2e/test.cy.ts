@@ -105,7 +105,14 @@ describe('test spec', () => {
     cy.get('[data-cy="yaml-save"]').click()
 
     cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Stage 3").should("be.visible")
-    cy.get('[data-cy="stage-2"]').contains("Stage 3").should("be.visible")
+    cy.get('[data-cy="stage-2"]').should('not.exist')
+
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}", { release: false })
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("\n- name: tes}{backspace}{backspace}t\n  type: survey\nsurveyName: CRT", { release: false })
+    cy.get('[data-cy="yaml-save"]').click()
+
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Stage 3").should("be.visible")
+    cy.get('[data-cy="stage-2"]').should('exist')
 
     // edit first stage
     cy.get('[data-cy="edit-stage-button-0"]').click()
