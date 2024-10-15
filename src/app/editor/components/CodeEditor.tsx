@@ -186,29 +186,20 @@ export default function CodeEditor() {
     })
   }
 
-  function markErrors(
-    editor: MonacoEditor.IStandaloneCodeEditor,
-    monaco: Monaco,
-    errors: any[]
-  ) {
-    const model = editor.getModel()
-    if (model) {
-      monaco.editor.removeAllMarkers('yaml')
-    }
+  function markErrors(errors: any[]) {
+    const model = editorRef.current?.getModel()
+    if (model && monacoRef.current) {
+      monacoRef.current.editor.removeAllMarkers('yaml')
 
-    // errors was setup to have an object stucture that corresponds to markers
-    // use startColumn 1, endColumn lineLength to have the whole row(s) highlighted
-    const markers: monaco.editor.IMarkerData[] = []
-    errors.forEach((error) =>
-      markers.push({
+      // errors was setup to have an object stucture that corresponds to markers
+      // use startColumn 1, endColumn lineLength to have the whole row(s) highlighted
+      const markers: Monaco.editor.IMarkerData[] = errors.map((error) => ({
         ...error,
         startColumn: 1,
         endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
-      })
-    )
-
-    if (model) {
-      monaco.editor.setModelMarkers(model, 'yaml', markers)
+        severity: monacoRef.current.MarkerSeverity.Error,
+      }))
+      monacoRef.current.editor.setModelMarkers(model, 'yaml', markers)
     }
   }
 
@@ -217,12 +208,10 @@ export default function CodeEditor() {
     const { parsedYAML, errorsYAML } = parseYAML(newValue)
 
     if (errorsYAML && editorRef.current && monacoRef.current) {
-      const editor = editorRef.current
-      const monaco = monacoRef.current
       if (schemaErrors.length > 0) {
         errorsYAML.push(...schemaErrors)
       }
-      markErrors(editor, monaco, errorsYAML)
+      markErrors(errorsYAML)
     }
   }
 
@@ -233,12 +222,11 @@ export default function CodeEditor() {
       const { parsedYAML, errorsYAML } = parseYAML(code)
 
       if (errorsYAML.length > 0 && editorRef.current && monacoRef.current) {
-        const editor = editorRef.current
-        const monaco = monacoRef.current
         if (schemaErrors.length > 0) {
+          // ensure that any previous schema errors are retained
           errorsYAML.push(...schemaErrors)
         }
-        markErrors(editor, monaco, errorsYAML)
+        markErrors(errorsYAML)
         console.log(errorsYAML)
         //TODO display a little something went wrong pop up
         return
@@ -250,10 +238,8 @@ export default function CodeEditor() {
       console.log(errorsSchema)
 
       if (errorsSchema.length > 0 && editorRef.current && monacoRef.current) {
-        const editor = editorRef.current
-        const monaco = monacoRef.current
         setSchemaErrors(errorsSchema)
-        markErrors(editor, monaco, errorsSchema)
+        markErrors(errorsSchema)
         //TODO display a little something went wrong pop up
       } else {
         // treatment schema can be parsed and is valid
