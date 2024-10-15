@@ -1,9 +1,9 @@
 'use client'
 import Editor, { Monaco } from '@monaco-editor/react'
-import { editor as MonacoEditor, IRange } from 'monaco-editor'
+import { editor as MonacoEditor } from 'monaco-editor'
 import { treatmentSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { parse, parseDocument } from 'yaml'
+import { parse } from 'yaml'
 import { stringify } from 'yaml'
 import { ZodError } from 'zod'
 
@@ -198,11 +198,14 @@ export default function CodeEditor() {
 
     // errors was setup to have an object stucture that corresponds to markers
     // use startColumn 1, endColumn lineLength to have the whole row(s) highlighted
-    const markers = errors.map((error: { endLineNumber: any }) => ({
-      ...error,
-      startColumn: 1,
-      endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
-    }))
+    const markers: monaco.editor.IMarkerData[] = []
+    errors.forEach((error) =>
+      markers.push({
+        ...error,
+        startColumn: 1,
+        endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
+      })
+    )
 
     if (model) {
       monaco.editor.setModelMarkers(model, 'yaml', markers)
