@@ -57,7 +57,7 @@ export default function EditorPage({}) {
 
         <DraggableSplitter dir="vertical" {...codeSeparatorProps} />
 
-        <div id="rightColumn" className="grow">
+        <div id="rightColumn" className="flex-1 min-w-[200px] overflow-auto">
           <CodeEditor />
         </div>
       </div>
