@@ -193,12 +193,13 @@ export default function CodeEditor() {
 
       // errors was setup to have an object stucture that corresponds to markers
       // use startColumn 1, endColumn lineLength to have the whole row(s) highlighted
-      const markers: Monaco.editor.IMarkerData[] = errors.map((error) => ({
+      const markers = errors.map((error) => ({
         ...error,
         startColumn: 1,
         endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
-        severity: monacoRef.current.MarkerSeverity.Error,
+        severity: monacoRef.current?.MarkerSeverity.Error,
       }))
+      console.log('markers: ', markers)
       monacoRef.current.editor.setModelMarkers(model, 'yaml', markers)
     }
   }
@@ -270,10 +271,7 @@ export default function CodeEditor() {
             automaticLayout: true,
           }}
           onChange={(newValue: any) => handleChange(newValue)}
-          onMount={(
-            editor: Monaco.editor.IStandaloneCodeEditor,
-            monaco: Monaco
-          ) => {
+          onMount={(editor: any, monaco: any) => {
             editorRef.current = editor
             monacoRef.current = monaco
           }}
