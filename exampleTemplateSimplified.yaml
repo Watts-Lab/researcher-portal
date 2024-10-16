@@ -60,3 +60,36 @@ templates:
               conditions:
                 - reference: prompt.discussionTopicPostAttitude
                   comparator: exists
+
+        
+introSequences:
+  - template: introSequence
+    fields:
+      sequenceName: wave1
+      discussionTopicNames:
+        - topicName: fundNeedleExchange
+        - topicName: israelAid
+        - topicName: slaveReparations
+        - topicName: universalIncome
+        - topicName: schoolDressCode
+      otherWaveTopicNames:
+        - topicName: freeInternet
+        - topicName: gunControl
+        - topicName: abortionLegality
+        - topicName: teacherTenure
+        - topicName: reduceMilitaryBudget
+
+treatments:
+  - template: crossPartisanDiscussion
+    fields:
+      waveNumber: 1
+      treatmentName: "wave_1_${topicName}_dem_${d0}_rep_${d1}"
+    broadcast:
+      d0:
+        - demPosition: Strongly No
+        - demPosition: Mostly No
+        - demPosition: Slightly No
+        - demPosition: Neutral
+        - demPosition: Slightly Yes
+        - demPosition: Mostly Yes
+        - demPosition: Strongly Yes
