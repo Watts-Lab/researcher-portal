@@ -19,8 +19,6 @@ export function StageCard({
   elements,
   duration,
   scale,
-  treatment,
-  editTreatment,
   sequence,
   stageIndex,
   setRenderPanelStage,
@@ -29,14 +27,20 @@ export function StageCard({
   elements: any[]
   duration: DurationType
   scale: number
-  treatment: any
-  editTreatment: (treatment: TreatmentType) => void
   sequence: string
   stageIndex: number
   setRenderPanelStage: any
 }) {
-  const { currentStageIndex, setCurrentStageIndex, elapsed, setElapsed } =
-    useContext(StageContext)
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+    templatesMap,
+    setTemplatesMap,
+  } = useContext(StageContext)
 
   const addElementOptions = [
     { question: 'Name', responseType: 'text' },
@@ -82,7 +86,6 @@ export function StageCard({
   const newElementModalId = `modal-stage${stageIndex}-element-new`
 
   return (
-    // TODO: reorder elements with drag and drop
     <div
       id={`timelineCard ${stageIndex}`}
       className={cn(
@@ -111,11 +114,7 @@ export function StageCard({
         </button>
 
         <Modal id={'modal-edit-stage-' + stageIndex}>
-          <EditStage
-            treatment={treatment}
-            editTreatment={editTreatment}
-            stageIndex={stageIndex}
-          />
+          <EditStage stageIndex={stageIndex} />
         </Modal>
       </div>
 
@@ -129,8 +128,6 @@ export function StageCard({
               stageDuration={duration}
               stageIndex={stageIndex}
               elementIndex={index}
-              treatment={treatment}
-              editTreatment={editTreatment}
               elementOptions={addElementOptions}
               onSubmit={''}
             />
@@ -152,12 +149,7 @@ export function StageCard({
           </button>
 
           <Modal id={newElementModalId}>
-            <EditElement
-              treatment={treatment}
-              editTreatment={editTreatment}
-              stageIndex={stageIndex}
-              elementIndex={-1}
-            />
+            <EditElement stageIndex={stageIndex} elementIndex={-1} />
           </Modal>
         </div>
       </div>

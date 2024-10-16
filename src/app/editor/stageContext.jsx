@@ -1,5 +1,6 @@
 //import { set } from 'node_modules/cypress/types/lodash';
 import { createContext, useState } from 'react'
+import { stringify } from 'yaml'
 
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
@@ -14,6 +15,12 @@ const StageProvider = ({ children }) => {
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
 
+  function editTreatment(newTreatment) {
+    setTreatment(newTreatment)
+    localStorage.setItem('code', stringify(newTreatment))
+    window.location.reload()
+  }
+
   const contextValue = {
     currentStageIndex,
     setCurrentStageIndex,
@@ -21,6 +28,7 @@ const StageProvider = ({ children }) => {
     setElapsed,
     treatment,
     setTreatment,
+    editTreatment,
     templatesMap,
     setTemplatesMap,
   }

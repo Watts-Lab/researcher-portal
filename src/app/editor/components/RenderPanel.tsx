@@ -64,7 +64,10 @@ export function RenderPanel() {
           <TimePicker
             value={time + ' s'}
             setValue={setElapsed}
-            maxValue={treatment.gameStages[currentStageIndex]?.duration ?? 0}
+            maxValue={
+              treatment.treatments[0].gameStages[currentStageIndex]?.duration ??
+              0
+            }
           />
           <ReferenceData
             participantInfoName={participantInfoName}
