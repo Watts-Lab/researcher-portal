@@ -12,7 +12,7 @@ describe('test spec', () => {
     cy.visit('http://localhost:3000/editor')
     cy.get('[data-cy="code-editor"]').get('.monaco-editor').should('exist')
     cy.get('[data-cy="code-editor"]').get('.monaco-editor').type('{ctrl+a}{del}', { release: false }) // equivalent to clear() in cypress
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type(yamltreatment)
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type(`${yamltreatment}{pageUp}`)
     //this fails because getting monaco-editor will include line numbers, but the yamltreatment variable does not
     // also monaco-editor will remove line breaks, but yamltreatment will have the line breaks
     //cy.get('[data-cy="code-editor"]').get('.monaco-editor').should('include.text', yamltreatment)
@@ -93,6 +93,7 @@ describe('test spec', () => {
     cy.get('[data-cy="stage-0"]').should("not.contain", "Element 2")
 
     // add fourth element to second stage via code editor
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{moveToEnd}{enter}", { release: false })
     cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("      - name: Element 4\n  type: prompt\nfile: file/address")
     cy.get('[data-cy="yaml-save"]').click()
 
