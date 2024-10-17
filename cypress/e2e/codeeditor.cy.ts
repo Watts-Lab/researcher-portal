@@ -3,8 +3,7 @@
 describe('code editor', () => {
     beforeEach(() => {
         // initial yaml treatment
-        let treatmentName = "name: cypress_code_editor_test"
-        let yamltreatment = treatmentName + "\nplayerCount: 1\ngameStages:\n- name: Stage 1\n  duration: 100\nelements:\n  - name: Element 1\n  type: survey\nsurveyName: CRT"
+        let yamltreatment = "name: cypress_code_editor_test\nplayerCount: 1\ngameStages:\n- name: Stage 1\n  duration: 100\nelements:\n  - name: Element 1\n  type: survey\nsurveyName: CRT"
 
         cy.viewport(2000, 1000, { log: false });
 
@@ -18,7 +17,7 @@ describe('code editor', () => {
         // text values from monaco-editor will include line numbers and no line breaks
         // the yamltreatment variable has no line numbers and line breaks
         // so right now comparison is only on the treatmentName
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains(treatmentName)
+        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains('cypress_code_editor_test')
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify value in stage cards

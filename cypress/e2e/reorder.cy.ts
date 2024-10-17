@@ -7,6 +7,7 @@ describe('timeline drag and drop', () => {
 
         cy.viewport(2000, 1000, { log: false });
         cy.visit('http://localhost:3000/editor');
+        cy.get('[data-cy="code-editor"]').get('.monaco-editor').should('exist')
         cy.get('[data-cy="code-editor"]').get('.monaco-editor').type('{ctrl+a}{del}', { release: false }) // equivalent to clear() in cypress
         cy.get('[data-cy="code-editor"]').get('.monaco-editor').type(yamltreatment)
         cy.get('[data-cy="yaml-save"]').click();
