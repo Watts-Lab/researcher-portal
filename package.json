@@ -14,8 +14,8 @@
     "patch": "cp patchedPlayer.d.ts ./node_modules/@empirica/core/dist/player-classic-react.d.ts"
   },
   "dependencies": {
-    "@empirica/core": "^1.11.0",
-    "@hello-pangea/dnd": "^16.6.0",
+    "@empirica/core": "^1.11.6",
+    "@hello-pangea/dnd": "^17.0.0",
     "@hookform/resolvers": "^3.6.0",
     "@monaco-editor/react": "^4.6.0",
     "@uiw/react-textarea-code-editor": "^2.1.9",
