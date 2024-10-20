@@ -50,7 +50,8 @@ export function useStageTimer() {
   // This is a mock function that returns a mock stage timer object
   const stageTimer = {
     isMock: true,
-    elapsed: stage.elapsed // problem: this will be called every render cycle...
+    elapsed: stage.elapsed * 1000 // multiply by 1000 for conditionalRender component
+    // problem: this will be called every render cycle...
   };
 
   return stageTimer;
@@ -66,6 +67,8 @@ export function useStage() {
     setElapsed,
     treatment,
     setTreatment,
+    templatesMap,
+    setTemplatesMap,
   } = useContext(StageContext)
   // const stage1 = useContext(StageContext);
   // console.log("useStageMock", stage1)
@@ -78,11 +81,19 @@ export function useStage() {
       //const treatmentString = localStorage.getItem("treatment");
       //const treatment = JSON.parse(treatmentString);
       if (varName === "elements") {
-        return treatment.gameStages[currentStageIndex]?.elements
+        var elements = treatment.treatments[0]?.gameStages[currentStageIndex]?.elements
+        elements =  elements.flatMap((element) => {
+          if (element.template) {
+            return templatesMap.get(element.template);
+          }
+          return [element];
+        });
+        console.log("revised elements", elements)
+        return elements;
       } else if (varName === "discussion") {
-        return treatment.gameStages[currentStageIndex]?.discussion
+        return treatment.treatments[0]?.gameStages[currentStageIndex]?.discussion
       } else if (varName === "name") {
-        return treatment.gameStages[currentStageIndex]?.name
+        return treatment.treatments[0]?.gameStages[currentStageIndex]?.name
       } else if (varName === "index") {
         return currentStageIndex
       }
@@ -110,6 +121,7 @@ export function usePlayers() {
 
 export function useGlobal() {
   // This is a mock function that returns a mock global object
+  // UPDATE CDN IF TESTING LOCALLY / DEPLOYING
   const global = {
     isMock: true,
     recruitingBatchConfig: {

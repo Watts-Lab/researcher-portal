@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   TreatmentType,
@@ -9,16 +9,25 @@ import {
 } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+import { StageContext } from '../stageContext.jsx'
 
 export function EditStage({
-  treatment,
-  editTreatment,
   stageIndex, // an index if the stage already exists, otherwise -1
 }: {
-  treatment: TreatmentType
-  editTreatment: (treatment: TreatmentType) => void
   stageIndex: number
 }) {
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+    editTreatment,
+    templatesMap,
+    setTemplatesMap,
+  } = useContext(StageContext)
+
   const {
     register,
     watch,
@@ -27,9 +36,18 @@ export function EditStage({
     formState: { errors },
   } = useForm<StageType>({
     defaultValues: {
-      name: treatment?.gameStages[stageIndex]?.name || '',
-      duration: treatment?.gameStages[stageIndex]?.duration || 0,
-      elements: treatment?.gameStages[stageIndex]?.elements || [],
+      name:
+        stageIndex != -1
+          ? treatment?.treatments[0].gameStages[stageIndex]?.name
+          : '',
+      duration:
+        stageIndex != -1
+          ? treatment?.treatments[0].gameStages[stageIndex]?.duration
+          : 0,
+      elements:
+        stageIndex != -1
+          ? treatment?.treatments[0].gameStages[stageIndex]?.elements
+          : [],
       // desc: "",
       // discussion: {
       //   chatType: "text",
@@ -47,7 +65,7 @@ export function EditStage({
     const inputs: { name: any; duration: any; elements: ElementType[] } = {
       name: watch('name'),
       duration: watch('duration'),
-      elements: treatment?.gameStages[stageIndex]?.elements || [],
+      elements: treatment?.treatments[0].gameStages[stageIndex]?.elements || [],
       // discussion: undefined,
       // desc: watch('desc'),
     }
@@ -73,11 +91,12 @@ export function EditStage({
 
     if (stageIndex === -1) {
       // create new stage
-      updatedTreatment?.gameStages?.push(inputs)
+      updatedTreatment?.treatments[0].gameStages?.push(inputs)
     } else {
       // modify existing stage
-      updatedTreatment.gameStages[stageIndex].name = watch('name')
-      updatedTreatment.gameStages[stageIndex].duration = watch('duration')
+      updatedTreatment.treatments[0].gameStages[stageIndex].name = watch('name')
+      updatedTreatment.treatments[0].gameStages[stageIndex].duration =
+        watch('duration')
       // todo: add discussion component
     }
     editTreatment(updatedTreatment)

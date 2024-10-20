@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import dynamic from 'next/dynamic.js'
 import TimePicker from './TimePicker'
+import ReferenceData from './ReferenceData'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
 
@@ -27,6 +28,13 @@ export function RenderPanel() {
     treatment,
     setTreatment,
   } = useContext(StageContext)
+
+  //const for reference data in sidebar
+  const [participantInfoName, setParticipantInfoName] = useState('')
+  const [guessPartnerParty, setGuessPartnerParty] = useState('')
+  const [guessPartnerPosition, setGuessPartnerPosition] = useState('')
+  const [stageName, setStageName] = useState('')
+
   console.log('RenderPanel.tsx current stage index', currentStageIndex)
   console.log('Current Treatment', treatment)
 
@@ -36,6 +44,12 @@ export function RenderPanel() {
   //const currentStage = treatment?.gameStages.?[currentStageIndex]
 
   //console.log('Current stage', localStorage.getItem('currentStageIndex'))
+
+  useEffect(() => {
+    // Updates value of timeline slider when elapsed time changes
+    console.log('Elapsed time changed:', elapsed)
+    setTime(elapsed)
+  }, [elapsed])
 
   return (
     <div className="flex" data-cy="render-panel">
@@ -50,7 +64,20 @@ export function RenderPanel() {
           <TimePicker
             value={time + ' s'}
             setValue={setElapsed}
-            maxValue={treatment.gameStages[currentStageIndex]?.duration ?? 0}
+            maxValue={
+              treatment.treatments[0].gameStages[currentStageIndex]?.duration ??
+              0
+            }
+          />
+          <ReferenceData
+            participantInfoName={participantInfoName}
+            guessPartnerParty={guessPartnerParty}
+            guessPartnerPosition={guessPartnerPosition}
+            stageName={stageName}
+            setParticipantInfoName={setParticipantInfoName}
+            setGuessPartnerParty={setGuessPartnerParty}
+            setGuessPartnerPosition={setGuessPartnerPosition}
+            setStageName={setStageName}
           />
           {/* need to retrieve stage duration from treatment */}
         </div>

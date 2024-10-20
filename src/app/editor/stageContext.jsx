@@ -1,17 +1,25 @@
 //import { set } from 'node_modules/cypress/types/lodash';
-import { createContext, useState } from 'react';
+import { createContext, useState } from 'react'
+import { stringify } from 'yaml'
 
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
 //     elapsed: "default"
 // });
 
-const StageContext = createContext();
+const StageContext = createContext()
 
 const StageProvider = ({ children }) => {
-  const [currentStageIndex, setCurrentStageIndex] = useState('default');
-  const [elapsed, setElapsed] = useState('default');
-  const [treatment, setTreatment] = useState(null);
+  const [currentStageIndex, setCurrentStageIndex] = useState('default')
+  const [elapsed, setElapsed] = useState(0)
+  const [treatment, setTreatment] = useState(null)
+  const [templatesMap, setTemplatesMap] = useState(new Map())
+
+  function editTreatment(newTreatment) {
+    setTreatment(newTreatment)
+    localStorage.setItem('code', stringify(newTreatment))
+    window.location.reload()
+  }
 
   const contextValue = {
     currentStageIndex,
@@ -19,17 +27,20 @@ const StageProvider = ({ children }) => {
     elapsed,
     setElapsed,
     treatment,
-    setTreatment
-  };
+    setTreatment,
+    editTreatment,
+    templatesMap,
+    setTemplatesMap,
+  }
 
   return (
     <StageContext.Provider value={contextValue}>
       {children}
     </StageContext.Provider>
-  );
-};
+  )
+}
 
-export { StageContext, StageProvider };
+export { StageContext, StageProvider }
 
 // import React, { createContext, useState, useContext } from 'react';
 

@@ -25,14 +25,10 @@ export default function Timeline({
     setElapsed,
     treatment,
     setTreatment,
+    editTreatment,
+    templatesMap,
+    setTemplatesMap,
   } = useContext(StageContext)
-
-  function editTreatment(newTreatment: TreatmentType) {
-    setTreatment(newTreatment)
-    localStorage.setItem('code', stringify(newTreatment))
-    window.location.reload()
-  }
-  // Todo: think about using 'useContext' here instead of passing editTreatment all the way down
 
   useEffect(() => {
     // Access localStorage only on the client side
@@ -40,8 +36,18 @@ export default function Timeline({
       const codeStr = localStorage.getItem('code') || ''
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
+
+      if (parsedCode?.templates) {
+        const templates = new Map<string, any>()
+        parsedCode.templates.forEach((template: any) => {
+          templates.set(template.templateName, template.templateContent)
+        })
+        setTemplatesMap(templates)
+      }
     }
   }, [setTreatment])
+
+  //setTreatment('')
 
   if (!treatment) {
     return null
@@ -65,6 +71,9 @@ export default function Timeline({
     updatedTreatment.gameStages = updatedStages
     editTreatment(updatedTreatment)
   }
+
+  console.log('treatment', treatment)
+  console.log('templatesMap', templatesMap)
 
   //const parsedCode = "";
 
@@ -94,7 +103,7 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {treatment?.gameStages?.map((stage: any, index: any) => (
+                  {treatment?.treatments[0]?.gameStages?.map((stage: any, index: any) => (
                     <Draggable
                       key={stage.name}
                       draggableId={`stage-${index}`}
@@ -126,7 +135,7 @@ export default function Timeline({
               )}
             </Droppable>
           </DragDropContext>
-
+        
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
             <button
               data-cy="add-stage-button"
@@ -142,11 +151,7 @@ export default function Timeline({
               +
             </button>
             <Modal id={'modal-add-stage'}>
-              <EditStage
-                treatment={treatment}
-                editTreatment={editTreatment}
-                stageIndex={-1}
-              />
+              <EditStage stageIndex={-1} />
             </Modal>
           </div>
         </div>

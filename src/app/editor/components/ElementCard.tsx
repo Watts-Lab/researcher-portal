@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Modal } from './Modal'
 import { EditElement } from './EditElement'
 import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { StageContext } from '../stageContext.jsx'
 
 export function ElementCard({
   element,
@@ -10,8 +11,6 @@ export function ElementCard({
   onSubmit,
   stageIndex,
   elementIndex,
-  treatment,
-  editTreatment,
   elementOptions,
 }: {
   element: any
@@ -20,13 +19,22 @@ export function ElementCard({
   onSubmit: any
   stageIndex: number
   elementIndex: number
-  treatment: any
-  editTreatment: (treatment: TreatmentType) => void
   elementOptions: any
 }) {
   const startTime = element.displayTime || 0
   const endTime = element.hideTime || stageDuration
   const [modalOpen, setModalOpen] = useState(false)
+
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+    templatesMap,
+    setTemplatesMap,
+  } = useContext(StageContext)
 
   const editModalId = `modal-stage${stageIndex}-element-${elementIndex}`
   return (
@@ -57,12 +65,7 @@ export function ElementCard({
       </button>
 
       <Modal id={editModalId}>
-        <EditElement
-          treatment={treatment}
-          editTreatment={editTreatment}
-          stageIndex={stageIndex}
-          elementIndex={elementIndex}
-        />
+        <EditElement stageIndex={stageIndex} elementIndex={elementIndex} />
       </Modal>
     </div>
   )
