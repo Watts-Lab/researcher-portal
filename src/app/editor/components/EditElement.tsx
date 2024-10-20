@@ -131,8 +131,7 @@ export function EditElement({
   }
 
   // FORM QUESTIONS
-  const htmlElements = []
-  htmlElements.push(
+  const htmlElements = (
     <form onSubmit={handleSubmit(saveEdits)}>
       <div>
         <label className="form-control w-full max-w-xs">

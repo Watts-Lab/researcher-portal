@@ -115,8 +115,7 @@ export function EditStage({
 
   // ----------- Form Questions -----------------
 
-  const htmlElements = []
-  htmlElements.push(
+  const htmlElements = (
     <form>
       {' '}
       {/* onSubmit={handleSubmit(saveEdits)}> */}
