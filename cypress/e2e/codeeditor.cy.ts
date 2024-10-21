@@ -1,5 +1,7 @@
 // npm run cypress:open
 
+import { keyCodeDefinitions } from "node_modules/cypress-real-events/keyCodeDefinitions";
+
 describe('code editor', () => {
     beforeEach(() => {
         // initial yaml treatment
@@ -8,17 +10,15 @@ describe('code editor', () => {
         cy.viewport(2000, 1000, { log: false });
 
         cy.visit('http://localhost:3000/editor')
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').should('exist')
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type('{ctrl+a}{del}', { release: false }) // equivalent to clear() in cypress
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type(`${yamltreatment}{pageUp}`)
+        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
 
         // verify initial text in editor
 
         // text values from monaco-editor will include line numbers and no line breaks
         // the yamltreatment variable has no line numbers and line breaks
         // so right now comparison is only on the treatmentName
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains('cypress_code_editor_test')
-        cy.get('[data-cy="yaml-save"]').click()
+        cy.containsInCodeEditor('cypress_code_editor_test')
+        cy.get('[data-cy="yaml-save"]').realClick()
 
         // verify value in stage cards
         cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
@@ -28,13 +28,13 @@ describe('code editor', () => {
 
     it('reflects code editor changes in stage cards', () => {
         // add new element using code editor
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{moveToEnd}{enter}", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{backspace}{backspace}  - name: Element 2\n  type: prompt\nfile: projects/example/preDiscussionInstructions.md")
+        cy.typeInCodeEditor("{moveToEnd}{enter}")
+        cy.typeInCodeEditor("{backspace}{backspace}  - name: Element 2\n  type: prompt\nfile: projects/example/preDiscussionInstructions.md")
         cy.get('[data-cy="yaml-save"]').click()
 
 
         // verify changes in code editor
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Element 2").should("be.visible")
+        cy.containsInCodeEditor("name: Element 2")
 
         // verify changes in stage cards
         cy.get('[data-cy="stage-0"]').should('exist')
@@ -55,29 +55,31 @@ describe('code editor', () => {
         cy.get('[data-cy="element-0-1"]').contains("TIPI").should("be.visible")
 
         // verify changes in code editor
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Element 2").should("be.visible")
+        cy.get('[data-cy="code-editor"]').get('.monaco-editor').realClick()
+        cy.contains("- name: Element 2").should("be.visible")
     })
 
 
     it('does not save when yaml is improperly formatted', () => {
         // edit to poorly formatted yaml using code editor
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{moveToEnd}{enter}", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{home}  name: Element 2\n  type: survey\nsurveyName: CRT")
+        cy.typeInCodeEditor("{moveToEnd}{enter}")
+        cy.typeInCodeEditor("{home}  name: Element 2\n  type: survey\nsurveyName: CRT")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor but no change in stage cards
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("name: Element 2").should("be.visible")
+        cy.containsInCodeEditor("name: Element 2")
         cy.get('[data-cy="element-0-1"]').should('not.exist')
         cy.get('[data-cy="element-0-0"]').should('exist')
 
         // correct mistake and save
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{end}{upArrow}{upArrow}{home}      - ", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{end}{upArrow}{home}      ", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{end}{home}      ", { release: false })
+        cy.typeInCodeEditor("{end}{upArrow}{upArrow}{home}      - ")
+        cy.typeInCodeEditor("{end}{upArrow}{home}      ")
+        cy.typeInCodeEditor("{end}{home}      ")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor and in stage cards
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Element 2").should("be.visible")
+        cy.get('[data-cy="code-editor"]').get('.monaco-editor').realClick()
+        cy.contains("- name: Element 2").should("be.visible")
         cy.get('[data-cy="stage-0"]').should('exist')
         cy.get('[data-cy="element-0-1"]').contains("survey").should("be.visible")
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible")
@@ -87,21 +89,21 @@ describe('code editor', () => {
 
     it('does not save when treatment (stage) is improperly formatted', () => {
         // add poorly formatted stage using code editor
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{moveToEnd}{enter}", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{home}  - name: Stage 2\n  duration: 300\nelements: []")
+        cy.typeInCodeEditor("{moveToEnd}{enter}")
+        cy.typeInCodeEditor("{home}  - name: Stage 2\n  duration: 300\nelements: []")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor but no change in stage cards
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Stage 2").should("be.visible")
+        cy.containsInCodeEditor("name: Stage 2")
         cy.get('[data-cy="stage-1"]').should('not.exist')
 
         // correct mistake and save
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("\n- name: Element 2\n  type: survey\nsurveyName: CRT", { release: false })
+        cy.typeInCodeEditor("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}")
+        cy.typeInCodeEditor("\n- name: Element 2\n  type: survey\nsurveyName: CRT")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor and in stage cards
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Stage 2").should("be.visible")
+        cy.containsInCodeEditor("name: Stage 2")
         cy.get('[data-cy="stage-1"]').should('exist')
         cy.get('[data-cy="element-1-0"]').contains("survey").should("be.visible")
         cy.get('[data-cy="element-1-0"]').contains("Element 2").should("be.visible")
@@ -109,21 +111,21 @@ describe('code editor', () => {
 
     it('does not save when treatment (element) is improperly formatted', () => {
         // add poorly formatted element using code editor
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{moveToEnd}{enter}", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{backspace}{backspace}  - name: Element 2")
+        cy.typeInCodeEditor("{moveToEnd}{enter}")
+        cy.typeInCodeEditor("{backspace}{backspace}  - name: Element 2")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor but no change in stage cards
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Element 2").should("be.visible")
+        cy.containsInCodeEditor("name: Element 2")
         cy.get('[data-cy="element-0-1"]').should('not.exist')
 
         // correct mistake and save
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{end}", { release: false })
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("\n  type: survey\nsurveyName: CRT", { release: false })
+        cy.typeInCodeEditor("{end}")
+        cy.typeInCodeEditor("\n  type: survey\nsurveyName: CRT")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor and in stage cards
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Element 2").should("be.visible")
+        cy.containsInCodeEditor("name: Element 2")
         cy.get('[data-cy="stage-0"]').should('exist')
         cy.get('[data-cy="element-0-1"]').contains("survey").should("be.visible")
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible")

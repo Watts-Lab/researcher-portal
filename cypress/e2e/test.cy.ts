@@ -1,3 +1,5 @@
+import { createPublicKey } from "crypto";
+
 // npm run cypress:open
 describe('test spec', () => {
   it('passes', () => {
@@ -10,13 +12,15 @@ describe('test spec', () => {
     cy.viewport(2000, 1000, { log: false });
 
     cy.visit('http://localhost:3000/editor')
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').should('exist')
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type('{ctrl+a}{del}', { release: false }) // equivalent to clear() in cypress
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type(`${yamltreatment}{pageUp}`)
-    //this fails because getting monaco-editor will include line numbers, but the yamltreatment variable does not
-    // also monaco-editor will remove line breaks, but yamltreatment will have the line breaks
-    //cy.get('[data-cy="code-editor"]').get('.monaco-editor').should('include.text', yamltreatment)
-    cy.get('[data-cy="yaml-save"]').click()
+    cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+
+    // verify initial text in editor
+
+    // text values from monaco-editor will include line numbers and no line breaks
+    // the yamltreatment variable has no line numbers and line breaks
+    // so right now comparison is only on the treatmentName
+    cy.containsInCodeEditor('cypress3_load_test')
+    cy.get('[data-cy="yaml-save"]').realClick()
 
     // create first stage
     cy.get('[data-cy="add-stage-button"]').click()
@@ -93,27 +97,27 @@ describe('test spec', () => {
     cy.get('[data-cy="stage-0"]').should("not.contain", "Element 2")
 
     // add fourth element to second stage via code editor
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{moveToEnd}{enter}", { release: false })
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("      - name: Element 4\n  type: prompt\nfile: file/address")
+    cy.typeInCodeEditor("{moveToEnd}{enter}")
+    cy.typeInCodeEditor("      - name: Element 4\n  type: prompt\nfile: file/address")
     cy.get('[data-cy="yaml-save"]').click()
 
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Element 4").should("be.visible")
+    cy.containsInCodeEditor("name: Element 4")
     cy.get('[data-cy="element-1-1"]').contains("prompt").should("be.visible")
     cy.get('[data-cy="element-1-1"]').contains("Element 4").should("be.visible")
 
     // add third stage via code editor
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{moveToEnd}{enter}", { release: false })
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{home}  - name: Stage 3\n  duration: 300\nelements: []")
+    cy.typeInCodeEditor("{moveToEnd}{enter}")
+    cy.typeInCodeEditor("{home}  - name: Stage 3\n  duration: 300\nelements: []")
     cy.get('[data-cy="yaml-save"]').click()
 
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Stage 3").should("be.visible")
+    cy.containsInCodeEditor("name: Stage 3")
     cy.get('[data-cy="stage-2"]').should('not.exist')
 
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}", { release: false })
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').type("\n- name: tes}{backspace}{backspace}t\n  type: survey\nsurveyName: CRT", { release: false })
+    cy.typeInCodeEditor("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}")
+    cy.typeInCodeEditor("\n- name: tes}{backspace}{backspace}t\n  type: survey\nsurveyName: CRT")
     cy.get('[data-cy="yaml-save"]').click()
 
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').contains("- name: Stage 3").should("be.visible")
+    cy.containsInCodeEditor("name: Stage 3")
     cy.get('[data-cy="stage-2"]').should('exist')
 
     // edit first stage
