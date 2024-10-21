@@ -34,7 +34,7 @@ Cypress.Commands.add('typeInCodeEditor', function (text) {
 })
 
 Cypress.Commands.add('containsInCodeEditor', function (text) {
-    cy.get('[data-cy="code-editor"]').get('.monaco-editor').realClick().realMouseWheel({ scrollBehavior: "top", deltaY: -100 })
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor').realClick().realMouseWheel({ scrollBehavior: "top", deltaY: -200 })
     cy.contains(text)
 })
 

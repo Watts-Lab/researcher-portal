@@ -28,8 +28,7 @@ describe('code editor', () => {
 
     it('reflects code editor changes in stage cards', () => {
         // add new element using code editor
-        cy.typeInCodeEditor("{moveToEnd}{enter}")
-        cy.typeInCodeEditor("{backspace}{backspace}  - name: Element 2\n  type: prompt\nfile: projects/example/preDiscussionInstructions.md")
+        cy.typeInCodeEditor("{moveToEnd}{enter}{backspace}{backspace}  - name: Element 2\n  type: prompt\nfile: projects/example/preDiscussionInstructions.md")
         cy.get('[data-cy="yaml-save"]').click()
 
 
@@ -55,8 +54,7 @@ describe('code editor', () => {
         cy.get('[data-cy="element-0-1"]').contains("TIPI").should("be.visible")
 
         // verify changes in code editor
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').realClick()
-        cy.contains("- name: Element 2").should("be.visible")
+        cy.containsInCodeEditor("name: Element 2")
     })
 
 
@@ -72,14 +70,11 @@ describe('code editor', () => {
         cy.get('[data-cy="element-0-0"]').should('exist')
 
         // correct mistake and save
-        cy.typeInCodeEditor("{end}{upArrow}{upArrow}{home}      - ")
-        cy.typeInCodeEditor("{end}{upArrow}{home}      ")
-        cy.typeInCodeEditor("{end}{home}      ")
+        cy.typeInCodeEditor("{end}{upArrow}{upArrow}{home}      - {end}{downArrow}{home}      {end}{downArrow}{home}      ")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor and in stage cards
-        cy.get('[data-cy="code-editor"]').get('.monaco-editor').realClick()
-        cy.contains("- name: Element 2").should("be.visible")
+        cy.containsInCodeEditor("name: Element 2")
         cy.get('[data-cy="stage-0"]').should('exist')
         cy.get('[data-cy="element-0-1"]').contains("survey").should("be.visible")
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible")
@@ -89,8 +84,7 @@ describe('code editor', () => {
 
     it('does not save when treatment (stage) is improperly formatted', () => {
         // add poorly formatted stage using code editor
-        cy.typeInCodeEditor("{moveToEnd}{enter}")
-        cy.typeInCodeEditor("{home}  - name: Stage 2\n  duration: 300\nelements: []")
+        cy.typeInCodeEditor("{moveToEnd}{enter}{home}  - name: Stage 2\n  duration: 300\nelements: []")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor but no change in stage cards
@@ -98,8 +92,7 @@ describe('code editor', () => {
         cy.get('[data-cy="stage-1"]').should('not.exist')
 
         // correct mistake and save
-        cy.typeInCodeEditor("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}")
-        cy.typeInCodeEditor("\n- name: Element 2\n  type: survey\nsurveyName: CRT")
+        cy.typeInCodeEditor("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}\n- name: Element 2\n  type: survey\nsurveyName: CRT")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor and in stage cards
@@ -111,8 +104,7 @@ describe('code editor', () => {
 
     it('does not save when treatment (element) is improperly formatted', () => {
         // add poorly formatted element using code editor
-        cy.typeInCodeEditor("{moveToEnd}{enter}")
-        cy.typeInCodeEditor("{backspace}{backspace}  - name: Element 2")
+        cy.typeInCodeEditor("{moveToEnd}{enter}{backspace}{backspace}  - name: Element 2")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor but no change in stage cards
@@ -120,8 +112,7 @@ describe('code editor', () => {
         cy.get('[data-cy="element-0-1"]').should('not.exist')
 
         // correct mistake and save
-        cy.typeInCodeEditor("{end}")
-        cy.typeInCodeEditor("\n  type: survey\nsurveyName: CRT")
+        cy.typeInCodeEditor("{end}\n  type: survey\nsurveyName: CRT")
         cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor and in stage cards

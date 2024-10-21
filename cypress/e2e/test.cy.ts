@@ -97,8 +97,7 @@ describe('test spec', () => {
     cy.get('[data-cy="stage-0"]').should("not.contain", "Element 2")
 
     // add fourth element to second stage via code editor
-    cy.typeInCodeEditor("{moveToEnd}{enter}")
-    cy.typeInCodeEditor("      - name: Element 4\n  type: prompt\nfile: file/address")
+    cy.typeInCodeEditor("{moveToEnd}{enter}      - name: Element 4\n  type: prompt\nfile: file/address")
     cy.get('[data-cy="yaml-save"]').click()
 
     cy.containsInCodeEditor("name: Element 4")
@@ -106,15 +105,13 @@ describe('test spec', () => {
     cy.get('[data-cy="element-1-1"]').contains("Element 4").should("be.visible")
 
     // add third stage via code editor
-    cy.typeInCodeEditor("{moveToEnd}{enter}")
-    cy.typeInCodeEditor("{home}  - name: Stage 3\n  duration: 300\nelements: []")
+    cy.typeInCodeEditor("{moveToEnd}{enter}{home}  - name: Stage 3\n  duration: 300\nelements: []")
     cy.get('[data-cy="yaml-save"]').click()
 
     cy.containsInCodeEditor("name: Stage 3")
     cy.get('[data-cy="stage-2"]').should('not.exist')
 
-    cy.typeInCodeEditor("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}")
-    cy.typeInCodeEditor("\n- name: tes}{backspace}{backspace}t\n  type: survey\nsurveyName: CRT")
+    cy.typeInCodeEditor("{end}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}\n- name: tes{backspace}{backspace}t\n  type: survey\nsurveyName: CRT")
     cy.get('[data-cy="yaml-save"]').click()
 
     cy.containsInCodeEditor("name: Stage 3")
