@@ -62,13 +62,13 @@ export default function Timeline({
 
     const sourceIndex = source.index
     const destIndex = destination.index
-    const updatedStages = Array.from(treatment.gameStages)
+    const updatedStages = Array.from(treatment.treatments[0].gameStages)
     const [removed] = updatedStages.splice(sourceIndex, 1)
     updatedStages.splice(destIndex, 0, removed)
 
     // update treatment
     const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-    updatedTreatment.gameStages = updatedStages
+    updatedTreatment.treatments[0].gameStages = updatedStages
     editTreatment(updatedTreatment)
   }
 
@@ -103,39 +103,39 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {treatment?.treatments[0]?.gameStages?.map((stage: any, index: any) => (
-                    <Draggable
-                      key={stage.name}
-                      draggableId={`stage-${index}`}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <StageCard
-                            title={stage.name}
-                            elements={stage.elements}
-                            duration={stage.duration}
-                            scale={scale}
-                            treatment={treatment}
-                            editTreatment={editTreatment}
-                            sequence={'gameStage'}
-                            stageIndex={index}
-                            setRenderPanelStage={setRenderPanelStage}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  {treatment?.treatments[0]?.gameStages?.map(
+                    (stage: any, index: any) => (
+                      <Draggable
+                        key={stage.name}
+                        draggableId={`stage-${index}`}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <StageCard
+                              title={stage.name}
+                              elements={stage.elements}
+                              duration={stage.duration}
+                              scale={scale}
+                              sequence={'gameStage'}
+                              stageIndex={index}
+                              setRenderPanelStage={setRenderPanelStage}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    )
+                  )}
                   {provided.placeholder}
                 </div>
               )}
             </Droppable>
           </DragDropContext>
-        
+
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
             <button
               data-cy="add-stage-button"

@@ -6,7 +6,7 @@ templates:
       - type: submitButton
 
 treatments:
-  - name: simple template test
+  - name: template sample stage
     playerCount: 1
     gameStages:
       - name: TestTemplateA

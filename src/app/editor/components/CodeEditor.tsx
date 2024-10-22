@@ -12,19 +12,21 @@ export default function CodeEditor() {
 
   useEffect(() => {
     async function fetchDefaultTreatment() {
-      try {
+      var data = defaultTreatment
+      if (defaultTreatment) {
+        return // If defaultTreatment is already set, do nothing
+      } else {
         const response = await fetch('/defaultTreatment.yaml')
         const text = await response.text()
-        const data = yaml.load(text)
+        data = yaml.load(text)
         setDefaultTreatment(data)
-        const storedCode = localStorage.getItem('code') || ''
-        if (storedCode === '') {
-          setCode(stringify(data))
-        } else {
-          setCode(storedCode)
-        }
-      } catch (error) {
-        console.error('Error fetching default treatment:', error)
+      }
+
+      const storedCode = localStorage.getItem('code') || ''
+      if (storedCode === '') {
+        setCode(stringify(data))
+      } else {
+        setCode(storedCode)
       }
     }
 

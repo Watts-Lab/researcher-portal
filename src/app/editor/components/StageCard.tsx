@@ -38,6 +38,7 @@ export function StageCard({
     setElapsed,
     treatment,
     setTreatment,
+    editTreatment,
     templatesMap,
     setTemplatesMap,
   } = useContext(StageContext)
@@ -97,7 +98,8 @@ export function StageCard({
 
     // update treatment
     const updatedTreatment = JSON.parse(JSON.stringify(treatment))
-    updatedTreatment.gameStages[stageIndex].elements = updatedElements
+    updatedTreatment.treatments[0].gameStages[stageIndex].elements =
+      updatedElements
     editTreatment(updatedTreatment)
   }
 
@@ -136,9 +138,12 @@ export function StageCard({
           <EditStage stageIndex={stageIndex} />
         </Modal>
       </div>
-      
+
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId={`droppable-elements-${stageIndex}`} direction='vertical'>
+        <Droppable
+          droppableId={`droppable-elements-${stageIndex}`}
+          direction="vertical"
+        >
           {(provided) => (
             <div
               id="elementList"
@@ -166,8 +171,6 @@ export function StageCard({
                           stageDuration={duration}
                           stageIndex={stageIndex}
                           elementIndex={index}
-                          treatment={treatment}
-                          editTreatment={editTreatment}
                           elementOptions={addElementOptions}
                           onSubmit={''}
                         />
@@ -198,12 +201,7 @@ export function StageCard({
         </button>
 
         <Modal id={newElementModalId}>
-          <EditElement
-            treatment={treatment}
-            editTreatment={editTreatment}
-            stageIndex={stageIndex}
-            elementIndex={-1}
-          />
+          <EditElement stageIndex={stageIndex} elementIndex={-1} />
         </Modal>
       </div>
     </div>

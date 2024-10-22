@@ -15,6 +15,7 @@ const StageProvider = ({ children }) => {
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
 
+  // for updating code editor, requires reload
   function editTreatment(newTreatment) {
     setTreatment(newTreatment)
     localStorage.setItem('code', stringify(newTreatment))

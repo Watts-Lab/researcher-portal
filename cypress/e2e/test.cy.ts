@@ -6,47 +6,54 @@ describe('test spec', () => {
     // TO ADD: check for warning messages when invalid input is entered
 
     // initial yaml code for treatment
-    let yamltreatment = "name: cypress3_load_test\nplayerCount: 1\ngameStages: []"
 
     cy.viewport(2000, 1000, { log: false });
 
     cy.visit('http://localhost:3000/editor')
-    cy.get('[data-cy="code-editor"]').clear().type(yamltreatment)
+    cy.get('[data-cy="code-editor"]').should('contain.text', 'testA')
     cy.get('[data-cy="yaml-save"]').click()
 
-    // create first stage
-    cy.get('[data-cy="add-stage-button"]').click()
-    cy.get('[data-cy="edit-stage-name-new"]').type("Stage 1")
-    cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300")
-    cy.get('[data-cy="edit-stage-save-new"]').click()
-
-    cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
-
-    // add first element to stage 1
-    cy.get('[data-cy="add-element-button-0"]').click()
-    cy.get('[data-cy="edit-element-name-0-new"]').type("Element 1")
-    cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt")
-    cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md")
-    cy.get('[data-cy="edit-element-save-0-new"]').click()
-
-    cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
-    cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible")
+    // // view template in render panel
+    // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
+    // cy.get('[data-cy="stage-0"]').click(0, 0)
+    // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
+    // cy.get('[data-cy="render-panel"]').contains("strong magical field").should("be.visible")
 
     // add second element to stage 1
     cy.get('[data-cy="add-element-button-0"]').click()
     cy.get('[data-cy="edit-element-name-0-new"]').type("Element 2")
+    cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt")
+    cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md")
+    cy.get('[data-cy="edit-element-save-0-new"]').click()
+
+    cy.get('[data-cy="element-0-1"]').contains("prompt").should("be.visible")
+    cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible")
+
+    // add third element to stage 1
+    cy.get('[data-cy="add-element-button-0"]').click()
+    cy.get('[data-cy="edit-element-name-0-new"]').type("Element 3")
     cy.get('[data-cy="edit-element-type-0-new"]').select("Survey")
     cy.get('[data-cy="edit-element-surveyName-0-new"]').select("TIPI")
     cy.get('[data-cy="edit-element-save-0-new"]').click()
 
-    cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
-    cy.get('[data-cy="element-0-1"]').contains("survey").should("be.visible")
-    cy.get('[data-cy="element-0-1"]').contains("TIPI").should("be.visible")
+    cy.get('[data-cy="element-0-1"]').contains("prompt").should("be.visible")
+    cy.get('[data-cy="element-0-2"]').contains("survey").should("be.visible")
+    cy.get('[data-cy="element-0-2"]').contains("TIPI").should("be.visible")
+
+    // edit first stage
+    cy.get('[data-cy="edit-stage-button-0"]').click()
+    cy.get('[data-cy="edit-stage-name-0"]').clear().type("Stage 1 Edited")
+    cy.get('[data-cy="edit-stage-duration-0"]').clear().type("400")
+    cy.get('[data-cy="edit-stage-save-0"]').click()
+
+    cy.get('[data-cy="stage-0"]').contains("Stage 1 Edited").should("be.visible")
 
     // view first stage in render panel
     cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
     cy.get('[data-cy="stage-0"]').click(0, 0)
+    cy.wait(2000)
     cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
+    cy.get('[data-cy="render-panel"]').contains("strong magical field").should("be.visible")
     cy.get('[data-cy="render-panel"]').contains("Here are a number of personality traits").should("be.visible")
 
     // create second stage
@@ -73,23 +80,23 @@ describe('test spec', () => {
     cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
     cy.get('[data-cy="render-panel"]').contains("Click to continue the video").should("be.visible")
 
-    // edit first element
-    cy.get('[data-cy="edit-element-button-0-0"]').click()
-    cy.get('[data-cy="edit-element-name-0-0"]').should("have.value", "Element 1").should("be.visible").type(" Edited")
-    cy.get('[data-cy="edit-element-file-0-0"]').type("projects/example/discussionInstructions.md")
-    cy.get('[data-cy="edit-element-save-0-0"]').click()
-
-    cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
-    cy.get('[data-cy="element-0-0"]').contains("Element 1 Edited").should("be.visible")
-
-    // delete second element
+    // edit second element in first stage
     cy.get('[data-cy="edit-element-button-0-1"]').click()
-    cy.get('[data-cy="edit-element-delete-0-1"]').click()
+    cy.get('[data-cy="edit-element-name-0-1"]').should("have.value", "Element 2").should("be.visible").type(" Edited")
+    cy.get('[data-cy="edit-element-file-0-1"]').type("projects/example/discussionInstructions.md")
+    cy.get('[data-cy="edit-element-save-0-1"]').click()
 
-    cy.get('[data-cy="stage-0"]').should("not.contain", "Element 2")
+    cy.get('[data-cy="element-0-1"]').contains("prompt").should("be.visible")
+    cy.get('[data-cy="element-0-1"]').contains("Element 2 Edited").should("be.visible")
+
+    // delete third element in first stage
+    cy.get('[data-cy="edit-element-button-0-2"]').click()
+    cy.get('[data-cy="edit-element-delete-0-2"]').click()
+
+    cy.get('[data-cy="stage-0"]').should("not.contain", "Element 3")
 
     // add fourth element to second stage via code editor
-    cy.get('[data-cy="code-editor"]').type("      - name: Element 4\n  type: prompt\nfile: file/address")
+    cy.get('[data-cy="code-editor"]').type("          - name: Element 4\n  type: prompt\nfile: file/address")
     cy.get('[data-cy="yaml-save"]').click()
 
     cy.get('[data-cy="code-editor"]').contains("- name: Element 4").should("be.visible")
@@ -103,17 +110,10 @@ describe('test spec', () => {
     cy.get('[data-cy="code-editor"]').contains("- name: Stage 3").should("be.visible")
     cy.get('[data-cy="stage-2"]').contains("Stage 3").should("be.visible")
 
-    // edit first stage
-    cy.get('[data-cy="edit-stage-button-0"]').click()
-    cy.get('[data-cy="edit-stage-name-0"]').type(" Edited")
-    cy.get('[data-cy="edit-stage-duration-0"]').clear().type("400")
-    cy.get('[data-cy="edit-stage-save-0"]').click()
-
-    cy.get('[data-cy="stage-0"]').contains("Stage 1 Edited").should("be.visible")
-
-    // delete second stage
+    // delete third stage
     cy.get('[data-cy="edit-stage-button-2"]').click()
     cy.get('[data-cy="edit-stage-delete-2"]').click()
+    cy.on('window:confirm', () => true);
 
     cy.get('[data-cy="timeline"]').should("not.contain", "Stage 3")
   })

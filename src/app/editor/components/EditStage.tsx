@@ -74,20 +74,21 @@ export function EditStage({
     // if (watch('desc') !== "") inputs.desc = watch('desc')
     // if (watch('elements') !== null) inputs.elements = watch('elements')
 
-    const result = stageSchema.safeParse(inputs)
-    if (!result.success) {
-      const parsedError = result.error.errors
-      if (
-        parsedError[0].message === 'Array must contain at least 1 element(s)' &&
-        stageIndex === -1
-      ) {
-        // do nothing --> ignore the error
-      } else {
-        console.error('Error described below:')
-        console.error(result.error.errors)
-        return
-      }
-    }
+    // ZOD SCHEMA VALIDATION NOT WORKING WITH TEMPLATES
+    //const result = stageSchema.safeParse(inputs)
+    // if (!result.success) {
+    //   const parsedError = result.error.errors
+    //   if (
+    //     parsedError[0].message === 'Array must contain at least 1 element(s)' &&
+    //     stageIndex === -1
+    //   ) {
+    //     // do nothing --> ignore the error
+    //   } else {
+    //     console.error('Error described below:')
+    //     console.error(result.error.errors)
+    //     return
+    //   }
+    // }
 
     if (stageIndex === -1) {
       // create new stage
@@ -108,7 +109,7 @@ export function EditStage({
     )
     if (confirm) {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      updatedTreatment.gameStages.splice(stageIndex, 1) // delete in place
+      updatedTreatment.treatments[0].gameStages.splice(stageIndex, 1) // delete in place
       editTreatment(updatedTreatment)
     }
   }
