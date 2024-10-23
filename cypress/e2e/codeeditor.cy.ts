@@ -4,7 +4,7 @@ import { keyCodeDefinitions } from "node_modules/cypress-real-events/keyCodeDefi
 
 function setInitialTreatment(appendTreatmentTextWith: string = '') {
     // initial yaml treatment
-    let yamltreatment = `name: cypress_code_editor_test \nplayerCount: 1 \ngameStages: {enter}- name: Stage 1 \n  duration: 100 \nelements: \n  - name: Element 1 \n  type: survey \nsurveyName: CRT ${appendTreatmentTextWith}`
+    let yamltreatment = `name: cypress_code_editor_test \nplayerCount: 1 \ngameStages: {enter}{home}  - name: Stage 1 \n  duration: 100 \nelements: \n  - name: Element 1 \n  type: survey \nsurveyName: CRT ${appendTreatmentTextWith}`
     cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
 
     // verify initial text in editor
@@ -111,7 +111,7 @@ describe('code editor', () => {
         cy.get('[data-cy="element-0-1"]').should('not.exist')
 
         // correct mistake and save
-        setInitialTreatment(`{enter}{backspace}- name: Element 2\n  type: survey\nsurveyName: CRT`)
+        setInitialTreatment(`{enter}{backspace}- name: Element 2\n  type: survey \nsurveyName: CRT`)
 
         // verify text is updated in editor and in stage cards
         cy.containsInCodeEditor("name: Element 2")
