@@ -193,3 +193,39 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
 }
 
 export default ReferenceData
+
+// const yamlString = `
+//   name: ManipulationCheck
+//   elements:
+//     - type: prompt
+//       file: projects/css_lab/ct_topic/consider_partner.md
+
+//     - type: display
+//       reference: participantInfo.name
+//       position: 0
+//       showToPositions: [1]
+
+//     - type: display
+//       reference: participantInfo.MEOW
+//       position: 1
+//       showToPositions: [0]
+
+//     - type: prompt
+//       file: projects/css_lab/ct_topic/guess_partner_party.md
+//       name: guessPartnerParty
+//       tags: ["outcome"]
+
+//     - type: prompt
+//       file: projects/css_lab/ct_topic/guess_partner_position.md
+
+//     - type: prompt
+//       file: "shared/yesNo/\${topicName}_survey.md"
+//       name: guessPartnerPosition
+//       tags: ["outcome"]
+
+//     - type: submitButton
+//       conditions:
+//         - reference: prompt.guessPartnerParty
+//           comparator: exists
+//         - reference: prompt.guessPartnerPosition
+//           comparator: exists
