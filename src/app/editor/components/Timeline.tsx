@@ -3,7 +3,6 @@ import React, { useEffect, useState, useContext } from 'react'
 import { parse } from 'yaml'
 import { StageCard } from './StageCard'
 import TimelineTools from './TimelineTools'
-import TimePicker from './TimePicker'
 import { stringify } from 'yaml'
 import { Modal } from './Modal'
 import { EditStage } from './EditStage'
@@ -17,7 +16,9 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   const [scale, setScale] = useState(1) // pixels per second
-  //const [treatment, setTreatment] = useState<any | null>(null)
+  const [filterCriteria, setFilterCriteria] = useState('all') // state for selected filter
+  const [filterOptions, setFilterOptions] = useState<string[]>([]) // state to store filter options (stage names)
+
   const {
     currentStageIndex,
     setCurrentStageIndex,
@@ -40,11 +41,37 @@ export default function Timeline({
       const codeStr = localStorage.getItem('code') || ''
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
+
+      const storedFilter = localStorage.getItem('filterCriteria') || 'all' // persist filter option
+      setFilterCriteria(storedFilter)
+
+      // generate dynamic selector options
+      if (parsedCode && parsedCode.gameStages) {
+        const stageNames = parsedCode.gameStages.map((stage: any) => stage.name)
+        setFilterOptions(['all', ...stageNames]) // 'all' as default
+      }
     }
   }, [setTreatment])
 
   if (!treatment) {
     return null
+  }
+
+  function filterStages(treatment: any) {
+    if (!treatment) return []
+
+    if (filterCriteria === 'all') {
+      return treatment.gameStages
+    } else {
+      return treatment.gameStages.filter(
+        (stage: { name: string }) => stage.name === filterCriteria
+      )
+    }
+  }
+
+  function handleFilterChange(event: any) {
+    setFilterCriteria(event.target.value)
+    localStorage.setItem('filterCriteria', event.target.value)
   }
 
   // drag and drop handler
@@ -81,6 +108,23 @@ export default function Timeline({
   return (
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
+
+      {/* select section dropdown */}
+      <div className="flex items-center justify-start space-x-2 p-1 bg-slate-200 h-12">
+        <label className="text-gray font-medium">Select section:</label>
+        <select
+          value={filterCriteria}
+          onChange={handleFilterChange}
+          className="select select-bordered bg-white text-gray-700 font-medium h-full text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 truncate max-w-xs"
+        >
+          {filterOptions.map((option, index) => (
+            <option key={index} value={option} className="truncate">
+              {option === 'all' ? 'All Stages' : option}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div
         id="timelineCanvas"
         className="grow min-h-10 bg-slate-600 p-2 overflow-y-auto overflow-x-auto"
@@ -94,7 +138,7 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {treatment?.gameStages?.map((stage: any, index: any) => (
+                  {filterStages(treatment)?.map((stage: any, index: any) => (
                     <Draggable
                       key={stage.name}
                       draggableId={`stage-${index}`}

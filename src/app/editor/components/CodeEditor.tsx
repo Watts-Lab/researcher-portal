@@ -93,9 +93,7 @@ export default function CodeEditor() {
   )
 
   useEffect(() => {
-    let value
-    // Get the value from local storage if it exists
-    value = localStorage.getItem('code') || ''
+    const value = localStorage.getItem('code') || ''
     if (value === '') {
       setCode(stringify(defaultTreatment))
     } else {
