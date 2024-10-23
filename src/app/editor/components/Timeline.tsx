@@ -9,6 +9,7 @@ import { Modal } from './Modal'
 import { EditStage } from './EditStage'
 import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { StageContext } from '@/editor/stageContext'
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 
 export default function Timeline({
   setRenderPanelStage,
@@ -46,6 +47,25 @@ export default function Timeline({
     return null
   }
 
+  // drag and drop handler
+  function onDragEnd(result: any) {
+    const { destination, source } = result
+    if (!destination) {
+      return
+    }
+
+    const sourceIndex = source.index
+    const destIndex = destination.index
+    const updatedStages = Array.from(treatment.gameStages)
+    const [removed] = updatedStages.splice(sourceIndex, 1)
+    updatedStages.splice(destIndex, 0, removed)
+
+    // update treatment
+    const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
+    updatedTreatment.gameStages = updatedStages
+    editTreatment(updatedTreatment)
+  }
+
   //const parsedCode = "";
 
   // TODO: add a page before this that lets the researcher select what treatment to work on
@@ -66,21 +86,47 @@ export default function Timeline({
         className="grow min-h-10 bg-slate-600 p-2 overflow-y-auto overflow-x-auto"
       >
         <div className="flex flex-row flex-nowrap overflow-x-auto gap-x-1 overflow-y-auto">
-          {treatment &&
-            treatment?.gameStages?.map((stage: any, index: any) => (
-              <StageCard
-                key={stage.name}
-                title={stage.name}
-                elements={stage.elements}
-                duration={stage.duration}
-                scale={scale}
-                treatment={treatment}
-                editTreatment={editTreatment}
-                sequence={'gameStage'}
-                stageIndex={index}
-                setRenderPanelStage={setRenderPanelStage}
-              />
-            ))}
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable-timeline" direction="horizontal">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="flex flex-row gap-x-1"
+                >
+                  {treatment?.gameStages?.map((stage: any, index: any) => (
+                    <Draggable
+                      key={stage.name}
+                      draggableId={`stage-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <StageCard
+                            title={stage.name}
+                            elements={stage.elements}
+                            duration={stage.duration}
+                            scale={scale}
+                            treatment={treatment}
+                            editTreatment={editTreatment}
+                            sequence={'gameStage'}
+                            stageIndex={index}
+                            setRenderPanelStage={setRenderPanelStage}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+
           <div className="card bg-slate-300 w-12 m-1 opacity-50 flex items-center">
             <button
               data-cy="add-stage-button"
