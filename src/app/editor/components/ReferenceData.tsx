@@ -8,7 +8,7 @@ const formatReference = (reference: string) => {
     .join(': ')
 }
 
-// helper to get part after  last colon just for placeholder
+// helper to get part after  last colon just for placeholdera
 const getPlaceholderText = (reference: string) => {
   const parts = reference.split(':')
   return parts.length > 1 ? parts[parts.length - 1].trim() : reference
@@ -32,63 +32,74 @@ const findReferencesByStage = (obj: any): any[] => {
 }
 
 // Pre-initialize JSON structure with empty strings for references
-const initializeJsonData = (
-  treatment: any
-): { [stage: string]: { [ref: string]: string } } => {
-  const jsonData: { [stage: string]: { [ref: string]: string } } = {}
-
+const initializeJsonData = (treatment: any) => {
+  const jsonData: { [key: string]: any } = {}
   treatment?.gameStages?.forEach((stage: any, index: number) => {
     const references = findReferencesByStage(stage)
     jsonData[`stage_${index}`] = {}
-
-    // Initialize each reference with an empty string
-    references.forEach((reference: string) => {
+    references.forEach((reference) => {
       jsonData[`stage_${index}`][reference] = ''
     })
   })
-
   return jsonData
 }
 
-const ReferenceData: React.FC<{ treatment: any; stageIndex: number }> = ({
-  treatment,
-  stageIndex,
-}) => {
+interface Treatment {
+  gameStages: any[]
+}
+
+interface ReferenceDataProps {
+  treatment: Treatment
+  stageIndex: number
+}
+
+interface JsonData {
+  [key: string]: {
+    [reference: string]: string
+  }
+}
+
+interface InputValues {
+  [key: string]: {
+    [reference: string]: string
+  }
+}
+
+const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
   const [references, setReferences] = useState<string[]>([])
-  const [jsonData, setJsonData] = useState<{
-    [stage: string]: { [ref: string]: string }
-  }>({})
-  const [inputValues, setInputValues] = useState<{
-    [stage: string]: { [ref: string]: string }
-  }>({})
+  const [jsonData, setJsonData] = useState<JsonData>({})
+  const [inputValues, setInputValues] = useState<InputValues>({})
 
-  //storing it here for now until we have a way to retrieve it from the stage
-  useEffect(() => {
-    if (treatment && treatment.gameStages && treatment.gameStages[stageIndex]) {
-      // we get the specific stage by its stageIndex
-      const stage = treatment.gameStages[stageIndex]
-      const allReferences = findReferencesByStage(stage)
-      setReferences(allReferences)
+ // Load references for the selected stage
+ useEffect(() => {
+  if (treatment?.gameStages?.[stageIndex]) {
+    const stage = treatment.gameStages[stageIndex];
+    const allReferences = findReferencesByStage(stage);
+    setReferences(allReferences);
 
-      // Pre-initialize the JSON structure only on the first load
-      if (Object.keys(jsonData).length === 0) {
-        const initializedJson = initializeJsonData(treatment)
-        setJsonData(initializedJson)
-      }
-
-      // Initialize input values for the current stage if not already initialized
-      if (!inputValues[`stage_${stageIndex}`]) {
-        setInputValues((prev) => ({
-          ...prev,
-          [`stage_${stageIndex}`]: jsonData[`stage_${stageIndex}`] || {},
-        }))
-      }
+    // Load or initialize JSON data for the current stage
+    if (!jsonData[`stage_${stageIndex}`]) {
+      const initializedJson = initializeJsonData(treatment);
+      setJsonData((prev) => ({ ...prev, ...initializedJson }));
     }
-  }, [treatment, stageIndex, jsonData, inputValues])
+
+    // Load or keep input values from state/localStorage without overwriting
+    if (!inputValues[`stage_${stageIndex}`]) {
+      const savedInputValues = JSON.parse(localStorage.getItem('inputValues') || '{}');
+      const initialValues = savedInputValues[`stage_${stageIndex}`] || {};
+
+      setInputValues((prev) => ({
+        ...prev,
+        [`stage_${stageIndex}`]: initialValues,
+      }));
+    }
+  }
+}, [treatment, stageIndex, jsonData, inputValues, setJsonData, setInputValues]);
+
 
   // Handle input change and update state for the current stage
   const handleInputChange = (reference: string, value: string) => {
-    setInputValues((prev) => ({
+    setInputValues((prev: { [key: string]: any }) => ({
       ...prev,
       [`stage_${stageIndex}`]: {
         ...(prev[`stage_${stageIndex}`] || {}),
@@ -97,18 +108,35 @@ const ReferenceData: React.FC<{ treatment: any; stageIndex: number }> = ({
     }))
   }
 
-  // Save function that updates the JSON array by stage and reference
+  // Save the current input values to the JSON structure and localStorage
   const saveAsJson = () => {
-    const updatedJson = { ...jsonData }
+    const updatedJson = {
+      ...jsonData,
+      [`stage_${stageIndex}`]: inputValues[`stage_${stageIndex}`],
+    }
+    setJsonData(updatedJson) // Update state
+    localStorage.setItem('jsonData', JSON.stringify(updatedJson)) // Save to localStorage
 
-    // Update only the references for this stage
-    updatedJson[`stage_${stageIndex}`] = {
-      ...inputValues[`stage_${stageIndex}`],
+    console.log('Saved JSON Data:', JSON.stringify(updatedJson, null, 2)) // Pretty print
+  }
+
+  useEffect(() => {
+    const savedJson = localStorage.getItem('jsonData')
+    const savedInputValues = localStorage.getItem('inputValues')
+
+    if (savedJson) {
+      console.log('Loaded JSON Data from localStorage:', JSON.parse(savedJson))
+      setJsonData(JSON.parse(savedJson))
     }
 
-    setJsonData(updatedJson) // Update state with the new JSON structure
-    console.log('Updated JSON:', JSON.stringify(updatedJson, null, 2)) // Pretty print JSON
-  }
+    if (savedInputValues) {
+      console.log(
+        'Loaded Input Values from localStorage:',
+        JSON.parse(savedInputValues)
+      )
+      setInputValues(JSON.parse(savedInputValues))
+    }
+  }, [])
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
