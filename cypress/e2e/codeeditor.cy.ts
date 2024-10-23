@@ -4,7 +4,7 @@ import { keyCodeDefinitions } from "node_modules/cypress-real-events/keyCodeDefi
 
 function setInitialTreatment(appendTreatmentTextWith: string = '') {
     // initial yaml treatment
-    let yamltreatment = `name: cypress_code_editor_test \nplayerCount: 1 \ngameStages: \n- name: Stage 1 \n  duration: 100 \nelements: \n  - name: Element 1 \n  type: survey \nsurveyName: CRT ${appendTreatmentTextWith}`
+    let yamltreatment = `name: cypress_code_editor_test \nplayerCount: 1 \ngameStages: {enter}- name: Stage 1 \n  duration: 100 \nelements: \n  - name: Element 1 \n  type: survey \nsurveyName: CRT ${appendTreatmentTextWith}`
     cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
 
     // verify initial text in editor
@@ -86,14 +86,14 @@ describe('code editor', () => {
 
     it('does not save when treatment (stage) is improperly formatted', () => {
         // add poorly formatted stage using code editor
-        setInitialTreatment(`{enter}{home}{del}{del}{del}{del}{del}{del}- name: Stage 2 \n  duration: 300 \nelements: error`)
+        setInitialTreatment(`{enter}{home}  - name: Stage 2 \n  duration: 300 \nelements: error`)
 
         // verify text is updated in editor but no change in stage cards
         cy.containsInCodeEditor("name: Stage 2")
         cy.get('[data-cy="stage-1"]').should('not.exist')
 
         // correct mistake and save
-        setInitialTreatment(`{enter}{home}{del}{del}{del}{del}{del}{del}- name: Stage 2 \n  duration: 300 \nelements: \n- name: Element 2 \n  type: survey \nsurveyName: CRT`)
+        setInitialTreatment(`{enter}{home}  - name: Stage 2 \n  duration: 300 \nelements: \n- name: Element 2 \n  type: survey \nsurveyName: CRT`)
 
         // verify text is updated in editor and in stage cards
         cy.containsInCodeEditor("name: Stage 2")
@@ -112,13 +112,22 @@ describe('code editor', () => {
 
         // correct mistake and save
         setInitialTreatment(`{enter}{backspace}- name: Element 2\n  type: survey\nsurveyName: CRT`)
-        cy.get('[data-cy="yaml-save"]').click()
 
         // verify text is updated in editor and in stage cards
         cy.containsInCodeEditor("name: Element 2")
         cy.get('[data-cy="stage-0"]').should('exist')
         cy.get('[data-cy="element-0-1"]').contains("survey").should("be.visible")
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible")
+    })
+
+    it('saves when treatment (element) is an empty array', () => {
+        // add stage with elements: [] using code editor
+        setInitialTreatment(`{enter}{home}  - name: Stage 2 \n  duration: 300 \nelements: []`)
+
+        // verify text is updated in editor and in stage cards
+        cy.containsInCodeEditor("name: Stage 2")
+        cy.get('[data-cy="stage-1"]').should('exist')
+        cy.get('[data-cy="element-1-0"]').should("not.exist")
     })
 
 

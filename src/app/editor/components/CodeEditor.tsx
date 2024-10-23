@@ -136,14 +136,18 @@ export default function CodeEditor() {
       return [] // no errors
     } catch (e: any) {
       console.log(`not a valid schema, ${e.errors.length} errors: `, e.errors)
-      return formatZodError(e)
+      // filter out errors that come from "elements: []", which is valid
+      const filteredErrors = e.errors.filter((error: any) => {
+        return !(error.path[-1] !== 'elements' && error.code === 'too_small')
+      })
+      return formatZodError(filteredErrors)
     }
 
     return []
   }
 
-  function formatZodError(error: any) {
-    return error.errors.map((err: any) => {
+  function formatZodError(errors: any) {
+    return errors.map((err: any) => {
       // create human-readable path
       const path = err.path.reduce((acc: any, segment: any) => {
         if (typeof segment === 'number') {
