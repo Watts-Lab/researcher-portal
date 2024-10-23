@@ -31,7 +31,7 @@ const findReferencesByStage = (obj: any): any[] => {
   return references
 }
 
-// Pre-initialize JSON structure with empty strings for references
+// initializing json data for each stage
 const initializeJsonData = (treatment: any) => {
   const jsonData: { [key: string]: any } = {}
   treatment?.gameStages?.forEach((stage: any, index: number) => {
@@ -70,34 +70,42 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
   const [jsonData, setJsonData] = useState<JsonData>({})
   const [inputValues, setInputValues] = useState<InputValues>({})
 
- // Load references for the selected stage
- useEffect(() => {
-  if (treatment?.gameStages?.[stageIndex]) {
-    const stage = treatment.gameStages[stageIndex];
-    const allReferences = findReferencesByStage(stage);
-    setReferences(allReferences);
+  // load refs for curr stage
+  useEffect(() => {
+    if (treatment?.gameStages?.[stageIndex]) {
+      const stage = treatment.gameStages[stageIndex]
+      const allReferences = findReferencesByStage(stage)
+      setReferences(allReferences)
 
-    // Load or initialize JSON data for the current stage
-    if (!jsonData[`stage_${stageIndex}`]) {
-      const initializedJson = initializeJsonData(treatment);
-      setJsonData((prev) => ({ ...prev, ...initializedJson }));
+      // load json data for curr stage
+      if (!jsonData[`stage_${stageIndex}`]) {
+        const initializedJson = initializeJsonData(treatment)
+        setJsonData((prev) => ({ ...prev, ...initializedJson }))
+      }
+
+      // load input vals from state/localStorage w/o overwriting
+      if (!inputValues[`stage_${stageIndex}`]) {
+        const savedInputValues = JSON.parse(
+          localStorage.getItem('inputValues') || '{}'
+        )
+        const initialValues = savedInputValues[`stage_${stageIndex}`] || {}
+
+        setInputValues((prev) => ({
+          ...prev,
+          [`stage_${stageIndex}`]: initialValues,
+        }))
+      }
     }
+  }, [
+    treatment,
+    stageIndex,
+    jsonData,
+    inputValues,
+    setJsonData,
+    setInputValues,
+  ])
 
-    // Load or keep input values from state/localStorage without overwriting
-    if (!inputValues[`stage_${stageIndex}`]) {
-      const savedInputValues = JSON.parse(localStorage.getItem('inputValues') || '{}');
-      const initialValues = savedInputValues[`stage_${stageIndex}`] || {};
-
-      setInputValues((prev) => ({
-        ...prev,
-        [`stage_${stageIndex}`]: initialValues,
-      }));
-    }
-  }
-}, [treatment, stageIndex, jsonData, inputValues, setJsonData, setInputValues]);
-
-
-  // Handle input change and update state for the current stage
+  // input changa & update state for curr stage
   const handleInputChange = (reference: string, value: string) => {
     setInputValues((prev: { [key: string]: any }) => ({
       ...prev,
@@ -108,16 +116,15 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
     }))
   }
 
-  // Save the current input values to the JSON structure and localStorage
+  // saving curr input values to JSON & localStorage
   const saveAsJson = () => {
     const updatedJson = {
       ...jsonData,
       [`stage_${stageIndex}`]: inputValues[`stage_${stageIndex}`],
     }
-    setJsonData(updatedJson) // Update state
-    localStorage.setItem('jsonData', JSON.stringify(updatedJson)) // Save to localStorage
-
-    console.log('Saved JSON Data:', JSON.stringify(updatedJson, null, 2)) // Pretty print
+    setJsonData(updatedJson)
+    localStorage.setItem('jsonData', JSON.stringify(updatedJson))
+    console.log('Saved JSON Data:', JSON.stringify(updatedJson, null, 2))
   }
 
   useEffect(() => {
@@ -144,22 +151,36 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
         Stage Refs and Dependencies
       </h2>
 
-      {references.map((reference, index) => (
-        <div key={index} className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            {formatReference(reference)}
-          </label>
-          <input
-            type="text"
-            className="mt-1 block w-full rounded-md border-gray-300 bg-gray-200 p-2 shadow-md hover:shadow-lg focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow duration-200 ease-in-out"
-            placeholder={`Enter value for ${getPlaceholderText(
-              formatReference(reference)
-            )}`}
-            value={inputValues[`stage_${stageIndex}`]?.[reference] || ''}
-            onChange={(e) => handleInputChange(reference, e.target.value)}
-          />
-        </div>
-      ))}
+      {references.map((reference, index) => {
+        const savedValue = jsonData[`stage_${stageIndex}`]?.[reference] || ''
+        const inputValue = inputValues[`stage_${stageIndex}`]?.[reference] || ''
+
+        return (
+          <div key={index} className="mb-6">
+            <label className="block text-sm font-medium text-gray-700">
+              {formatReference(reference)}
+            </label>
+
+            {/* saved val */}
+            {savedValue && (
+              <p className="text-sm text-gray-500 mt-1">
+                <strong>Saved Value:</strong> {savedValue}
+              </p>
+            )}
+
+            {/* input val */}
+            <input
+              type="text"
+              className="mt-2 block w-full rounded-md border-gray-300 bg-gray-100 p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder={`Enter value for ${getPlaceholderText(
+                formatReference(reference)
+              )}`}
+              value={inputValue}
+              onChange={(e) => handleInputChange(reference, e.target.value)}
+            />
+          </div>
+        )
+      })}
 
       <button
         onClick={saveAsJson}
