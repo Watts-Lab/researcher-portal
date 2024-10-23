@@ -12,6 +12,7 @@ const StageProvider = ({ children }) => {
   const [currentStageIndex, setCurrentStageIndex] = useState('default');
   const [elapsed, setElapsed] = useState('default');
   const [treatment, setTreatment] = useState(null);
+  
 
   const contextValue = {
     currentStageIndex,
