@@ -24,14 +24,25 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+
+import 'cypress-real-events'
+
+Cypress.Commands.add('typeInCodeEditor', function (text) {
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor')
+        .realClick().type(`{ctrl+end}${text}`)
+})
+
+Cypress.Commands.add('containsInCodeEditor', function (text) {
+    cy.get('[data-cy="code-editor"]').get('.monaco-editor').realClick().realMouseWheel({ scrollBehavior: "top", deltaY: -10000 })
+    cy.contains(text)
+})
+
+declare global {
+    namespace Cypress {
+        interface Chainable {
+            typeInCodeEditor(text: string): Chainable<void>
+            containsInCodeEditor(text: string): Chainable<void>
+        }
+    }
+}

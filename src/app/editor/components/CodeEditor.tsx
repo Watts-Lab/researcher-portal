@@ -1,11 +1,17 @@
 'use client'
-import YamlEditor from '@uiw/react-textarea-code-editor'
-import { useState, useEffect, useMemo } from 'react'
+import Editor, { Monaco } from '@monaco-editor/react'
+import { editor as MonacoEditor } from 'monaco-editor'
+import { treatmentSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { parse } from 'yaml'
 import { stringify } from 'yaml'
+import { ZodError } from 'zod'
 
 export default function CodeEditor() {
   const [code, setCode] = useState('')
+  const [schemaErrors, setSchemaErrors] = useState([])
+  const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null)
+  const monacoRef = useRef<Monaco | null>(null)
 
   const defaultTreatment = useMemo(
     () => ({
@@ -103,42 +109,175 @@ export default function CodeEditor() {
     }
   }, [defaultTreatment])
 
-  function handleChange(evn: any) {
-    let entry = evn.target.value
-    setCode(entry)
+  function parseYAML(yamlString: string) {
+    try {
+      const parsedYAML = parse(yamlString)
+      return { parsedYAML, errorsYAML: [] }
+    } catch (YAMLParseError: any) {
+      return {
+        parsedYAML: null,
+        errorsYAML: [
+          {
+            message: YAMLParseError.message,
+            startLineNumber: YAMLParseError.linePos[0].line,
+            endLineNumber: YAMLParseError.linePos[1].line,
+            startColumn: YAMLParseError.linePos[0].col,
+            endColumn: YAMLParseError.linePos[1].col,
+            path: undefined,
+          },
+        ],
+      }
+    }
+  }
+
+  function validateTreatmentSchema(parsedYAML: any) {
+    try {
+      treatmentSchema.parse(parsedYAML) // this uses Zod's parsing, not YAML's parsing
+      return [] // no errors
+    } catch (e: any) {
+      console.log(`not a valid schema, ${e.errors.length} errors: `, e.errors)
+      // filter out errors that come from "elements: []", which is valid
+      const filteredErrors = e.errors.filter((error: any) => {
+        return !(error.path[-1] !== 'elements' && error.code === 'too_small')
+      })
+      return formatZodError(filteredErrors)
+    }
+
+    return []
+  }
+
+  function formatZodError(errors: any) {
+    return errors.map((err: any) => {
+      // create human-readable path
+      const path = err.path.reduce((acc: any, segment: any) => {
+        if (typeof segment === 'number') {
+          return `${acc}[${segment}]`
+        } else if (acc) {
+          return `${acc}.${segment}`
+        } else {
+          // first segment, no leading dot
+          return segment
+        }
+      }, '')
+
+      const location = path.length > 0 ? path : 'root'
+
+      const code = err.code // type of the Zod error (invalid_type, too_small, etc.)
+
+      // extract more detailed info depending on the error code
+      let details = ''
+      switch (code) {
+        case 'invalid_type':
+          details = `Expected ${err.expected}, received ${err.received}`
+          break
+        case 'too_small':
+        case 'too_big':
+          details = `${err.message} (minimum: ${err.minimum}, maximum: ${err.maximum})`
+          break
+        default:
+          details = err.message
+          break
+      }
+
+      return {
+        message: `${path}: ${details}`,
+        startLineNumber: 1,
+        endLineNumber: 1,
+        startColumn: 1,
+        endColumn: 1,
+        path: location,
+      }
+    })
+  }
+
+  function markErrors(errors: any[]) {
+    const model = editorRef.current?.getModel()
+    if (model && monacoRef.current) {
+      monacoRef.current.editor.removeAllMarkers('yaml')
+
+      // errors was setup to have an object stucture that corresponds to markers
+      // use startColumn 1, endColumn lineLength to have the whole row(s) highlighted
+      const markers = errors.map((error) => ({
+        ...error,
+        startColumn: 1,
+        endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
+        severity: monacoRef.current?.MarkerSeverity.Error,
+      }))
+      console.log('markers: ', markers)
+      monacoRef.current.editor.setModelMarkers(model, 'yaml', markers)
+    }
+  }
+
+  function handleChange(newValue: string) {
+    setCode(newValue)
+    const { parsedYAML, errorsYAML } = parseYAML(newValue)
+
+    if (errorsYAML && editorRef.current && monacoRef.current) {
+      if (schemaErrors.length > 0) {
+        errorsYAML.push(...schemaErrors)
+      }
+      markErrors(errorsYAML)
+    }
   }
 
   function handleSave(e: any) {
-    //TODO validation should occur here
     e.preventDefault()
     try {
-      parse(code)
-      localStorage.setItem('code', code)
-      window.location.reload() //refresh page to make elements appear on screen
-    } catch (YAMLParseError) {
-      console.log('Parse Error on Save', YAMLParseError)
-      //TODO also display a little something went wrong pop up
+      // parse the treamtent file, ensuring it's valid YAML
+      const { parsedYAML, errorsYAML } = parseYAML(code)
+
+      if (errorsYAML.length > 0 && editorRef.current && monacoRef.current) {
+        if (schemaErrors.length > 0) {
+          // ensure that any previous schema errors are retained
+          errorsYAML.push(...schemaErrors)
+        }
+        markErrors(errorsYAML)
+        console.log(errorsYAML)
+        //TODO display a little something went wrong pop up
+        return
+      }
+
+      // validate the treatment file against the treatment schema
+      const errorsSchema = validateTreatmentSchema(parsedYAML)
+      setSchemaErrors(errorsSchema)
+      console.log(errorsSchema)
+
+      if (errorsSchema.length > 0 && editorRef.current && monacoRef.current) {
+        setSchemaErrors(errorsSchema)
+        markErrors(errorsSchema)
+        //TODO display a little something went wrong pop up
+      } else {
+        // treatment schema can be parsed and is valid
+        localStorage.setItem('code', code)
+        window.location.reload() //refresh page to make elements appear on screen
+      }
+    } catch (e) {
+      console.log('Error on Save', e)
+      //TODO display a little something went wrong pop up
     }
   }
   return (
     <div>
       <div
         style={{ height: '95vh', overflow: 'auto', backgroundColor: '#F0F2F6' }}
+        data-cy="code-editor"
       >
-        <YamlEditor
-          data-cy="code-editor"
+        <Editor
           value={code}
           language="yaml"
-          placeholder={
-            'Please enter treatment configuration. Do not refresh the page before saving.'
-          }
-          onChange={(env) => handleChange(env)}
-          padding={5}
-          style={{
-            fontSize: 12,
-            fontFamily:
-              'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-            backgroundColor: '#F0F2F6',
+          options={{
+            wordWrap: 'on',
+            showFoldingControls: 'always',
+            wrappingIndent: 'same',
+            minimap: {
+              enabled: true,
+            },
+            automaticLayout: true,
+          }}
+          onChange={(newValue: any) => handleChange(newValue)}
+          onMount={(editor: any, monaco: any) => {
+            editorRef.current = editor
+            monacoRef.current = monaco
           }}
         />
       </div>

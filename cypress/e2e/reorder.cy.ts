@@ -3,12 +3,19 @@
 describe('timeline drag and drop', () => {
     beforeEach(() => {
         // initial yaml treatment file
-        let yamltreatment = "name: drag_and_drop_test\nplayerCount: 1\ngameStages: []";
+        let yamltreatment = "name: drag_and_drop_test{enter}playerCount: 1{enter}gameStages: []";
 
         cy.viewport(2000, 1000, { log: false });
         cy.visit('http://localhost:3000/editor');
-        cy.get('[data-cy="code-editor"]').clear().type(yamltreatment);
-        cy.get('[data-cy="yaml-save"]').click();
+        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+
+        // verify initial text in editor
+
+        // text values from monaco-editor will include line numbers and no line breaks
+        // the yamltreatment variable has no line numbers and line breaks
+        // so right now comparison is only on the treatmentName
+        cy.containsInCodeEditor('drag_and_drop_test')
+        cy.get('[data-cy="yaml-save"]').realClick()
 
         // add first stage
         cy.get('[data-cy="add-stage-button"]').click();
