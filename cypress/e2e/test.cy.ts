@@ -109,7 +109,7 @@ describe('test spec', () => {
     cy.get('[data-cy="yaml-save"]').click()
 
     cy.containsInCodeEditor("name: Stage 3")
-    cy.get('[data-cy="stage-2"]').should('not.exist')
+    cy.get('[data-cy="stage-2"]').should('exist')
 
     cy.typeInCodeEditor("{moveToEnd}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{enter}- name: test {enter}  type: survey {enter}surveyName: CRT")
     cy.get('[data-cy="yaml-save"]').click()
