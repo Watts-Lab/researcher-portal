@@ -57,16 +57,32 @@ export default function Timeline({
     return null
   }
 
+  // function filterStages(treatment: any) {
+  //   if (!treatment) return []
+
+  //   if (filterCriteria === 'all') {
+  //     console.log('stages', treatment.gameStages)
+  //     return treatment.gameStages
+  //   } else {
+
+  //     return treatment.gameStages.filter(
+  //       (stage: { name: string }) => stage.name === filterCriteria
+  //     )
+  //   }
+  // }
+
   function filterStages(treatment: any) {
     if (!treatment) return []
 
-    if (filterCriteria === 'all') {
-      return treatment.gameStages
-    } else {
-      return treatment.gameStages.filter(
-        (stage: { name: string }) => stage.name === filterCriteria
+    const filteredStages = treatment.gameStages
+      .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
+      .filter(({ stage }) =>
+        filterCriteria === 'all' ? true : stage.name === filterCriteria
       )
-    }
+
+    console.log('Filtered Stages:', filteredStages) 
+
+    return filteredStages
   }
 
   function handleFilterChange(event: any) {
@@ -110,7 +126,10 @@ export default function Timeline({
       <TimelineTools setScale={setScale} />
 
       {/* select section dropdown */}
-      <div className="flex items-center justify-start space-x-2 p-1 bg-slate-200 h-12">
+      <div
+        className="flex items-center justify-start space-x-2 p-1 bg-slate-200 h-12"
+        data-cy="filter-dropdown"
+      >
         <label className="text-gray font-medium">Select section:</label>
         <select
           value={filterCriteria}
@@ -138,10 +157,10 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {filterStages(treatment)?.map((stage: any, index: any) => (
+                  {filterStages(treatment)?.map((obj: any, index: any) => (
                     <Draggable
-                      key={stage.name}
-                      draggableId={`stage-${index}`}
+                      key={obj.stage.name}
+                      draggableId={`stage-${obj.originalIndex}`}
                       index={index}
                     >
                       {(provided) => (
@@ -151,14 +170,14 @@ export default function Timeline({
                           {...provided.dragHandleProps}
                         >
                           <StageCard
-                            title={stage.name}
-                            elements={stage.elements}
-                            duration={stage.duration}
+                            title={obj.stage.name}
+                            elements={obj.stage.elements}
+                            duration={obj.stage.duration}
                             scale={scale}
                             treatment={treatment}
                             editTreatment={editTreatment}
                             sequence={'gameStage'}
-                            stageIndex={index}
+                            stageIndex={obj.originalIndex}
                             setRenderPanelStage={setRenderPanelStage}
                           />
                         </div>
