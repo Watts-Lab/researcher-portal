@@ -76,7 +76,7 @@ export default function Timeline({
 
     const filteredStages = treatment.gameStages
       .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
-      .filter(({ stage }) =>
+      .filter(({ stage }: { stage: any }) =>
         filterCriteria === 'all' ? true : stage.name === filterCriteria
       )
 
