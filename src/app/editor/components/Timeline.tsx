@@ -26,14 +26,10 @@ export default function Timeline({
     setElapsed,
     treatment,
     setTreatment,
+    editTreatment,
+    templatesMap,
+    setTemplatesMap,
   } = useContext(StageContext)
-
-  function editTreatment(newTreatment: TreatmentType) {
-    setTreatment(newTreatment)
-    localStorage.setItem('code', stringify(newTreatment))
-    window.location.reload()
-  }
-  // Todo: think about using 'useContext' here instead of passing editTreatment all the way down
 
   useEffect(() => {
     // Access localStorage only on the client side
@@ -46,12 +42,23 @@ export default function Timeline({
       setFilterCriteria(storedFilter)
 
       // generate dynamic selector options
-      if (parsedCode && parsedCode.gameStages) {
-        const stageNames = parsedCode.gameStages.map((stage: any) => stage.name)
+      if (parsedCode && parsedCode.treatments?.[0].gameStages) {
+        const stageNames = parsedCode.treatments[0].gameStages.map(
+          (stage: any) => stage.name
+        )
         setFilterOptions(['all', ...stageNames]) // 'all' as default
+      }
+      if (parsedCode?.templates) {
+        const templates = new Map<string, any>()
+        parsedCode.templates.forEach((template: any) => {
+          templates.set(template.templateName, template.templateContent)
+        })
+        setTemplatesMap(templates)
       }
     }
   }, [setTreatment])
+
+  //setTreatment('')
 
   if (!treatment) {
     return null
@@ -80,7 +87,7 @@ export default function Timeline({
         filterCriteria === 'all' ? true : stage.name === filterCriteria
       )
 
-    console.log('Filtered Stages:', filteredStages) 
+    console.log('Filtered Stages:', filteredStages)
 
     return filteredStages
   }
@@ -99,15 +106,18 @@ export default function Timeline({
 
     const sourceIndex = source.index
     const destIndex = destination.index
-    const updatedStages = Array.from(treatment.gameStages)
+    const updatedStages = Array.from(treatment.treatments[0].gameStages)
     const [removed] = updatedStages.splice(sourceIndex, 1)
     updatedStages.splice(destIndex, 0, removed)
 
     // update treatment
     const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-    updatedTreatment.gameStages = updatedStages
+    updatedTreatment.treatments[0].gameStages = updatedStages
     editTreatment(updatedTreatment)
   }
+
+  console.log('treatment', treatment)
+  console.log('templatesMap', templatesMap)
 
   //const parsedCode = "";
 
@@ -157,33 +167,35 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {filterStages(treatment)?.map((obj: any, index: any) => (
-                    <Draggable
-                      key={obj.stage.name}
-                      draggableId={`stage-${obj.originalIndex}`}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <StageCard
-                            title={obj.stage.name}
-                            elements={obj.stage.elements}
-                            duration={obj.stage.duration}
-                            scale={scale}
-                            treatment={treatment}
-                            editTreatment={editTreatment}
-                            sequence={'gameStage'}
-                            stageIndex={obj.originalIndex}
-                            setRenderPanelStage={setRenderPanelStage}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  {filterStages(treatment?.treatments?.[0])?.map(
+                    (obj: any, index: any) => (
+                      <Draggable
+                        key={obj.stage.name}
+                        draggableId={`stage-${obj.originalIndex}`}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <StageCard
+                              title={obj.stage.name}
+                              elements={obj.stage.elements}
+                              duration={obj.stage.duration}
+                              treatment={treatment}
+                              editTreatment={editTreatment}
+                              scale={scale}
+                              sequence={'gameStage'}
+                              stageIndex={index}
+                              setRenderPanelStage={setRenderPanelStage}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    )
+                  )}
                   {provided.placeholder}
                 </div>
               )}
@@ -205,11 +217,7 @@ export default function Timeline({
               +
             </button>
             <Modal id={'modal-add-stage'}>
-              <EditStage
-                treatment={treatment}
-                editTreatment={editTreatment}
-                stageIndex={-1}
-              />
+              <EditStage stageIndex={-1} />
             </Modal>
           </div>
         </div>

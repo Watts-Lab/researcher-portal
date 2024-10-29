@@ -1,0 +1,16 @@
+# simple treatment with one game stage using a template with two elements
+templates:
+  - templateName: testA
+    templateContent:
+      - type: prompt
+        file: projects/example/multipleChoiceColors.md
+      - type: submitButton
+
+treatments:
+  - name: simple template test
+    playerCount: 1
+    gameStages:
+      - name: TestTemplateA
+        duration: 60
+        elements:
+          - template: testA

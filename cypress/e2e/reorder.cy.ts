@@ -17,18 +17,11 @@ describe('timeline drag and drop', () => {
         cy.containsInCodeEditor('drag_and_drop_test')
         cy.get('[data-cy="yaml-save"]').realClick()
 
-        // add first stage
-        cy.get('[data-cy="add-stage-button"]').click();
-        cy.get('[data-cy="edit-stage-name-new"]').type("Stage 1");
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300");
-        cy.get('[data-cy="edit-stage-save-new"]').click();
-
-        // add element 1 in stage 1
-        cy.get('[data-cy="add-element-button-0"]').click();
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 1");
-        cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt");
-        cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md");
-        cy.get('[data-cy="edit-element-save-0-new"]').click();
+        // rename first stage
+        cy.get('[data-cy="edit-stage-button-0"]').click()
+        cy.get('[data-cy="edit-stage-name-0"]').clear().type("Stage 1")
+        cy.get('[data-cy="edit-stage-duration-0"]').clear().type("400")
+        cy.get('[data-cy="edit-stage-save-0"]').click()
 
         // add element 2 in stage 1
         cy.get('[data-cy="add-element-button-0"]').click();
@@ -45,13 +38,13 @@ describe('timeline drag and drop', () => {
 
         cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible");
         cy.get('[data-cy="stage-1"]').contains("Stage 2").should("be.visible");
-        cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible");
+        cy.get('[data-cy="element-0-0"]').contains("testA").should("be.visible");
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible");
     });
 
     it('allows reordering of elements within stage', () => {
         // verify initial order
-        cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible");
+        cy.get('[data-cy="element-0-0"]').contains("testA").should("be.visible");
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible");
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
 
@@ -66,7 +59,7 @@ describe('timeline drag and drop', () => {
 
         // verify new order
         cy.get('[data-cy="element-0-0"]').contains("Element 2").should("be.visible");
-        cy.get('[data-cy="element-0-1"]').contains("Element 1").should("be.visible");
+        cy.get('[data-cy="element-0-1"]').contains("testA").should("be.visible");
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
     })
 
@@ -93,7 +86,7 @@ describe('timeline drag and drop', () => {
 
     it('rejects dragging elements to invalid spots', () => {
         // verify initial order
-        cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible");
+        cy.get('[data-cy="element-0-0"]').contains("testA").should("be.visible");
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible");
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
 
@@ -107,7 +100,7 @@ describe('timeline drag and drop', () => {
         cy.wait(1000);
 
         // verify that order remains the same
-        cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible");
+        cy.get('[data-cy="element-0-0"]').contains("testA").should("be.visible");
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible");
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
 
@@ -121,7 +114,7 @@ describe('timeline drag and drop', () => {
         cy.wait(1000);
 
         // verify that order remains the same
-        cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible");
+        cy.get('[data-cy="element-0-0"]').contains("testA").should("be.visible");
         cy.get('[data-cy="element-0-1"]').contains("Element 2").should("be.visible");
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
     })

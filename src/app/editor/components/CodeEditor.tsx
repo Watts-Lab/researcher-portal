@@ -1,4 +1,6 @@
 'use client'
+import { StageContext } from '@/editor/stageContext'
+import yaml from 'js-yaml'
 import Editor, { Monaco } from '@monaco-editor/react'
 import { editor as MonacoEditor } from 'monaco-editor'
 import { treatmentSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
@@ -9,103 +11,33 @@ import { ZodError } from 'zod'
 
 export default function CodeEditor() {
   const [code, setCode] = useState('')
+  const [defaultTreatment, setDefaultTreatment] = useState<any>(null)
   const [schemaErrors, setSchemaErrors] = useState([])
   const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
 
-  const defaultTreatment = useMemo(
-    () => ({
-      name: 'Example Treatment',
-      desc: 'Run through the entire negotiation sequence.',
-      playerCount: 3,
-      assignPositionsBy: 'random',
-      gameStages: [
-        {
-          name: 'Role Assignment and General Instructions',
-          duration: 300,
-          desc: 'Assign participants a role',
-          elements: [
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/01a_instructions_3_way_negotiation.md',
-              showToPositions: [0],
-            },
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/01b_instructions_3_way_negotiation.md',
-              showToPositions: [1],
-            },
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/01c_instructions_3_way_negotiation.md',
-              showToPositions: [2],
-            },
-            {
-              type: 'submitButton',
-            },
-          ],
-        },
-        {
-          name: 'Main Discussion',
-          duration: 600,
-          desc: 'Main Discussion Time',
-          discussion: {
-            showNickname: false,
-            showTitle: true,
-          },
-          elements: [
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/03a_rep_a.md',
-              showToPositions: [0],
-            },
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/03b_rep_b.md',
-              showToPositions: [1],
-            },
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/03c_rep_c.md',
-              showToPositions: [2],
-            },
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/05_response_submission.md',
-            },
-            {
-              type: 'separator',
-              style: 'thin',
-            },
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/06_multipleChoice_agreement_submission.md',
-              name: 'dealsheet1',
-            },
-            {
-              type: 'prompt',
-              file: 'projects/3-way-negotiation/06_multipleChoice_agreement_submission_inclusion.md',
-              name: 'dealsheet2',
-            },
-            {
-              type: 'submitButton',
-              buttonText: 'Submit Now and End Negotiation',
-            },
-          ],
-        },
-      ],
-    }),
-    []
-  )
-
   useEffect(() => {
-    const value = localStorage.getItem('code') || ''
-    if (value === '') {
-      setCode(stringify(defaultTreatment))
-    } else {
-      setCode(value)
+    async function fetchDefaultTreatment() {
+      var data = defaultTreatment
+      if (defaultTreatment) {
+        return // If defaultTreatment is already set, do nothing
+      } else {
+        const response = await fetch('/defaultTreatment.yaml')
+        const text = await response.text()
+        data = yaml.load(text)
+        setDefaultTreatment(data)
+      }
+
+      const storedCode = localStorage.getItem('code') || ''
+      if (storedCode === '') {
+        setCode(stringify(data))
+      } else {
+        setCode(storedCode)
+      }
     }
-  }, [defaultTreatment])
+
+    fetchDefaultTreatment()
+  }, [])
 
   function parseYAML(yamlString: string) {
     try {
@@ -244,11 +176,10 @@ export default function CodeEditor() {
         setSchemaErrors(errorsSchema)
         markErrors(errorsSchema)
         //TODO display a little something went wrong pop up
-      } else {
-        // treatment schema can be parsed and is valid
-        localStorage.setItem('code', code)
-        window.location.reload() //refresh page to make elements appear on screen
       }
+      // treatment schema can be parsed and is valid
+      localStorage.setItem('code', code)
+      window.location.reload() //refresh page to make elements appear on screen
     } catch (e) {
       console.log('Error on Save', e)
       //TODO display a little something went wrong pop up
