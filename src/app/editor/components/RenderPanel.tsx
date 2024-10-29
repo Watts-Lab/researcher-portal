@@ -1,9 +1,9 @@
 import React, { useEffect, useState, createContext, useContext } from 'react'
 import dynamic from 'next/dynamic.js'
 import TimePicker from './TimePicker'
+import ReferenceData from './ReferenceData'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
-
 import { StageContext } from '@/editor/stageContext'
 import { Substitute } from 'styled-components/dist/types';
 
@@ -39,6 +39,7 @@ export function RenderPanel() {
     treatment,
     setTreatment,
   } = useContext(StageContext)
+
   console.log('RenderPanel.tsx current stage index', currentStageIndex)
   console.log('Current Treatment', treatment)
 
@@ -64,6 +65,7 @@ export function RenderPanel() {
             setValue={setElapsed}
             maxValue={treatment.gameStages[currentStageIndex]?.duration ?? 0}
           />
+          <ReferenceData treatment={treatment} stageIndex={currentStageIndex} />
           {/* need to retrieve stage duration from treatment */}
         </div>
       )}
