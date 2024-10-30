@@ -74,7 +74,10 @@ export function RenderPanel() {
                 ?.duration ?? 0
             }
           />
-          <ReferenceData treatment={treatment} stageIndex={currentStageIndex} />
+          <ReferenceData
+            treatment={treatment.treatments?.[0]}
+            stageIndex={currentStageIndex}
+          />
           {/* need to retrieve stage duration from treatment */}
         </div>
       )}
