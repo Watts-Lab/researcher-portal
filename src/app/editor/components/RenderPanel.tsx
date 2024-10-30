@@ -58,7 +58,7 @@ export function RenderPanel() {
       )}
       {currentStageIndex !== 'default' && (
         <div className="min-w-fit">
-          <h1>Preview of stage {currentStageIndex} </h1>
+          <h1>Preview of Stage {currentStageIndex} </h1>
           <TimePicker
             value={time + ' s'}
             setValue={setElapsed}

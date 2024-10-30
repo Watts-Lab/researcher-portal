@@ -83,4 +83,6 @@ describe('timeline filter treatment', () => {
     })
 
     // add test for same named stages
+
+    // make sure stageIndex is updated
 })
