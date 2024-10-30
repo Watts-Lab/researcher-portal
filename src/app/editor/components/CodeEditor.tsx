@@ -176,10 +176,11 @@ export default function CodeEditor() {
         setSchemaErrors(errorsSchema)
         markErrors(errorsSchema)
         //TODO display a little something went wrong pop up
-      }
+      } // else {
       // treatment schema can be parsed and is valid
       localStorage.setItem('code', code)
       window.location.reload() //refresh page to make elements appear on screen
+      //} // TODO add this back in once zod schemas work for treatments
     } catch (e) {
       console.log('Error on Save', e)
       //TODO display a little something went wrong pop up
