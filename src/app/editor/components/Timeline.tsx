@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { parse } from 'yaml'
 import { StageCard } from './StageCard'
 import TimelineTools from './TimelineTools'
@@ -58,38 +58,34 @@ export default function Timeline({
     }
   }, [setTreatment])
 
-  //setTreatment('')
+  const filterStages = useCallback(
+    (treatment: any) => {
+      // think about using useMemo here
+      if (!treatment) return []
+
+      const filteredStages = treatment.gameStages
+        .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
+        .filter(({ stage }: { stage: any }) =>
+          filterCriteria === 'all' ? true : stage.name === filterCriteria
+        )
+
+      console.log('Filtered Stages:', filteredStages)
+
+      return filteredStages
+    },
+    [filterCriteria]
+  )
+
+  // change stage index whenever filterCriteria changes
+  useEffect(() => {
+    const filteredStages = filterStages(treatment)
+    if (filteredStages.length > 0) {
+      setCurrentStageIndex(filteredStages[0].originalIndex)
+    }
+  }, [filterCriteria, treatment, setCurrentStageIndex, filterStages])
 
   if (!treatment) {
     return null
-  }
-
-  // function filterStages(treatment: any) {
-  //   if (!treatment) return []
-
-  //   if (filterCriteria === 'all') {
-  //     console.log('stages', treatment.gameStages)
-  //     return treatment.gameStages
-  //   } else {
-
-  //     return treatment.gameStages.filter(
-  //       (stage: { name: string }) => stage.name === filterCriteria
-  //     )
-  //   }
-  // }
-
-  function filterStages(treatment: any) {
-    if (!treatment) return []
-
-    const filteredStages = treatment.gameStages
-      .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
-      .filter(({ stage }: { stage: any }) =>
-        filterCriteria === 'all' ? true : stage.name === filterCriteria
-      )
-
-    console.log('Filtered Stages:', filteredStages)
-
-    return filteredStages
   }
 
   function handleFilterChange(event: any) {
