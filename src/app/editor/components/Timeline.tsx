@@ -6,7 +6,10 @@ import TimelineTools from './TimelineTools'
 import { stringify } from 'yaml'
 import { Modal } from './Modal'
 import { EditStage } from './EditStage'
-import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import {
+  treatmentSchema,
+  TreatmentType,
+} from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { StageContext } from '@/editor/stageContext'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 
@@ -78,7 +81,7 @@ export default function Timeline({
 
   // change stage index whenever filterCriteria changes
   useEffect(() => {
-    const filteredStages = filterStages(treatment)
+    const filteredStages = filterStages(treatment?.treatments?.[0])
     if (filteredStages.length > 0) {
       setCurrentStageIndex(filteredStages[0].originalIndex)
     }
@@ -180,8 +183,6 @@ export default function Timeline({
                               title={obj.stage.name}
                               elements={obj.stage.elements}
                               duration={obj.stage.duration}
-                              treatment={treatment}
-                              editTreatment={editTreatment}
                               scale={scale}
                               sequence={'gameStage'}
                               stageIndex={index}
