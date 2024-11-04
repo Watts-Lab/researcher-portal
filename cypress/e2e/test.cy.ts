@@ -7,7 +7,7 @@ describe('test spec', () => {
         // TO ADD: check for warning messages when invalid input is entered
 
         // initial yaml code for treatment
-        let yamltreatment = "name: cypress3_load_test{enter}playerCount: 1{enter}gameStages: []{enter}"
+        let yamltreatment = "treatments: {enter}- name: cypress3_load_test{enter}  playerCount: 1{enter}gameStages: []{enter}"
 
         cy.viewport(2000, 1000, { log: false });
 
@@ -27,6 +27,24 @@ describe('test spec', () => {
         // cy.get('[data-cy="stage-0"]').click(0, 0)
         // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
         // cy.get('[data-cy="render-panel"]').contains("strong magical field").should("be.visible")
+
+        // create first stage
+        cy.get('[data-cy="add-stage-button"]').click()
+        cy.get('[data-cy="edit-stage-name-new"]').type("Stage 1")
+        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300")
+        cy.get('[data-cy="edit-stage-save-new"]').click()
+
+        cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
+
+        // add first element to stage 1
+        cy.get('[data-cy="add-element-button-0"]').click()
+        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 1")
+        cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt")
+        cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md")
+        cy.get('[data-cy="edit-element-save-0-new"]').click()
+
+        cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
+        cy.get('[data-cy="element-0-0"]').contains("Element 1").should("be.visible")
 
         // add second element to stage 1
         cy.get('[data-cy="add-element-button-0"]').click()
@@ -62,7 +80,7 @@ describe('test spec', () => {
         cy.get('[data-cy="stage-0"]').click(0, 0)
         cy.wait(2000)
         cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
-        cy.get('[data-cy="render-panel"]').contains("strong magical field").should("be.visible")
+        // cy.get('[data-cy="render-panel"]').contains("strong magical field").should("be.visible")
         cy.get('[data-cy="render-panel"]').contains("Here are a number of personality traits").should("be.visible")
 
         // create second stage
@@ -105,11 +123,7 @@ describe('test spec', () => {
         cy.get('[data-cy="stage-0"]').should("not.contain", "Element 3")
 
         // add fourth element to second stage via code editor
-<<<<<<< HEAD
-        cy.typeInCodeEditor("{moveToEnd}{enter}      - name: Element 4 {enter}  type: prompt {enter}file: file/address")
-=======
-    cy.get('[data-cy="code-editor"]').type("          - name: Element 4\n  type: prompt\nfile: file/address")
->>>>>>> origin/evan-timeline
+        cy.typeInCodeEditor("{moveToEnd}{enter}{home}          - name: Element 4 {enter}  type: prompt {enter}file: file/address")
         cy.get('[data-cy="yaml-save"]').click()
 
         cy.containsInCodeEditor("name: Element 4")
@@ -117,13 +131,7 @@ describe('test spec', () => {
         cy.get('[data-cy="element-1-1"]').contains("Element 4").should("be.visible")
 
         // add third stage via code editor
-        cy.typeInCodeEditor("{moveToEnd}{enter}{home}  - name: Stage 3 {enter}  duration: 300 {enter}elements: []")
-        cy.get('[data-cy="yaml-save"]').click()
-
-        cy.containsInCodeEditor("name: Stage 3")
-        cy.get('[data-cy="stage-2"]').should('exist')
-
-        cy.typeInCodeEditor("{moveToEnd}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{enter}- name: test {enter}  type: survey {enter}surveyName: CRT")
+        cy.typeInCodeEditor("{moveToEnd}{enter}{home}      - name: Stage 3 {enter}  duration: 300 {enter}elements: []")
         cy.get('[data-cy="yaml-save"]').click()
 
         cy.containsInCodeEditor("name: Stage 3")

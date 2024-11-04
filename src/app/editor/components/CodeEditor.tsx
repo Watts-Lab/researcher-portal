@@ -3,7 +3,7 @@ import { StageContext } from '@/editor/stageContext'
 import yaml from 'js-yaml'
 import Editor, { Monaco } from '@monaco-editor/react'
 import { editor as MonacoEditor } from 'monaco-editor'
-import { treatmentSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { treatmentFileSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { parse } from 'yaml'
 import { stringify } from 'yaml'
@@ -62,7 +62,7 @@ export default function CodeEditor() {
 
   function validateTreatmentSchema(parsedYAML: any) {
     try {
-      treatmentSchema.parse(parsedYAML) // this uses Zod's parsing, not YAML's parsing
+      treatmentFileSchema.parse(parsedYAML) // this uses Zod's parsing, not YAML's parsing
       return [] // no errors
     } catch (e: any) {
       console.log(`not a valid schema, ${e.errors.length} errors: `, e.errors)
@@ -162,7 +162,7 @@ export default function CodeEditor() {
           errorsYAML.push(...schemaErrors)
         }
         markErrors(errorsYAML)
-        console.log(errorsYAML)
+        console.log('yaml errors: ', errorsYAML)
         //TODO display a little something went wrong pop up
         return
       }
@@ -170,17 +170,17 @@ export default function CodeEditor() {
       // validate the treatment file against the treatment schema
       const errorsSchema = validateTreatmentSchema(parsedYAML)
       setSchemaErrors(errorsSchema)
-      console.log(errorsSchema)
+      console.log('schema errors: ', errorsSchema)
 
       if (errorsSchema.length > 0 && editorRef.current && monacoRef.current) {
         setSchemaErrors(errorsSchema)
         markErrors(errorsSchema)
         //TODO display a little something went wrong pop up
-      } // else {
-      // treatment schema can be parsed and is valid
-      localStorage.setItem('code', code)
-      window.location.reload() //refresh page to make elements appear on screen
-      //} // TODO add this back in once zod schemas work for treatments
+      } else {
+        // treatment schema can be parsed and is valid
+        localStorage.setItem('code', code)
+        window.location.reload() //refresh page to make elements appear on screen
+      }
     } catch (e) {
       console.log('Error on Save', e)
       //TODO display a little something went wrong pop up
@@ -203,6 +203,7 @@ export default function CodeEditor() {
               enabled: true,
             },
             automaticLayout: true,
+            scrollBeyondLastLine: false,
           }}
           onChange={(newValue: any) => handleChange(newValue)}
           onMount={(editor: any, monaco: any) => {

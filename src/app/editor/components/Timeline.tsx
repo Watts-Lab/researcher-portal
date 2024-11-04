@@ -185,7 +185,7 @@ export default function Timeline({
                               duration={obj.stage.duration}
                               scale={scale}
                               sequence={'gameStage'}
-                              stageIndex={index}
+                              stageIndex={obj.originalIndex}
                               setRenderPanelStage={setRenderPanelStage}
                             />
                           </div>

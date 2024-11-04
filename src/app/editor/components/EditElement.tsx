@@ -1,11 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
-import {
-  TreatmentType,
-  ElementType,
-  elementSchema,
-  elementBaseSchema,
-} from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { elementSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 import { StageContext } from '../stageContext.jsx'
