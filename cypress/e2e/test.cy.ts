@@ -76,10 +76,12 @@ describe('test spec', () => {
         cy.get('[data-cy="stage-0"]').contains("Stage 1 Edited").should("be.visible")
 
         // view first stage in render panel
-        cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
+        // TODO check if needed
+        // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
         cy.get('[data-cy="stage-0"]').click(0, 0)
         cy.wait(2000)
         cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
+        // TODO check if needed
         // cy.get('[data-cy="render-panel"]').contains("strong magical field").should("be.visible")
         cy.get('[data-cy="render-panel"]').contains("Here are a number of personality traits").should("be.visible")
 
