@@ -151,43 +151,51 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
         Stage Refs and Dependencies
       </h2>
 
-      {references.map((reference, index) => {
-        const savedValue = jsonData[`stage_${stageIndex}`]?.[reference] || ''
-        const inputValue = inputValues[`stage_${stageIndex}`]?.[reference] || ''
+      {references.length > 0 ? (
+        <>
+          {references.map((reference, index) => {
+            const savedValue =
+              jsonData[`stage_${stageIndex}`]?.[reference] || ''
+            const inputValue =
+              inputValues[`stage_${stageIndex}`]?.[reference] || ''
 
-        return (
-          <div key={index} className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              {formatReference(reference)}
-            </label>
+            return (
+              <div key={index} className="mb-6">
+                <label className="block text-sm font-medium text-gray-700">
+                  {formatReference(reference)}
+                </label>
 
-            {/* saved val */}
-            {savedValue && (
-              <p className="text-sm text-gray-500 mt-1">
-                <strong>Saved Value:</strong> {savedValue}
-              </p>
-            )}
+                {/* saved val */}
+                {savedValue && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    <strong>Saved Value:</strong> {savedValue}
+                  </p>
+                )}
 
-            {/* input val */}
-            <input
-              type="text"
-              className="mt-2 block w-full rounded-md border-gray-300 bg-gray-100 p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder={`Enter value for ${getPlaceholderText(
-                formatReference(reference)
-              )}`}
-              value={inputValue}
-              onChange={(e) => handleInputChange(reference, e.target.value)}
-            />
-          </div>
-        )
-      })}
+                {/* input val */}
+                <input
+                  type="text"
+                  className="mt-2 block w-full rounded-md border-gray-300 bg-gray-100 p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder={`Enter value for ${getPlaceholderText(
+                    formatReference(reference)
+                  )}`}
+                  value={inputValue}
+                  onChange={(e) => handleInputChange(reference, e.target.value)}
+                />
+              </div>
+            )
+          })}
 
-      <button
-        onClick={saveAsJson}
-        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Save
-      </button>
+          <button
+            onClick={saveAsJson}
+            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Save
+          </button>
+        </>
+      ) : (
+        <p className="text-sm text-gray-500">No references found</p>
+      )}
     </div>
   )
 }
