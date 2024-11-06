@@ -7,7 +7,7 @@ import { treatmentFileSchema } from '../../../../deliberation-empirica/server/sr
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { parse } from 'yaml'
 import { stringify } from 'yaml'
-import { ZodError } from 'zod'
+import { ZodIssue, ZodError } from 'zod'
 
 export default function CodeEditor() {
   const [code, setCode] = useState('')
@@ -42,44 +42,70 @@ export default function CodeEditor() {
   function parseYAML(yamlString: string) {
     try {
       const parsedYAML = parse(yamlString)
-      return { parsedYAML, errorsYAML: [] }
+      return { success: true, data: parsedYAML }
     } catch (YAMLParseError: any) {
       return {
-        parsedYAML: null,
-        errorsYAML: [
-          {
-            message: YAMLParseError.message,
-            startLineNumber: YAMLParseError.linePos[0].line,
-            endLineNumber: YAMLParseError.linePos[1].line,
-            startColumn: YAMLParseError.linePos[0].col,
-            endColumn: YAMLParseError.linePos[1].col,
-            path: undefined,
-          },
-        ],
+        success: false,
+        error: {
+          issues: [
+            {
+              message: YAMLParseError.message,
+              startLineNumber: YAMLParseError.linePos[0].line,
+              endLineNumber: YAMLParseError.linePos[1].line,
+              startColumn: YAMLParseError.linePos[0].col,
+              endColumn: YAMLParseError.linePos[1].col,
+              path: undefined,
+            },
+          ],
+        },
       }
     }
   }
 
-  function validateTreatmentSchema(parsedYAML: any) {
+  function validateTreatmentSchema(parsedYAML: any[]) {
     try {
-      treatmentFileSchema.parse(parsedYAML) // this uses Zod's parsing, not YAML's parsing
-      return [] // no errors
-    } catch (e: any) {
-      console.log(`not a valid schema, ${e.errors.length} errors: `, e.errors)
-      // filter out errors that come from "elements: []", which is valid
-      const filteredErrors = e.errors.filter((error: any) => {
-        return !(error.path[-1] !== 'elements' && error.code === 'too_small')
-      })
-      return formatZodError(filteredErrors)
-    }
+      const result = treatmentFileSchema.safeParse(parsedYAML) // this uses Zod's parsing, not YAML's parsing
 
-    return []
+      if (!result.success) {
+        // console.log(`not a valid schema, ${result.error.issues.length} errors: `,result.error.issues)
+        // filter out errors that come from "elements: []", which is valid
+        result.error.issues = result.error.issues.filter((issue: ZodIssue) => {
+          return issue.path[-1] === 'elements' || issue.code !== 'too_small'
+        })
+        // console.log(`filtered, ${result.error.issues.length} errors remain: `,result.error.issues)
+        if (result.error.issues.length === 0) {
+          // if no errors remain it means all the errors are acceptable in GUI
+          // so success is now true
+          return { success: true, data: undefined }
+        }
+        result.error.issues = formatZodIssues(result.error.issues)
+      }
+
+      return result
+    } catch (e) {
+      // Indicates more fundamental error
+      // TODO communicate to user smoothly
+      return {
+        success: false,
+        error: {
+          issues: [
+            {
+              message: `Error with Zod parsing: ${e}`,
+              startLineNumber: 1,
+              endLineNumber: 1,
+              startColumn: 1,
+              endColumn: 1,
+            },
+          ],
+        },
+      }
+    }
   }
 
-  function formatZodError(errors: any) {
-    return errors.map((err: any) => {
+  function formatZodIssues(errors: any) {
+    return errors.map((issue: any) => {
       // create human-readable path
-      const path = err.path.reduce((acc: any, segment: any) => {
+      const path = issue.path.reduce((acc: any, segment: any) => {
         if (typeof segment === 'number') {
           return `${acc}[${segment}]`
         } else if (acc) {
@@ -92,25 +118,27 @@ export default function CodeEditor() {
 
       const location = path.length > 0 ? path : 'root'
 
-      const code = err.code // type of the Zod error (invalid_type, too_small, etc.)
-
       // extract more detailed info depending on the error code
+      const code = issue.code // type of the Zod issue (invalid_type, too_small, etc.)
       let details = ''
       switch (code) {
         case 'invalid_type':
-          details = `Expected ${err.expected}, received ${err.received}`
+          details = `Expected ${issue.expected}, received ${issue.received}`
           break
         case 'too_small':
+          details = `${issue.message} (minimum: ${issue.minimum})`
+          break
         case 'too_big':
-          details = `${err.message} (minimum: ${err.minimum}, maximum: ${err.maximum})`
+          details = `${issue.message} (maximum: ${issue.maximum})`
           break
         default:
-          details = err.message
+          details = issue.message
           break
       }
 
       return {
-        message: `${path}: ${details}`,
+        ...issue,
+        message: `${location}: ${details}`,
         startLineNumber: 1,
         endLineNumber: 1,
         startColumn: 1,
@@ -133,20 +161,25 @@ export default function CodeEditor() {
         endColumn: model ? model.getLineLength(error.endLineNumber) : 1,
         severity: monacoRef.current?.MarkerSeverity.Error,
       }))
-      console.log('markers: ', markers)
+      //console.log('markers: ', markers)
       monacoRef.current.editor.setModelMarkers(model, 'yaml', markers)
     }
   }
 
   function handleChange(newValue: string) {
     setCode(newValue)
-    const { parsedYAML, errorsYAML } = parseYAML(newValue)
+    const resultYaml = parseYAML(newValue)
 
-    if (errorsYAML && editorRef.current && monacoRef.current) {
+    if (!resultYaml.success) {
+      const newErrors = resultYaml.error?.issues || []
       if (schemaErrors.length > 0) {
-        errorsYAML.push(...schemaErrors)
+        // ensure that any previous schema errors are retained
+        newErrors.push(...schemaErrors)
       }
-      markErrors(errorsYAML)
+      markErrors(newErrors)
+    } else {
+      // ensure that any previous schema errors are retained
+      markErrors(schemaErrors)
     }
   }
 
@@ -154,30 +187,33 @@ export default function CodeEditor() {
     e.preventDefault()
     try {
       // parse the treamtent file, ensuring it's valid YAML
-      const { parsedYAML, errorsYAML } = parseYAML(code)
+      const resultYaml = parseYAML(code)
 
-      if (errorsYAML.length > 0 && editorRef.current && monacoRef.current) {
+      if (!resultYaml.success) {
+        const newYamlErrors = resultYaml?.error?.issues || []
+        //console.log('new yaml errors detected: ', newYamlErrors)
         if (schemaErrors.length > 0) {
           // ensure that any previous schema errors are retained
-          errorsYAML.push(...schemaErrors)
+          newYamlErrors.push(...schemaErrors)
         }
-        markErrors(errorsYAML)
-        console.log('yaml errors: ', errorsYAML)
+        markErrors(newYamlErrors)
         //TODO display a little something went wrong pop up
         return
       }
 
       // validate the treatment file against the treatment schema
-      const errorsSchema = validateTreatmentSchema(parsedYAML)
-      setSchemaErrors(errorsSchema)
-      console.log('schema errors: ', errorsSchema)
-
-      if (errorsSchema.length > 0 && editorRef.current && monacoRef.current) {
-        setSchemaErrors(errorsSchema)
-        markErrors(errorsSchema)
+      const resultSchema = validateTreatmentSchema(resultYaml.data)
+      if (!resultSchema.success) {
+        const newSchemaErrors = resultSchema.error?.issues || [
+          resultSchema.error,
+        ]
+        //console.log('new schema errors detected: ', newSchemaErrors)
+        setSchemaErrors(newSchemaErrors)
+        markErrors(newSchemaErrors)
         //TODO display a little something went wrong pop up
       } else {
         // treatment schema can be parsed and is valid
+        setSchemaErrors([])
         localStorage.setItem('code', code)
         window.location.reload() //refresh page to make elements appear on screen
       }
