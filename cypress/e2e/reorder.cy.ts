@@ -15,7 +15,7 @@ describe('timeline drag and drop', () => {
         // the yamltreatment variable has no line numbers and line breaks
         // so right now comparison is only on the treatmentName
         cy.containsInCodeEditor('drag_and_drop_test')
-        cy.get('[data-cy="yaml-save"]').realClick()
+        cy.get('[data-cy="code-editor-save"]').realClick()
 
         // add first stage
         cy.get('[data-cy="add-stage-button"]').click();

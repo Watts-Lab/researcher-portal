@@ -1,157 +1,38 @@
 'use client'
 import { StageContext } from '@/editor/stageContext'
-import yaml from 'js-yaml'
 import Editor, { Monaco } from '@monaco-editor/react'
 import { editor as MonacoEditor } from 'monaco-editor'
-import { treatmentFileSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { parse } from 'yaml'
-import { stringify } from 'yaml'
-import { ZodIssue, ZodError } from 'zod'
+import languageConfig from '../config/languageConfig'
 
-export default function CodeEditor() {
+export default function CodeEditor({ language = 'yaml' }) {
   const [code, setCode] = useState('')
-  const [defaultTreatment, setDefaultTreatment] = useState<any>(null)
-  const [schemaErrors, setSchemaErrors] = useState([])
+  const [defaultData, setDefaultData] = useState<any>(null)
+  const [schemaErrors, setSchemaErrors] = useState<any>([])
   const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
 
   useEffect(() => {
-    async function fetchDefaultTreatment() {
-      var data = defaultTreatment
-      if (defaultTreatment) {
-        return // If defaultTreatment is already set, do nothing
-      } else {
-        const response = await fetch('/defaultTreatment.yaml')
-        const text = await response.text()
-        data = yaml.load(text)
-        setDefaultTreatment(data)
-      }
+    async function fetchDefaultData() {
+      if (defaultData) return // prevents re-fetching if defaultData is already set
 
+      // fetch default data if loadDefaultData is defined
+      const data = (await languageConfig[language].loadDefaultData?.()) || ''
+      setDefaultData(data)
+
+      // fetch local data if available
+      // TODO remove hardcoded 'code' to get local edits depending on file being edited currently...
       const storedCode = localStorage.getItem('code') || ''
-      if (storedCode === '') {
-        setCode(stringify(data))
-      } else {
-        setCode(storedCode)
-      }
+      setCode(storedCode || data)
     }
 
-    fetchDefaultTreatment()
-  }, [])
-
-  function parseYAML(yamlString: string) {
-    try {
-      const parsedYAML = parse(yamlString)
-      return { success: true, data: parsedYAML }
-    } catch (YAMLParseError: any) {
-      return {
-        success: false,
-        error: {
-          issues: [
-            {
-              message: YAMLParseError.message,
-              startLineNumber: YAMLParseError.linePos[0].line,
-              endLineNumber: YAMLParseError.linePos[1].line,
-              startColumn: YAMLParseError.linePos[0].col,
-              endColumn: YAMLParseError.linePos[1].col,
-              path: undefined,
-            },
-          ],
-        },
-      }
-    }
-  }
-
-  function validateTreatmentSchema(parsedYAML: any[]) {
-    try {
-      const result = treatmentFileSchema.safeParse(parsedYAML) // this uses Zod's parsing, not YAML's parsing
-
-      if (!result.success) {
-        // console.log(`not a valid schema, ${result.error.issues.length} errors: `,result.error.issues)
-        // filter out errors that come from "elements: []", which is valid
-        result.error.issues = result.error.issues.filter((issue: ZodIssue) => {
-          return issue.path[-1] === 'elements' || issue.code !== 'too_small'
-        })
-        // console.log(`filtered, ${result.error.issues.length} errors remain: `,result.error.issues)
-        if (result.error.issues.length === 0) {
-          // if no errors remain it means all the errors are acceptable in GUI
-          // so success is now true
-          return { success: true, data: undefined }
-        }
-        result.error.issues = formatZodIssues(result.error.issues)
-      }
-
-      return result
-    } catch (e) {
-      // Indicates more fundamental error
-      // TODO communicate to user smoothly
-      return {
-        success: false,
-        error: {
-          issues: [
-            {
-              message: `Error with Zod parsing: ${e}`,
-              startLineNumber: 1,
-              endLineNumber: 1,
-              startColumn: 1,
-              endColumn: 1,
-            },
-          ],
-        },
-      }
-    }
-  }
-
-  function formatZodIssues(errors: any) {
-    return errors.map((issue: any) => {
-      // create human-readable path
-      const path = issue.path.reduce((acc: any, segment: any) => {
-        if (typeof segment === 'number') {
-          return `${acc}[${segment}]`
-        } else if (acc) {
-          return `${acc}.${segment}`
-        } else {
-          // first segment, no leading dot
-          return segment
-        }
-      }, '')
-
-      const location = path.length > 0 ? path : 'root'
-
-      // extract more detailed info depending on the error code
-      const code = issue.code // type of the Zod issue (invalid_type, too_small, etc.)
-      let details = ''
-      switch (code) {
-        case 'invalid_type':
-          details = `Expected ${issue.expected}, received ${issue.received}`
-          break
-        case 'too_small':
-          details = `${issue.message} (minimum: ${issue.minimum})`
-          break
-        case 'too_big':
-          details = `${issue.message} (maximum: ${issue.maximum})`
-          break
-        default:
-          details = issue.message
-          break
-      }
-
-      return {
-        ...issue,
-        message: `${location}: ${details}`,
-        startLineNumber: 1,
-        endLineNumber: 1,
-        startColumn: 1,
-        endColumn: 1,
-        path: location,
-      }
-    })
-  }
+    fetchDefaultData()
+  })
 
   function markErrors(errors: any[]) {
     const model = editorRef.current?.getModel()
     if (model && monacoRef.current) {
-      monacoRef.current.editor.removeAllMarkers('yaml')
+      monacoRef.current.editor.removeAllMarkers(language)
 
       // errors was setup to have an object stucture that corresponds to markers
       // use startColumn 1, endColumn lineLength to have the whole row(s) highlighted
@@ -162,16 +43,18 @@ export default function CodeEditor() {
         severity: monacoRef.current?.MarkerSeverity.Error,
       }))
       //console.log('markers: ', markers)
-      monacoRef.current.editor.setModelMarkers(model, 'yaml', markers)
+      monacoRef.current.editor.setModelMarkers(model, language, markers)
     }
   }
 
   function handleChange(newValue: string) {
     setCode(newValue)
-    const resultYaml = parseYAML(newValue)
+    const parse = languageConfig[language].parse
+    const resultParse = parse(newValue)
+    //console.log('change result: ', result)
 
-    if (!resultYaml.success) {
-      const newErrors = resultYaml.error?.issues || []
+    if (!resultParse.success) {
+      const newErrors = resultParse.error?.issues || []
       if (schemaErrors.length > 0) {
         // ensure that any previous schema errors are retained
         newErrors.push(...schemaErrors)
@@ -185,37 +68,35 @@ export default function CodeEditor() {
 
   function handleSave(e: any) {
     e.preventDefault()
+    const { parse, validate, save } = languageConfig[language]
     try {
-      // parse the treamtent file, ensuring it's valid YAML
-      const resultYaml = parseYAML(code)
+      // parse the file, ensuring it's valid according to language
+      const resultParse = parse(code)
 
-      if (!resultYaml.success) {
-        const newYamlErrors = resultYaml?.error?.issues || []
-        //console.log('new yaml errors detected: ', newYamlErrors)
+      if (!resultParse.success) {
+        const newErrors = resultParse?.error?.issues || []
+        //console.log('new errors detected: ', newErrors)
         if (schemaErrors.length > 0) {
           // ensure that any previous schema errors are retained
-          newYamlErrors.push(...schemaErrors)
+          newErrors.push(...schemaErrors)
         }
-        markErrors(newYamlErrors)
+        markErrors(newErrors)
         //TODO display a little something went wrong pop up
         return
       }
 
-      // validate the treatment file against the treatment schema
-      const resultSchema = validateTreatmentSchema(resultYaml.data)
-      if (!resultSchema.success) {
-        const newSchemaErrors = resultSchema.error?.issues || [
-          resultSchema.error,
-        ]
+      // validate the file against the language schema
+      const resultValidate = validate(resultParse.data)
+      if (!resultValidate.success) {
+        let newSchemaErrors = resultValidate?.error?.issues || []
         //console.log('new schema errors detected: ', newSchemaErrors)
         setSchemaErrors(newSchemaErrors)
         markErrors(newSchemaErrors)
         //TODO display a little something went wrong pop up
       } else {
-        // treatment schema can be parsed and is valid
+        // data can be parsed and is valid
         setSchemaErrors([])
-        localStorage.setItem('code', code)
-        window.location.reload() //refresh page to make elements appear on screen
+        save(code)
       }
     } catch (e) {
       console.log('Error on Save', e)
@@ -230,7 +111,7 @@ export default function CodeEditor() {
       >
         <Editor
           value={code}
-          language="yaml"
+          language={language}
           options={{
             wordWrap: 'on',
             showFoldingControls: 'always',
@@ -250,7 +131,7 @@ export default function CodeEditor() {
       </div>
       <div style={{ backgroundColor: '#F0F2F6' }}>
         <button
-          data-cy="yaml-save"
+          data-cy="code-editor-save"
           className="btn btn-primary"
           onClick={handleSave}
         >

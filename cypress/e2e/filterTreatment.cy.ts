@@ -12,7 +12,7 @@ describe('timeline filter treatment', () => {
         // the yamltreatment variable has no line numbers and line breaks
         // so right now comparison is only on the treatmentName
         cy.containsInCodeEditor('filter_timeline_test')
-        cy.get('[data-cy="yaml-save"]').realClick()
+        cy.get('[data-cy="code-editor-save"]').realClick()
 
         // first stage
         cy.get('[data-cy="add-stage-button"]').click();
