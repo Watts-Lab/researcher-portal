@@ -103,33 +103,55 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {treatment?.treatments[0]?.gameStages?.map(
-                    (stage: any, index: any) => (
-                      <Draggable
-                        key={stage.name}
-                        draggableId={`stage-${index}`}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <StageCard
-                              title={stage.name}
-                              elements={stage.elements}
-                              duration={stage.duration}
-                              scale={scale}
-                              sequence={'gameStage'}
-                              stageIndex={index}
-                              setRenderPanelStage={setRenderPanelStage}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    )
-                  )}
+                  {treatment?.treatments.length > 0 &&
+                    treatment?.treatments[0]?.gameStages?.map(
+                      (stage: any, index: any) => (
+                        <Draggable
+                          key={stage.name}
+                          draggableId={`stage-${index}`}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              {stage.name && (
+                                <StageCard
+                                  title={stage.name}
+                                  elements={stage.elements}
+                                  duration={stage.duration}
+                                  scale={scale}
+                                  sequence={'gameStage'}
+                                  stageIndex={index}
+                                  setRenderPanelStage={setRenderPanelStage}
+                                  isTemplate={false}
+                                />
+                              )}
+                              {stage.template && (
+                                <StageCard
+                                  title={
+                                    templatesMap.get(stage.template)[0].name
+                                  }
+                                  elements={
+                                    templatesMap.get(stage.template)[0].elements
+                                  }
+                                  duration={
+                                    templatesMap.get(stage.template)[0].duration
+                                  }
+                                  scale={scale}
+                                  sequence={'gameStage'}
+                                  stageIndex={index}
+                                  setRenderPanelStage={setRenderPanelStage}
+                                  isTemplate={true}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </Draggable>
+                      )
+                    )}
                   {provided.placeholder}
                 </div>
               )}
