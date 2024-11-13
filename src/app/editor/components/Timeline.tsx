@@ -19,8 +19,13 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   const [scale, setScale] = useState(1) // pixels per second
-  const [filterCriteria, setFilterCriteria] = useState('all') // state for selected filter
-  const [filterOptions, setFilterOptions] = useState<string[]>([]) // state to store filter options (stage names)
+  const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(() => {
+    const savedIndex = localStorage.getItem('selectedTreatmentIndex')
+    return savedIndex !== null ? parseInt(savedIndex, 10) : 0
+  })
+  const [stageOptions, setStageOptions] = useState<string[]>([])
+  const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
+  const [filterCriteria, setFilterCriteria] = useState('all')
 
   const {
     currentStageIndex,
@@ -41,16 +46,23 @@ export default function Timeline({
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
 
-      const storedFilter = localStorage.getItem('filterCriteria') || 'all' // persist filter option
+      const storedFilter = localStorage.getItem('filterCriteria') || 'all'
       setFilterCriteria(storedFilter)
 
       // generate dynamic selector options
-      if (parsedCode && parsedCode.treatments?.[0].gameStages) {
-        const stageNames = parsedCode.treatments[0].gameStages.map(
-          (stage: any) => stage.name
+      if (parsedCode && parsedCode.treatments) {
+        const treatmentNames = parsedCode.treatments.map(
+          (treatment: any) => treatment.name
         )
-        setFilterOptions(['all', ...stageNames]) // 'all' as default
+        setTreatmentOptions(treatmentNames)
+
+        const stageNames =
+          parsedCode.treatments[0]?.gameStages?.map(
+            (stage: any) => stage.name
+          ) || []
+        setStageOptions(['all', ...stageNames]) // 'all' as default
       }
+
       if (parsedCode?.templates) {
         const templates = new Map<string, any>()
         parsedCode.templates.forEach((template: any) => {
@@ -64,7 +76,7 @@ export default function Timeline({
   const filterStages = useCallback(
     (treatment: any) => {
       // think about using useMemo here
-      if (!treatment) return []
+      if (!treatment || !treatment.gameStages) return []
 
       const filteredStages = treatment.gameStages
         .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
@@ -79,21 +91,34 @@ export default function Timeline({
     [filterCriteria]
   )
 
-  // change stage index whenever filterCriteria changes
   useEffect(() => {
-    const filteredStages = filterStages(treatment?.treatments?.[0])
-    if (filteredStages.length > 0) {
+    const selectedTreatment = treatment?.treatments?.[selectedTreatmentIndex]
+    const filteredStages = filterStages(selectedTreatment)
+    if (filteredStages.length > 0)
       setCurrentStageIndex(filteredStages[0].originalIndex)
-    }
-  }, [filterCriteria, treatment, setCurrentStageIndex, filterStages])
 
-  if (!treatment) {
-    return null
-  }
+    // update stage filter options when treatment changes
+    const stageNames =
+      selectedTreatment?.gameStages?.map((stage: any) => stage.name) || []
+    setStageOptions(['all', ...stageNames])
+  }, [
+    filterCriteria,
+    selectedTreatmentIndex,
+    treatment,
+    setCurrentStageIndex,
+    filterStages,
+  ])
+
+  //if (!treatment) return null
 
   function handleFilterChange(event: any) {
     setFilterCriteria(event.target.value)
     localStorage.setItem('filterCriteria', event.target.value)
+  }
+
+  function handleTreatmentChange(event: any) {
+    setSelectedTreatmentIndex(event.target.value)
+    localStorage.setItem('selectedTreatmentIndex', event.target.value)
   }
 
   // drag and drop handler
@@ -118,39 +143,46 @@ export default function Timeline({
   console.log('treatment', treatment)
   console.log('templatesMap', templatesMap)
 
-  //const parsedCode = "";
-
-  // TODO: add a page before this that lets the researcher select what treatment to work on
-
-  // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
-
-  const addStageOptions = [
-    { question: 'Name', responseType: 'text' },
-    { question: 'Duration', responseType: 'text' },
-    { question: 'Discussion', responseType: 'text' },
-  ]
-
   return (
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
 
-      {/* select section dropdown */}
-      <div
-        className="flex items-center justify-start space-x-2 p-1 bg-slate-200 h-12"
-        data-cy="filter-dropdown"
-      >
-        <label className="text-gray font-medium">Select section:</label>
-        <select
-          value={filterCriteria}
-          onChange={handleFilterChange}
-          className="select select-bordered bg-white text-gray-700 font-medium h-full text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 truncate max-w-xs"
+      {/* Dropdowns container */}
+      <div className="flex items-center justify-start space-x-6 p-1 bg-slate-200 h-12">
+        {/* select treatment dropdown */}
+        <div
+          data-cy="treatment-dropdown"
+          className="flex items-center space-x-2"
         >
-          {filterOptions.map((option, index) => (
-            <option key={index} value={option} className="truncate">
-              {option === 'all' ? 'All Stages' : option}
-            </option>
-          ))}
-        </select>
+          <label className="text-gray font-medium">Select treatment:</label>
+          <select
+            value={selectedTreatmentIndex}
+            onChange={handleTreatmentChange}
+            className="select select-bordered bg-white text-gray-700 font-medium h-full text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 truncate max-w-xs"
+          >
+            {treatmentOptions.map((option, index) => (
+              <option key={index} value={index} className="truncate">
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* select stage dropdown */}
+        <div data-cy="stages-dropdown" className="flex items-center space-x-2">
+          <label className="text-gray font-medium">Select stage:</label>
+          <select
+            value={filterCriteria}
+            onChange={handleFilterChange}
+            className="select select-bordered bg-white text-gray-700 font-medium h-full text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 truncate max-w-xs"
+          >
+            {stageOptions.map((option, index) => (
+              <option key={index} value={option} className="truncate">
+                {option === 'all' ? 'All Stages' : option}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div
@@ -166,33 +198,33 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {filterStages(treatment?.treatments?.[0])?.map(
-                    (obj: any, index: any) => (
-                      <Draggable
-                        key={obj.stage.name}
-                        draggableId={`stage-${obj.originalIndex}`}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <StageCard
-                              title={obj.stage.name}
-                              elements={obj.stage.elements}
-                              duration={obj.stage.duration}
-                              scale={scale}
-                              sequence={'gameStage'}
-                              stageIndex={obj.originalIndex}
-                              setRenderPanelStage={setRenderPanelStage}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    )
-                  )}
+                  {filterStages(
+                    treatment?.treatments?.[selectedTreatmentIndex]
+                  )?.map((obj: any, index: any) => (
+                    <Draggable
+                      key={obj.stage.name}
+                      draggableId={`stage-${obj.originalIndex}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <StageCard
+                            title={obj.stage.name}
+                            elements={obj.stage.elements}
+                            duration={obj.stage.duration}
+                            scale={scale}
+                            sequence={'gameStage'}
+                            stageIndex={obj.originalIndex}
+                            setRenderPanelStage={setRenderPanelStage}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
                   {provided.placeholder}
                 </div>
               )}
