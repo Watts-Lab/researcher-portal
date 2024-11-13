@@ -1,0 +1,16 @@
+# using template as a gamestage
+templates:
+  - templateName: testGameStagesTemplate
+    templateContent:
+      - name: GameStageTemplate
+        duration: 60
+        elements:
+          - type: prompt
+            file: projects/example/multipleChoiceColors.md
+          - type: submitButton
+
+treatments:
+  - name: simple template test
+    playerCount: 1
+    gameStages:
+      - template: testGameStagesTemplate
