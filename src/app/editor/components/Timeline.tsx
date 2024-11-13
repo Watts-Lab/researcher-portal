@@ -19,10 +19,6 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   const [scale, setScale] = useState(1) // pixels per second
-  const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(() => {
-    const savedIndex = localStorage.getItem('selectedTreatmentIndex')
-    return savedIndex !== null ? parseInt(savedIndex, 10) : 0
-  })
   const [stageOptions, setStageOptions] = useState<string[]>([])
   const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
   const [filterCriteria, setFilterCriteria] = useState('all')
@@ -37,6 +33,8 @@ export default function Timeline({
     editTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
   } = useContext(StageContext)
 
   useEffect(() => {
@@ -85,6 +83,7 @@ export default function Timeline({
         )
 
       console.log('Filtered Stages:', filteredStages)
+      localStorage.setItem('filterCriteria', filterCriteria)
 
       return filteredStages
     },
@@ -94,6 +93,7 @@ export default function Timeline({
   useEffect(() => {
     const selectedTreatment = treatment?.treatments?.[selectedTreatmentIndex]
     const filteredStages = filterStages(selectedTreatment)
+
     if (filteredStages.length > 0)
       setCurrentStageIndex(filteredStages[0].originalIndex)
 
@@ -119,6 +119,7 @@ export default function Timeline({
   function handleTreatmentChange(event: any) {
     setSelectedTreatmentIndex(event.target.value)
     localStorage.setItem('selectedTreatmentIndex', event.target.value)
+    setFilterCriteria('all')
   }
 
   // drag and drop handler
@@ -130,13 +131,16 @@ export default function Timeline({
 
     const sourceIndex = source.index
     const destIndex = destination.index
-    const updatedStages = Array.from(treatment.treatments[0].gameStages)
+    const updatedStages = Array.from(
+      treatment.treatments[selectedTreatmentIndex].gameStages
+    )
     const [removed] = updatedStages.splice(sourceIndex, 1)
     updatedStages.splice(destIndex, 0, removed)
 
     // update treatment
     const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-    updatedTreatment.treatments[0].gameStages = updatedStages
+    updatedTreatment.treatments[selectedTreatmentIndex].gameStages =
+      updatedStages
     editTreatment(updatedTreatment)
   }
 
