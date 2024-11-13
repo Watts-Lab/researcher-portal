@@ -21,7 +21,7 @@ export default function Timeline({
   const [scale, setScale] = useState(1) // pixels per second
   const [stageOptions, setStageOptions] = useState<string[]>([])
   const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
-  const [filterCriteria, setFilterCriteria] = useState('all')
+  const [filterCriteria, setFilterCriteria] = useState('all') // filter for stages
 
   const {
     currentStageIndex,
@@ -38,7 +38,6 @@ export default function Timeline({
   } = useContext(StageContext)
 
   useEffect(() => {
-    // Access localStorage only on the client side
     if (typeof window !== 'undefined') {
       const codeStr = localStorage.getItem('code') || ''
       const parsedCode = parse(codeStr)
@@ -49,6 +48,7 @@ export default function Timeline({
 
       // generate dynamic selector options
       if (parsedCode && parsedCode.treatments) {
+        // assumes treatments will always be defined!
         const treatmentNames = parsedCode.treatments.map(
           (treatment: any) => treatment.name
         )

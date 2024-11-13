@@ -14,10 +14,7 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
-  const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(() => {
-    const savedIndex = localStorage.getItem('selectedTreatmentIndex')
-    return savedIndex !== null ? parseInt(savedIndex, 10) : 0
-  })
+  const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(0)
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
@@ -37,7 +34,7 @@ const StageProvider = ({ children }) => {
     templatesMap,
     setTemplatesMap,
     selectedTreatmentIndex,
-    setSelectedTreatmentIndex
+    setSelectedTreatmentIndex,
   }
 
   return (
