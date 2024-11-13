@@ -1,49 +1,68 @@
-describe('ReferenceData Component', () => {
-  const stageIndex = 0;
-
+describe('ReferenceData Component - Input and Save References', () => {
   beforeEach(() => {
-    // Clear localStorage 
-    cy.clearLocalStorage();
+    // initial test yaml
+    let yamlTreatment = `
+          name: reference_test
+          playerCount: 1
+          gameStages:
+            - name: Stage 1
+              elements:
+                - type: display
+                  reference: participantInfo.name
+                - type: display
+                  reference: participantInfo.age
+      `;
 
-    // Set initial localStorage data using Cypress window object
-    const initialData = {
-      [`stage_${stageIndex}`]: { reference1: 'Test Value 1' },
-    };
-
+    // viewport & visit editor page
+    cy.viewport(2000, 1000);
     cy.visit('http://localhost:3000/editor');
 
+    // entering YAML treatment into code editor & save
+    cy.get('[data-cy="code-editor"]').clear().type(yamlTreatment);
+    cy.get('[data-cy="yaml-save"]').click();
 
-    cy.window().then((win) => {
-      win.localStorage.setItem('jsonData', JSON.stringify(initialData));
-      console.log('Initial LocalStorage jsonData:', win.localStorage.getItem('jsonData'));
-    });
+    cy.get('[data-cy="stage-title"]', { timeout: 10000 }).should("be.visible");
 
-    cy.wait(500);
-    cy.reload();
+    // verifying stage & elements are added successfully
+    cy.get('[data-cy="stage-title"]').should("be.visible");
+    cy.get('[data-cy="reference-label-participantInfo.name"]').contains("Participant Info: Name").should("be.visible");
+    cy.get('[data-cy="reference-label-participantInfo.age"]').contains("Participant Info: Age").should("be.visible");
   });
 
-  it('confirms localStorage is set correctly', () => {
-    // Verify that localStorage contains the expected data
+  it('allows input of reference values, saves, and displays them correctly', () => {
+    const nameValue = 'Alice';
+    const ageValue = '30';
+
+    // type values into input fields for each reference
+    cy.get('[data-cy="reference-input-participantInfo.name"]').type(nameValue);
+    cy.get('[data-cy="reference-input-participantInfo.age"]').type(ageValue);
+
+    // click Save button
+    cy.get('[data-cy="save-button"]').click();
+
+    // verify values r stored in localStorage
     cy.window().then((win) => {
       const jsonData = JSON.parse(win.localStorage.getItem('jsonData') || '{}');
-      expect(jsonData[`stage_${stageIndex}`].reference1).to.equal('Test Value 1');
+      expect(jsonData['stage_0']['participantInfo.name']).to.equal(nameValue);
+      expect(jsonData['stage_0']['participantInfo.age']).to.equal(ageValue);
     });
+
+    // verify saved values r displayed in UI
+    cy.get('[data-cy="reference-display-participantInfo.name"]').should('contain', `Saved Value: ${nameValue}`);
+    cy.get('[data-cy="reference-display-participantInfo.age"]').should('contain', `Saved Value: ${ageValue}`);
   });
 
-  it('keeps values isolated by stage', () => {
-    const stage2Data = { reference2: 'Stage 2 Value' };
+  it('displays "No references found" message when no references exist', () => {
+    // clear YAML treatment
+    let emptyYamlTreatment = `
+          name: reference_test
+          playerCount: 1
+          gameStages: []
+      `;
+    cy.get('[data-cy="code-editor"]').clear().type(emptyYamlTreatment);
+    cy.get('[data-cy="yaml-save"]').click();
 
-    cy.window().then((win) => {
-      win.localStorage.setItem('jsonData', JSON.stringify({ stage_1: stage2Data }));
-    });
-
-    cy.wait(500);
-    cy.reload();
-
-    // Verify that the stage 2 value is set correctly in localStorage
-    cy.window().then((win) => {
-      const jsonData = JSON.parse(win.localStorage.getItem('jsonData') || '{}');
-      expect(jsonData['stage_1'].reference2).to.equal('Stage 2 Value');
-    });
+    // check
+    cy.get('[data-cy="no-references-message"]').should('contain', 'No references found');
   });
 });

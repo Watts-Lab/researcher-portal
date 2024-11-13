@@ -147,7 +147,7 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-semibold mb-4">
+      <h2 className="text-lg font-semibold mb-4" data-cy="stage-title">
         Stage Refs and Dependencies
       </h2>
 
@@ -161,13 +161,16 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
 
             return (
               <div key={index} className="mb-6">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700" data-cy={`reference-label-${reference}`}>
                   {formatReference(reference)}
                 </label>
 
                 {/* saved val */}
                 {savedValue && (
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p
+                    className="text-sm text-gray-500 mt-1"
+                    data-cy={`reference-display-${reference}`}
+                  >
                     <strong>Saved Value:</strong> {savedValue}
                   </p>
                 )}
@@ -176,6 +179,7 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
                 <input
                   type="text"
                   className="mt-2 block w-full rounded-md border-gray-300 bg-gray-100 p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  data-cy={`reference-input-${reference}`}
                   placeholder={`Enter value for ${getPlaceholderText(
                     formatReference(reference)
                   )}`}
@@ -189,12 +193,15 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
           <button
             onClick={saveAsJson}
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            data-cy="save-button"
           >
             Save
           </button>
         </>
       ) : (
-        <p className="text-sm text-gray-500">No references found</p>
+        <p className="text-sm text-gray-500" data-cy="no-references-message">
+          No references found
+        </p>
       )}
     </div>
   )
