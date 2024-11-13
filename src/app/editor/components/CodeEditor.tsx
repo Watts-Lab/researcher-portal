@@ -31,6 +31,7 @@ export default function CodeEditor() {
       const storedCode = localStorage.getItem('code') || ''
       if (storedCode === '') {
         setCode(stringify(data))
+        localStorage.setItem('code', stringify(data))
       } else {
         setCode(storedCode)
       }
