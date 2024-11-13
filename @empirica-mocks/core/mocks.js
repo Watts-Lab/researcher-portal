@@ -69,6 +69,8 @@ export function useStage() {
     setTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex
   } = useContext(StageContext)
   // const stage1 = useContext(StageContext);
   // console.log("useStageMock", stage1)

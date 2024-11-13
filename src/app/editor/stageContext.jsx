@@ -14,7 +14,8 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
-  const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(0)
+  const [selectedTreatmentIndex, setSelectedTreatmentIndex] =
+    useState('default')
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
