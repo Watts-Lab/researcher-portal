@@ -22,7 +22,8 @@
     "paths": {
       "@/*": ["src/app/*"],
       "@/api/*": ["src/app/api/*"],
-      "@deliberation-empirica": ["deliberation-empirica"]
+      "@deliberation-empirica": ["deliberation-empirica"],
+      "@empirica/core/*": ["@empirica-mocks/core/mocks.js"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

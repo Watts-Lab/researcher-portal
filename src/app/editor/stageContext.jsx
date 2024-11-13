@@ -1,6 +1,14 @@
 //import { set } from 'node_modules/cypress/types/lodash';
 import { createContext, useState } from 'react';
 
+import {
+  useGame,
+  useStage,
+  usePlayer,
+  useRound,
+  useStageTimer,
+} from "@empirica/core/player/classic/react";
+
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
 //     elapsed: "default"
@@ -13,13 +21,16 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState('default');
   const [treatment, setTreatment] = useState(null);
 
+  const player = usePlayer();
+
   const contextValue = {
     currentStageIndex,
     setCurrentStageIndex,
     elapsed,
     setElapsed,
     treatment,
-    setTreatment
+    setTreatment,
+    player,
   };
 
   return (
