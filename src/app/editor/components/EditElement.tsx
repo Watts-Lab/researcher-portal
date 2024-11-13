@@ -22,6 +22,8 @@ export function EditElement({
     editTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex
   } = useContext(StageContext)
 
   const {
@@ -33,11 +35,11 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       name:
-        treatment?.treatments?.[0].gameStages[stageIndex]?.elements[
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
           elementIndex
         ]?.name || '',
       selectedOption:
-        treatment?.treatments?.[0].gameStages[stageIndex]?.elements[
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
           elementIndex
         ]?.type || 'Pick one',
       file: '',
@@ -88,11 +90,11 @@ export function EditElement({
     }
 
     if (elementIndex === -1) {
-      updatedTreatment?.treatments[0].gameStages[stageIndex]?.elements?.push(
+      updatedTreatment?.treatments[selectedTreatmentIndex].gameStages[stageIndex]?.elements?.push(
         inputs
       )
     } else {
-      updatedTreatment.treatments[0].gameStages[stageIndex].elements[
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements[
         elementIndex
       ] = inputs
     }
@@ -106,7 +108,7 @@ export function EditElement({
     )
     if (confirm) {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      updatedTreatment.treatments[0].gameStages[stageIndex].elements.splice(
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements.splice(
         elementIndex,
         1
       ) // delete in place

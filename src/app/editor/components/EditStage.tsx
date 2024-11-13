@@ -26,6 +26,8 @@ export function EditStage({
     editTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
   } = useContext(StageContext)
 
   const {
@@ -38,15 +40,15 @@ export function EditStage({
     defaultValues: {
       name:
         stageIndex != -1
-          ? treatment?.treatments?.[0].gameStages[stageIndex]?.name
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.name
           : '',
       duration:
         stageIndex != -1
-          ? treatment?.treatments?.[0].gameStages[stageIndex]?.duration
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.duration
           : 0,
       elements:
         stageIndex != -1
-          ? treatment?.treatments?.[0].gameStages[stageIndex]?.elements
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements
           : [],
       // desc: "",
       // discussion: {
@@ -66,7 +68,7 @@ export function EditStage({
       name: watch('name'),
       duration: watch('duration'),
       elements:
-        treatment?.treatments?.[0].gameStages[stageIndex]?.elements || [],
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements || [],
       // discussion: undefined,
       // desc: watch('desc'),
     }
@@ -93,11 +95,11 @@ export function EditStage({
 
     if (stageIndex === -1) {
       // create new stage
-      updatedTreatment?.treatments?.[0].gameStages?.push(inputs)
+      updatedTreatment?.treatments?.[selectedTreatmentIndex].gameStages?.push(inputs)
     } else {
       // modify existing stage
-      updatedTreatment.treatments[0].gameStages[stageIndex].name = watch('name')
-      updatedTreatment.treatments[0].gameStages[stageIndex].duration =
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].name = watch('name')
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].duration =
         watch('duration')
       // todo: add discussion component
     }
@@ -110,7 +112,7 @@ export function EditStage({
     )
     if (confirm) {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      updatedTreatment.treatments[0].gameStages.splice(stageIndex, 1) // delete in place
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages.splice(stageIndex, 1) // delete in place
       editTreatment(updatedTreatment)
     }
   }

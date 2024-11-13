@@ -10,6 +10,6 @@ treatments:
     playerCount: 1
     gameStages:
       - name: TestTemplateA
-        duration: 60
+        duration: 300
         elements:
           - template: testA

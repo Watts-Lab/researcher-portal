@@ -55,7 +55,7 @@ export default function Timeline({
         setTreatmentOptions(treatmentNames)
 
         const stageNames =
-          parsedCode.treatments[0]?.gameStages?.map(
+          parsedCode.treatments[selectedTreatmentIndex]?.gameStages?.map(
             (stage: any) => stage.name
           ) || []
         setStageOptions(['all', ...stageNames]) // 'all' as default
