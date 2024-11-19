@@ -80,20 +80,59 @@ export function useStage() {
       
       //const treatmentString = localStorage.getItem("treatment");
       //const treatment = JSON.parse(treatmentString);
+      var tempStage = null; // for template stages
+      const stageTemplateName = treatment.treatments[0]?.gameStages[currentStageIndex]?.template || "";
+      var fields = treatment.treatments[0]?.gameStages[currentStageIndex]?.fields || [];
+      if (stageTemplateName !== "") {
+        tempStage = templatesMap.get(stageTemplateName)[0]
+      }
+      console.log("tempStage", tempStage);
+
+      //logic to fill in ${} props
+      // move logic outside get()
+      const variablePattern = /\${([^}]+)}/;
+      {tempStage && 
+        tempStage.elements.forEach(element => {
+          Object.keys(element).forEach(key => {
+            const value = element[key];
+
+            if (typeof value === "string" && variablePattern.test(value)) {
+              const match = value.match(variablePattern);
+              if (match) {
+                console.log("replaced " + match[1] + " with " + fields[match[1]]);
+                element[key] = fields[match[1]];
+              }
+            }
+          });
+        });
+      }
+
+
       if (varName === "elements") {
-        var elements = treatment.treatments[0]?.gameStages[currentStageIndex]?.elements
+        if (tempStage) {
+          return tempStage.elements;
+        }
+
+        var elements = treatment.treatments[0]?.gameStages[currentStageIndex]?.elements;
         elements =  elements.flatMap((element) => {
           if (element.template) {
             return templatesMap.get(element.template);
           }
           return [element];
         });
-        console.log("revised elements", elements)
         return elements;
       } else if (varName === "discussion") {
-        return treatment.treatments[0]?.gameStages[currentStageIndex]?.discussion
+        if (tempStage) {
+          return tempStage.discussion || [];
+        }
+
+        return treatment.treatments[0]?.gameStages[currentStageIndex]?.discussion || [];
       } else if (varName === "name") {
+        if (tempStage) {
+          return tempStage.name;
+        }
         return treatment.treatments[0]?.gameStages[currentStageIndex]?.name
+        
       } else if (varName === "index") {
         return currentStageIndex
       }
