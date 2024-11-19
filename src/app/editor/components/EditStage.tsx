@@ -38,15 +38,15 @@ export function EditStage({
     defaultValues: {
       name:
         stageIndex != -1
-          ? treatment?.treatments[0].gameStages[stageIndex]?.name
+          ? treatment?.treatments?.[0].gameStages[stageIndex]?.name
           : '',
       duration:
         stageIndex != -1
-          ? treatment?.treatments[0].gameStages[stageIndex]?.duration
+          ? treatment?.treatments?.[0].gameStages[stageIndex]?.duration
           : 0,
       elements:
         stageIndex != -1
-          ? treatment?.treatments[0].gameStages[stageIndex]?.elements
+          ? treatment?.treatments?.[0].gameStages[stageIndex]?.elements
           : [],
       // desc: "",
       // discussion: {
@@ -65,7 +65,8 @@ export function EditStage({
     const inputs: { name: any; duration: any; elements: ElementType[] } = {
       name: watch('name'),
       duration: watch('duration'),
-      elements: treatment?.treatments[0].gameStages[stageIndex]?.elements || [],
+      elements:
+        treatment?.treatments?.[0].gameStages[stageIndex]?.elements || [],
       // discussion: undefined,
       // desc: watch('desc'),
     }
@@ -92,7 +93,7 @@ export function EditStage({
 
     if (stageIndex === -1) {
       // create new stage
-      updatedTreatment?.treatments[0].gameStages?.push(inputs)
+      updatedTreatment?.treatments?.[0].gameStages?.push(inputs)
     } else {
       // modify existing stage
       updatedTreatment.treatments[0].gameStages[stageIndex].name = watch('name')

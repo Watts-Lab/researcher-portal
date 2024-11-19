@@ -1,11 +1,14 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, createContext, useContext } from 'react'
 import dynamic from 'next/dynamic.js'
 import TimePicker from './TimePicker'
 import ReferenceData from './ReferenceData'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
-
 import { StageContext } from '@/editor/stageContext'
+import { Substitute } from 'styled-components/dist/types'
+
+const StyleContext = createContext({})
+const useStyle = () => useContext(StyleContext)
 
 const Stage = dynamic(
   () =>
@@ -16,6 +19,14 @@ const Stage = dynamic(
     ssr: false,
   }
 )
+
+const StyledStage = () => {
+  return (
+    <div className="min-w-sm mx-auto aspect-video relative">
+      <Stage />
+    </div>
+  )
+}
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
@@ -28,12 +39,6 @@ export function RenderPanel() {
     treatment,
     setTreatment,
   } = useContext(StageContext)
-
-  //const for reference data in sidebar
-  const [participantInfoName, setParticipantInfoName] = useState('')
-  const [guessPartnerParty, setGuessPartnerParty] = useState('')
-  const [guessPartnerPosition, setGuessPartnerPosition] = useState('')
-  const [stageName, setStageName] = useState('')
 
   console.log('RenderPanel.tsx current stage index', currentStageIndex)
   console.log('Current Treatment', treatment)
@@ -60,24 +65,18 @@ export function RenderPanel() {
       )}
       {currentStageIndex !== 'default' && (
         <div className="min-w-fit">
-          <h1>Preview of stage {currentStageIndex} </h1>
+          <h1>Preview of Stage {currentStageIndex} </h1>
           <TimePicker
             value={time + ' s'}
             setValue={setElapsed}
             maxValue={
-              treatment.treatments[0].gameStages[currentStageIndex]?.duration ??
-              0
+              treatment.treatments?.[0].gameStages[currentStageIndex]
+                ?.duration ?? 0
             }
           />
           <ReferenceData
-            participantInfoName={participantInfoName}
-            guessPartnerParty={guessPartnerParty}
-            guessPartnerPosition={guessPartnerPosition}
-            stageName={stageName}
-            setParticipantInfoName={setParticipantInfoName}
-            setGuessPartnerParty={setGuessPartnerParty}
-            setGuessPartnerPosition={setGuessPartnerPosition}
-            setStageName={setStageName}
+            treatment={treatment.treatments?.[0]}
+            stageIndex={currentStageIndex}
           />
           {/* need to retrieve stage duration from treatment */}
         </div>
@@ -99,8 +98,8 @@ export function RenderPanel() {
           )}
       </div> */}
 
-      <div className="w-full">
-        {currentStageIndex !== 'default' && <Stage />}
+      <div className="w-full flex">
+        {currentStageIndex !== 'default' && <StyledStage />}
       </div>
     </div>
   )

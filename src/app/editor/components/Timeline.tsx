@@ -1,13 +1,15 @@
 'use client'
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { parse } from 'yaml'
 import { StageCard } from './StageCard'
 import TimelineTools from './TimelineTools'
-import TimePicker from './TimePicker'
 import { stringify } from 'yaml'
 import { Modal } from './Modal'
 import { EditStage } from './EditStage'
-import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import {
+  treatmentSchema,
+  TreatmentType,
+} from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { StageContext } from '@/editor/stageContext'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 
@@ -17,7 +19,9 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   const [scale, setScale] = useState(1) // pixels per second
-  //const [treatment, setTreatment] = useState<any | null>(null)
+  const [filterCriteria, setFilterCriteria] = useState('all') // state for selected filter
+  const [filterOptions, setFilterOptions] = useState<string[]>([]) // state to store filter options (stage names)
+
   const {
     currentStageIndex,
     setCurrentStageIndex,
@@ -37,6 +41,16 @@ export default function Timeline({
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
 
+      const storedFilter = localStorage.getItem('filterCriteria') || 'all' // persist filter option
+      setFilterCriteria(storedFilter)
+
+      // generate dynamic selector options
+      if (parsedCode && parsedCode.treatments?.[0].gameStages) {
+        const stageNames = parsedCode.treatments[0].gameStages.map(
+          (stage: any) => stage.name
+        )
+        setFilterOptions(['all', ...stageNames]) // 'all' as default
+      }
       if (parsedCode?.templates) {
         const templates = new Map<string, any>()
         parsedCode.templates.forEach((template: any) => {
@@ -47,10 +61,39 @@ export default function Timeline({
     }
   }, [setTreatment])
 
-  //setTreatment('')
+  const filterStages = useCallback(
+    (treatment: any) => {
+      // think about using useMemo here
+      if (!treatment) return []
+
+      const filteredStages = treatment.gameStages
+        .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
+        .filter(({ stage }: { stage: any }) =>
+          filterCriteria === 'all' ? true : stage.name === filterCriteria
+        )
+
+      console.log('Filtered Stages:', filteredStages)
+
+      return filteredStages
+    },
+    [filterCriteria]
+  )
+
+  // change stage index whenever filterCriteria changes
+  useEffect(() => {
+    const filteredStages = filterStages(treatment?.treatments?.[0])
+    if (filteredStages.length > 0) {
+      setCurrentStageIndex(filteredStages[0].originalIndex)
+    }
+  }, [filterCriteria, treatment, setCurrentStageIndex, filterStages])
 
   if (!treatment) {
     return null
+  }
+
+  function handleFilterChange(event: any) {
+    setFilterCriteria(event.target.value)
+    localStorage.setItem('filterCriteria', event.target.value)
   }
 
   // drag and drop handler
@@ -90,6 +133,26 @@ export default function Timeline({
   return (
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
+
+      {/* select section dropdown */}
+      <div
+        className="flex items-center justify-start space-x-2 p-1 bg-slate-200 h-12"
+        data-cy="filter-dropdown"
+      >
+        <label className="text-gray font-medium">Select section:</label>
+        <select
+          value={filterCriteria}
+          onChange={handleFilterChange}
+          className="select select-bordered bg-white text-gray-700 font-medium h-full text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 truncate max-w-xs"
+        >
+          {filterOptions.map((option, index) => (
+            <option key={index} value={option} className="truncate">
+              {option === 'all' ? 'All Stages' : option}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div
         id="timelineCanvas"
         className="grow min-h-10 bg-slate-600 p-2 overflow-y-auto overflow-x-auto"
@@ -103,28 +166,27 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {treatment?.treatments.length > 0 &&
-                    treatment?.treatments[0]?.gameStages?.map(
-                      (stage: any, index: any) => (
-                        <Draggable
-                          key={stage.name}
-                          draggableId={`stage-${index}`}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              {stage.name && (
+                  {filterStages(treatment?.treatments?.[0])?.map(
+                    (obj: any, index: any) => (
+                      <Draggable
+                        key={obj.stage.name}
+                        draggableId={`stage-${obj.originalIndex}`}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {stage.name && (
                                 <StageCard
-                                  title={stage.name}
-                                  elements={stage.elements}
-                                  duration={stage.duration}
+                                  title={obj.stage.name}
+                                  elements={obj.stage.elements}
+                                  duration={obj.stage.duration}
                                   scale={scale}
                                   sequence={'gameStage'}
-                                  stageIndex={index}
+                                  stageIndex={obj.originalIndex}
                                   setRenderPanelStage={setRenderPanelStage}
                                   isTemplate={false}
                                 />
@@ -132,13 +194,13 @@ export default function Timeline({
                               {stage.template && (
                                 <StageCard
                                   title={
-                                    templatesMap.get(stage.template)[0].name
+                                    templatesMap.get(obj.stage.template)[0].name
                                   }
                                   elements={
-                                    templatesMap.get(stage.template)[0].elements
+                                    templatesMap.get(obj.stage.template)[0].elements
                                   }
                                   duration={
-                                    templatesMap.get(stage.template)[0].duration
+                                    templatesMap.get(obj.stage.template)[0].duration
                                   }
                                   scale={scale}
                                   sequence={'gameStage'}
@@ -147,11 +209,11 @@ export default function Timeline({
                                   isTemplate={true}
                                 />
                               )}
-                            </div>
-                          )}
-                        </Draggable>
-                      )
-                    )}
+                          </div>
+                        )}
+                      </Draggable>
+                    )
+                  )}
                   {provided.placeholder}
                 </div>
               )}

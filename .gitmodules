@@ -1,3 +1,4 @@
 [submodule "deliberation-empirica"]
 	path = deliberation-empirica
 	url = https://github.com/Watts-Lab/deliberation-empirica.git
+	branch = james-update-zod-again
