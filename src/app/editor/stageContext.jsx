@@ -21,6 +21,7 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
+  const player = usePlayer()
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
@@ -29,8 +30,6 @@ const StageProvider = ({ children }) => {
     window.location.reload()
   }
 
-  const player = usePlayer();
-
   const contextValue = {
     currentStageIndex,
     setCurrentStageIndex,
@@ -38,11 +37,11 @@ const StageProvider = ({ children }) => {
     setElapsed,
     treatment,
     setTreatment,
-    player,
     editTreatment,
+    player,
     templatesMap,
     setTemplatesMap,
-  };
+  }
 
   return (
     <StageContext.Provider value={contextValue}>
