@@ -32,6 +32,10 @@ export function EditElement({
   const stageTemplateName =
     treatment.treatments[0]?.gameStages[currentStageIndex]?.template || ''
 
+  console.log("stageTemplateName == ''", stageTemplateName == '')
+  console.log('stageIndex', stageIndex)
+  console.log('elementIndex', elementIndex)
+
   const {
     register,
     watch,
@@ -41,18 +45,20 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       // WEIRD BUG WITH ELEMENTINDEX NOT SURE WHY
-      name: '',
-      // stageTemplateName == ""
-      //   ? treatment?.treatments[0].gameStages[stageIndex]?.elements[
-      //       elementIndex
-      //     ]?.name || ''
-      //   : '',
-      selectedOption: 'Pick one',
-      // stageTemplateName == ""
-      //   ? treatment?.treatments[0].gameStages[stageIndex]?.elements[
-      //       elementIndex
-      //     ]?.type || 'Pick one'
-      //   : 'Pick one',
+      //'',
+      name:
+        stageTemplateName == ''
+          ? treatment?.treatments[0].gameStages[stageIndex]?.elements?.[
+              elementIndex
+            ]?.name || ''
+          : '',
+      //'Pick one',
+      selectedOption:
+        stageTemplateName == ''
+          ? treatment?.treatments[0].gameStages[stageIndex]?.elements?.[
+              elementIndex
+            ]?.type || 'Pick one'
+          : 'Pick one',
       file: '',
       url: '',
       params: [],
