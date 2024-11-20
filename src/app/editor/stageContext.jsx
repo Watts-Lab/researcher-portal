@@ -16,6 +16,8 @@ const StageProvider = ({ children }) => {
   const [templatesMap, setTemplatesMap] = useState(new Map())
   const [selectedTreatmentIndex, setSelectedTreatmentIndex] =
     useState('default')
+  const [selectedIntroSequenceIndex, setSelectedIntroSequenceIndex] =
+    useState('default')
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
@@ -36,6 +38,8 @@ const StageProvider = ({ children }) => {
     setTemplatesMap,
     selectedTreatmentIndex,
     setSelectedTreatmentIndex,
+    selectedIntroSequenceIndex,
+    setSelectedIntroSequenceIndex
   }
 
   return (

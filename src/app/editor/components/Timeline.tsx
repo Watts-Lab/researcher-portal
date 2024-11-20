@@ -21,6 +21,7 @@ export default function Timeline({
   const [scale, setScale] = useState(1) // pixels per second
   const [stageOptions, setStageOptions] = useState<string[]>([])
   const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
+  const [introSequenceOptions, setIntroSequenceOptions] = useState<string[]>([])
   const [filterCriteria, setFilterCriteria] = useState('all') // filter for stages
 
   const {
@@ -35,6 +36,8 @@ export default function Timeline({
     setTemplatesMap,
     selectedTreatmentIndex,
     setSelectedTreatmentIndex,
+    selectedIntroSequenceIndex,
+    setSelectedIntroSequenceIndex,
   } = useContext(StageContext)
 
   useEffect(() => {
@@ -46,28 +49,38 @@ export default function Timeline({
       const storedFilter = localStorage.getItem('filterCriteria') || 'all'
       setFilterCriteria(storedFilter)
 
-      // generate dynamic selector options
-      if (parsedCode && parsedCode.treatments) {
-        // assumes treatments will always be defined!
-        const treatmentNames = parsedCode.treatments.map(
-          (treatment: any) => treatment.name
-        )
-        setTreatmentOptions(treatmentNames)
-        setSelectedTreatmentIndex(0)
+      // generate dynamic selector options for treatments, intro sequences, and templates
+      if (parsedCode) {
+        if (parsedCode.treatments) {
+          const treatmentNames = parsedCode.treatments.map(
+            (treatment: any) => treatment.name
+          )
+          setTreatmentOptions(treatmentNames)
+          setSelectedTreatmentIndex(0)
 
-        const stageNames =
-          parsedCode.treatments[selectedTreatmentIndex]?.gameStages?.map(
-            (stage: any) => stage.name
-          ) || []
-        setStageOptions(['all', ...stageNames]) // 'all' as default
-      }
+          const stageNames =
+            parsedCode.treatments[0]?.gameStages?.map(
+              (stage: any) => stage.name
+            ) || []
+          setStageOptions(['all', ...stageNames]) // 'all' as default
+        }
 
-      if (parsedCode?.templates) {
-        const templates = new Map<string, any>()
-        parsedCode.templates.forEach((template: any) => {
-          templates.set(template.templateName, template.templateContent)
-        })
-        setTemplatesMap(templates)
+        if (parsedCode.introSequences) {
+          const sequenceNames = parsedCode.introSequences.map(
+            (sequence: any, index: number) =>
+              sequence.fields?.sequenceName || `Sequence ${index + 1}`
+          )
+          setIntroSequenceOptions(sequenceNames)
+          setSelectedIntroSequenceIndex(0)
+        }
+
+        if (parsedCode.templates) {
+          const templates = new Map<string, any>()
+          parsedCode.templates.forEach((template: any) => {
+            templates.set(template.templateName, template.templateContent)
+          })
+          setTemplatesMap(templates)
+        }
       }
     }
   }, [setTreatment])
@@ -93,25 +106,25 @@ export default function Timeline({
 
   useEffect(() => {
     localStorage.setItem('selectedTreatmentIndex', selectedTreatmentIndex)
+    localStorage.setItem('selectedIntroSequenceIndex', selectedIntroSequenceIndex)
     const selectedTreatment = treatment?.treatments?.[selectedTreatmentIndex]
     const filteredStages = filterStages(selectedTreatment)
 
-    if (filteredStages.length > 0)
+    if (filteredStages.length > 0) {
       setCurrentStageIndex(filteredStages[0].originalIndex)
+    }
 
-    // update stage filter options when treatment changes
     const stageNames =
       selectedTreatment?.gameStages?.map((stage: any) => stage.name) || []
     setStageOptions(['all', ...stageNames])
   }, [
     filterCriteria,
     selectedTreatmentIndex,
+    selectedIntroSequenceIndex,
     treatment,
     setCurrentStageIndex,
     filterStages,
   ])
-
-  //if (!treatment) return null
 
   function handleFilterChange(event: any) {
     setFilterCriteria(event.target.value)
@@ -119,12 +132,18 @@ export default function Timeline({
   }
 
   function handleTreatmentChange(event: any) {
+    setCurrentStageIndex(0)
     setSelectedTreatmentIndex(event.target.value)
     localStorage.setItem('selectedTreatmentIndex', event.target.value)
     setFilterCriteria('all')
   }
 
-  // drag and drop handler
+  function handleIntroSequenceChange(event: any) {
+    setSelectedIntroSequenceIndex(event.target.value)
+    localStorage.setItem('selectedIntroSequenceIndex', event.target.value)
+    setFilterCriteria('all')
+  }
+
   function onDragEnd(result: any) {
     const { destination, source } = result
     if (!destination) {
@@ -134,7 +153,7 @@ export default function Timeline({
     const sourceIndex = source.index
     const destIndex = destination.index
     const updatedStages = Array.from(
-      treatment.treatments[selectedTreatmentIndex].gameStages
+      treatment.treatments[selectedTreatmentIndex]?.gameStages || []
     )
     const [removed] = updatedStages.splice(sourceIndex, 1)
     updatedStages.splice(destIndex, 0, removed)
@@ -153,9 +172,7 @@ export default function Timeline({
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
 
-      {/* Dropdowns container */}
       <div className="flex items-center justify-start space-x-6 p-1 bg-slate-200 h-12">
-        {/* select treatment dropdown */}
         <div
           data-cy="treatment-dropdown"
           className="flex items-center space-x-2"
@@ -174,7 +191,26 @@ export default function Timeline({
           </select>
         </div>
 
-        {/* select stage dropdown */}
+        <div
+          data-cy="intro-sequence-dropdown"
+          className="flex items-center space-x-2"
+        >
+          <label className="text-gray font-medium">
+            Select intro sequence:
+          </label>
+          <select
+            value={selectedIntroSequenceIndex}
+            onChange={handleIntroSequenceChange}
+            className="select select-bordered bg-white text-gray-700 font-medium h-full text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 truncate max-w-xs"
+          >
+            {introSequenceOptions.map((option, index) => (
+              <option key={index} value={index} className="truncate">
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div data-cy="stages-dropdown" className="flex items-center space-x-2">
           <label className="text-gray font-medium">Select stage:</label>
           <select
