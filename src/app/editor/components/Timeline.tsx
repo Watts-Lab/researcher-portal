@@ -53,6 +53,7 @@ export default function Timeline({
           (treatment: any) => treatment.name
         )
         setTreatmentOptions(treatmentNames)
+        setSelectedTreatmentIndex(0)
 
         const stageNames =
           parsedCode.treatments[selectedTreatmentIndex]?.gameStages?.map(
@@ -91,6 +92,7 @@ export default function Timeline({
   )
 
   useEffect(() => {
+    localStorage.setItem('selectedTreatmentIndex', selectedTreatmentIndex)
     const selectedTreatment = treatment?.treatments?.[selectedTreatmentIndex]
     const filteredStages = filterStages(selectedTreatment)
 
