@@ -1,10 +1,10 @@
 describe('timeline filter treatment', () => {
     beforeEach(() => {
         // load initial treatment file
-        //let yamltreatment = "treatments: \n - name: filter_timeline_test\n  playerCount: 1\ngameStages: []";
+        let yamltreatment = "treatments: \n - name: filter_timeline_test\n  playerCount: 1\ngameStages: []";
         cy.viewport(2000, 1000, { log: false });
         cy.visit('http://localhost:3000/editor');
-        //cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
 
         // verify initial text in editor
 
