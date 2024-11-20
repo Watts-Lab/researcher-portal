@@ -1,8 +1,10 @@
 import { useContext } from 'react';
 import { isFunctionDeclaration } from "typescript";
-import { StageContext } from '@/editor/stageContext';
+import { StageContext } from '@/editor/stageContext'; // # don't know why this doesn't work
 
 // file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
+// import { StageContext } from "../../../../../src/app/editor/stageContext"
+
 
 
 export function usePlayer() {
