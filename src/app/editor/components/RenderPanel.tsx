@@ -22,7 +22,7 @@ const Stage = dynamic(
 
 const StyledStage = () => {
   return (
-    <div className="min-w-sm mx-auto aspect-video relative">
+    <div className="min-w-sm mx-auto aspect-video relative w-full">
       <Stage />
     </div>
   )
