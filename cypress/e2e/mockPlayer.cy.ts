@@ -21,10 +21,11 @@ describe('test spec', () => {
         // click on survey questions and complete survey
         cy.contains('Please answer the following questions').should('exist')
         //cy.contains('1').click({force: true})
-        cy.get('input[id="sq_106i_0"]').click({force: true})
-        cy.get('input[id="sq_107i_0"]').click({force: true})
-        cy.get('input[id="sq_108i_0"]').click({force: true})
-        cy.get('input[id="sq_109i_0"]').click({force: true})
+        cy.get('input[type="radio"]').should("have.value", "1").click({force: true, multiple: true})
+        // cy.get('input[id="sq_106i_0"]').click({force: true})
+        // cy.get('input[id="sq_107i_0"]').click({force: true})
+        // cy.get('input[id="sq_108i_0"]').click({force: true})
+        // cy.get('input[id="sq_109i_0"]').click({force: true})
         cy.get('input[title="Complete"]').click()
 
         // survey should not be visible and no error should be thrown
