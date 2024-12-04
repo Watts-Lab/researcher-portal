@@ -4,6 +4,12 @@ import TimePicker from './TimePicker'
 import ReferenceData from './ReferenceData'
 //import { Stage } from './../../../.././deliberation-empirica/client/src/Stage.jsx'
 import RenderDelibElement from './RenderDelibElement'
+
+import './../../styles/index.css'
+import './../../styles/player-classic-react.css'
+import './../../styles/player-classic.css'
+import './../../styles/player.css'
+
 import { StageContext } from '@/editor/stageContext'
 import { Substitute } from 'styled-components/dist/types'
 
