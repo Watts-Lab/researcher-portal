@@ -56,7 +56,7 @@ export function ElementCard({
       <div>
         {Object.keys(element).map((key) => (
           <p key={key}>
-            {key}: {element[key]}
+            {key}: {element[key].toString()}
           </p>
         ))}
       </div>

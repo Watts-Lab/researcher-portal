@@ -118,6 +118,39 @@ export function useStage() {
           if (element.template) {
             return templatesMap.get(element.template);
           }
+          if (element.conditions) {
+            // update with other comparators
+            var refData = JSON.parse(localStorage.getItem('jsonData') || '{}');
+            const conditions = element.conditions;
+            const comparator = conditions[0]?.comparator || "x";
+            const reference = conditions[0]?.reference || "x";
+            console.log("refData", refData)
+            console.log("reference", reference , typeof reference)
+            if (comparator === "x") {
+              return [element];
+            } else if (comparator === "exists") {
+              console.log("comparing")
+              console.log(refData[`stage_${currentStageIndex}`])
+              if (refData[`stage_${currentStageIndex}`]?.[reference]) {
+                console.log("SHOWING")
+                const newElement = {...element};
+                delete newElement.conditions;
+                return [newElement];
+              } else {
+                return [];
+              }
+            }
+            
+            const condition = conditions.find((condition) => {
+              if (condition.field) {
+                return fields[condition.field] === condition.value;
+              }
+              return true;
+            });
+            if (condition) {
+              return [element];
+            }
+          }
           return [element];
         });
         return elements;
