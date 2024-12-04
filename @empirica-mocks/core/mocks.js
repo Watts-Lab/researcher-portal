@@ -69,6 +69,8 @@ export function useStage() {
     setTreatment,
     templatesMap,
     setTemplatesMap,
+    refData,
+    setRefData,
   } = useContext(StageContext)
   // const stage1 = useContext(StageContext);
   // console.log("useStageMock", stage1)
@@ -119,20 +121,15 @@ export function useStage() {
             return templatesMap.get(element.template);
           }
           if (element.conditions) {
-            // update with other comparators
-            var refData = JSON.parse(localStorage.getItem('jsonData') || '{}');
+            // TODO: update with other comparators
+            // var refData = JSON.parse(localStorage.getItem('jsonData') || '{}');
             const conditions = element.conditions;
             const comparator = conditions[0]?.comparator || "x";
             const reference = conditions[0]?.reference || "x";
-            console.log("refData", refData)
-            console.log("reference", reference , typeof reference)
             if (comparator === "x") {
               return [element];
             } else if (comparator === "exists") {
-              console.log("comparing")
-              console.log(refData[`stage_${currentStageIndex}`])
               if (refData[`stage_${currentStageIndex}`]?.[reference]) {
-                console.log("SHOWING")
                 const newElement = {...element};
                 delete newElement.conditions;
                 return [newElement];
