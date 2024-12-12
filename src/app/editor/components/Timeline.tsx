@@ -271,7 +271,7 @@ export default function Timeline({
                   )?.map((obj: any, index: any) => (
                     <Draggable
                       key={obj.stage.name}
-                      draggableId={`stage-${obj.originalIndex}`}
+                      draggableId={`treatment-${selectedTreatmentIndex}-stage-${obj.originalIndex}`}
                       index={index}
                     >
                       {(provided) => (

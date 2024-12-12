@@ -156,8 +156,8 @@ export function StageCard({
               {elements !== undefined &&
                 elements.map((element, index) => (
                   <Draggable
-                    key={`element-${stageIndex}-${index}`}
-                    draggableId={`element-${stageIndex}-${index}`}
+                    key={`element-${selectedTreatmentIndex}-${stageIndex}-${index}`}
+                    draggableId={`element-${selectedTreatmentIndex}-${stageIndex}-${index}`}
                     index={index}
                   >
                     {(provided) => (
