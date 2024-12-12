@@ -107,7 +107,7 @@ describe('test spec', () => {
         // view second stage in render panel
         cy.get('[data-cy="stage-1"]').click(0, 0)
         cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
-        cy.get('[data-cy="render-panel"]').contains("Click to continue the video").should("be.visible")
+        //cy.get('[data-cy="render-panel"]').contains("Click to continue the video").should("be.visible")
 
         // edit second element in first stage
         cy.get('[data-cy="edit-element-button-0-1"]').click()

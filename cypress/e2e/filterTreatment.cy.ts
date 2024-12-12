@@ -40,7 +40,7 @@ describe('timeline filter treatment', () => {
     });
 
     it('should dynamically populate filter options based on treatment file', () => {
-        cy.get('[data-cy="filter-dropdown"] select').within(() => {
+        cy.get('[data-cy="stages-dropdown"] select').within(() => {
             cy.get('option').should('have.length', 4);
             cy.get('option').eq(0).should('have.text', 'All Stages');
             cy.get('option').eq(1).should('have.text', 'Role Assignment and General Instructions');
@@ -51,19 +51,19 @@ describe('timeline filter treatment', () => {
 
     it('allows filtering stages by criteria', () => {
         // default option
-        cy.get('[data-cy="filter-dropdown"] select').should('have.value', 'all');
+        cy.get('[data-cy="stages-dropdown"] select').should('have.value', 'all');
 
         // select one section and ensure no other sections are visible
-        cy.get('[data-cy="filter-dropdown"] select').select('Main Discussion');
-        cy.get('[data-cy="filter-dropdown"] select').should('have.value', 'Main Discussion');
+        cy.get('[data-cy="stages-dropdown"] select').select('Main Discussion');
+        cy.get('[data-cy="stages-dropdown"] select').should('have.value', 'Main Discussion');
         cy.get('[data-cy="stage-0"]').should('not.exist');
         cy.get('[data-cy="stage-2"]').should('not.exist');
         cy.get('[data-cy="stage-1"]').contains("Main Discussion").should("be.visible");
         cy.get('[data-cy^="stage-"]').should('have.length', 1);
 
         // reset to all stages when filter option is cleared
-        cy.get('[data-cy="filter-dropdown"] select').select('all');
-        cy.get('[data-cy="filter-dropdown"] select').should('have.value', 'all');
+        cy.get('[data-cy="stages-dropdown"] select').select('all');
+        cy.get('[data-cy="stages-dropdown"] select').should('have.value', 'all');
         cy.get('[data-cy="stage-0"]').contains("Role Assignment and General Instructions").should("be.visible");
         cy.get('[data-cy="stage-1"]').contains("Main Discussion").should("be.visible");
         cy.get('[data-cy="stage-2"]').contains("Post Discussion Survey").should("be.visible");
@@ -71,9 +71,9 @@ describe('timeline filter treatment', () => {
     })
 
     it('should persist selected filter after page reload', () => {
-        cy.get('[data-cy="filter-dropdown"] select').should('have.value', 'all');
+        cy.get('[data-cy="stages-dropdown"] select').should('have.value', 'all');
 
-        cy.get('[data-cy="filter-dropdown"] select').select('Main Discussion');
+        cy.get('[data-cy="stages-dropdown"] select').select('Main Discussion');
         cy.get('[data-cy="stage-0"]').should('not.exist');
         cy.get('[data-cy="stage-2"]').should('not.exist');
         cy.get('[data-cy="stage-1"]').contains("Main Discussion").should("be.visible");
@@ -81,8 +81,8 @@ describe('timeline filter treatment', () => {
 
         cy.reload(); // reload page
 
-        cy.get('[data-cy="filter-dropdown"] select').select('Main Discussion');
-        cy.get('[data-cy="filter-dropdown"] select').should('have.value', 'Main Discussion');
+        cy.get('[data-cy="stages-dropdown"] select').select('Main Discussion');
+        cy.get('[data-cy="stages-dropdown"] select').should('have.value', 'Main Discussion');
         cy.get('[data-cy="stage-0"]').should('not.exist');
         cy.get('[data-cy="stage-2"]').should('not.exist');
         cy.get('[data-cy="stage-1"]').contains("Main Discussion").should("be.visible");
