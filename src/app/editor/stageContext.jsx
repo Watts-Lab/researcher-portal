@@ -7,7 +7,7 @@ import {
   usePlayer,
   useRound,
   useStageTimer,
-} from "@empirica/core/player/classic/react";
+} from '@empirica/core/player/classic/react'
 
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
@@ -21,6 +21,9 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
+  const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(0)
+  const [selectedIntroSequenceIndex, setSelectedIntroSequenceIndex] =
+    useState(0)
   const player = usePlayer()
 
   // for updating code editor, requires reload
@@ -41,6 +44,10 @@ const StageProvider = ({ children }) => {
     player,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
+    selectedIntroSequenceIndex,
+    setSelectedIntroSequenceIndex,
   }
 
   return (
