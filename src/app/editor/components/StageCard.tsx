@@ -41,6 +41,8 @@ export function StageCard({
     editTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
   } = useContext(StageContext)
 
   const addElementOptions = [
@@ -98,7 +100,7 @@ export function StageCard({
 
     // update treatment
     const updatedTreatment = JSON.parse(JSON.stringify(treatment))
-    updatedTreatment.treatments[0].gameStages[stageIndex].elements =
+    updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements =
       updatedElements
     editTreatment(updatedTreatment)
   }
