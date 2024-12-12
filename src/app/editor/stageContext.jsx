@@ -14,6 +14,7 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
+  const [refData, setRefData] = useState({})
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
@@ -32,6 +33,8 @@ const StageProvider = ({ children }) => {
     editTreatment,
     templatesMap,
     setTemplatesMap,
+    refData,
+    setRefData,
   }
 
   return (

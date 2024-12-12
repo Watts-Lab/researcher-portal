@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import { StageContext } from '@/editor/stageContext'
 
 // helper to format references
 const formatReference = (reference: string) => {
@@ -70,6 +71,8 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
   const [jsonData, setJsonData] = useState<JsonData>({})
   const [inputValues, setInputValues] = useState<InputValues>({})
 
+  const { refData, setRefData } = useContext(StageContext)
+
   // load refs for curr stage
   useEffect(() => {
     if (treatment?.gameStages?.[stageIndex]) {
@@ -123,6 +126,7 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
       [`stage_${stageIndex}`]: inputValues[`stage_${stageIndex}`],
     }
     setJsonData(updatedJson)
+    setRefData(updatedJson)
     localStorage.setItem('jsonData', JSON.stringify(updatedJson))
     console.log('Saved JSON Data:', JSON.stringify(updatedJson, null, 2))
   }
@@ -134,6 +138,7 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
     if (savedJson) {
       console.log('Loaded JSON Data from localStorage:', JSON.parse(savedJson))
       setJsonData(JSON.parse(savedJson))
+      setRefData(JSON.parse(savedJson))
     }
 
     if (savedInputValues) {
