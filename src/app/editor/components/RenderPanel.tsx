@@ -44,10 +44,13 @@ export function RenderPanel() {
     setElapsed,
     treatment,
     setTreatment,
+    player,
   } = useContext(StageContext)
 
   console.log('RenderPanel.tsx current stage index', currentStageIndex)
   console.log('Current Treatment', treatment)
+  console.log('Stage Context', StageContext)
+  console.log('player stage', player.stage)
 
   // const currentStageIndex = Number(localStorage.getItem('currentStageIndex'))
 
@@ -108,5 +111,5 @@ export function RenderPanel() {
         {currentStageIndex !== 'default' && <StyledStage />}
       </div>
     </div>
-  )
+  ) 
 }
