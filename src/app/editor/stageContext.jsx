@@ -1,5 +1,5 @@
 //import { set } from 'node_modules/cypress/types/lodash';
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import { stringify } from 'yaml'
 import {
   useGame,
@@ -29,6 +29,20 @@ const StageProvider = ({ children }) => {
     localStorage.setItem('code', stringify(newTreatment))
     window.location.reload()
   }
+
+    // Update elapsed time dynamically
+    useEffect(() => {
+      const start = Date.now(); 
+  
+      // Create an interval that updates elapsed time every second
+      const interval = setInterval(() => {
+        const secondsElapsed = Math.floor((Date.now() - start) / 1000); 
+        setElapsed(secondsElapsed);
+      }, 1000);
+  
+      // Cleanup the interval on component unmount
+      return () => clearInterval(interval);
+    }, []); 
 
   const contextValue = {
     currentStageIndex,
