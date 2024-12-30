@@ -98,6 +98,7 @@ describe('timeline drag and drop', () => {
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
 
         // try moving first element from stage 1 to stage 2
+        cy.wait(1000);
         cy.get('[data-cy="element-0-0"]')
             .focus()
             .type(" ")

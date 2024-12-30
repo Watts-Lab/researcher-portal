@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import { isFunctionDeclaration } from "typescript";
-// import { StageContext } from '@/editor/stageContext'; # don't know why this doesn't work
+// import { StageContext } from '@/editor/stageContext'; // # don't know why this doesn't work
 
 // file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
-import { StageContext } from "../../../../../src/app/editor/stageContext"
+import { StageContext } from "../../src/app/editor/stageContext"
+// "../../../../src/app/editor/stageContext"
 
 
 
@@ -16,6 +17,14 @@ export function usePlayer() {
     exitStep: 0, //TODO,
     gameID: 21,
     position: 0, //TODO - set with toggle
+    stage: {
+      set: function (varName, value) {
+        this[varName] = value;
+      },
+      get: function (varName) {
+        return this[varName];
+      },
+    },
     get: function (varName) {
       return this[varName];
     },
@@ -23,7 +32,6 @@ export function usePlayer() {
       this[varName] = value;
     },
   };
-
   return player;
 }
 
@@ -46,6 +54,8 @@ export function useGame() {
 export function useStageTimer() {
   const stage = useContext(StageContext);
   console.log("useStageTimerMock", stage)
+  console.log("StageElapsed", stage.elapsed)
+  
   
   // This is a mock function that returns a mock stage timer object
   const stageTimer = {

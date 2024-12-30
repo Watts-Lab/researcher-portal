@@ -1,6 +1,13 @@
 //import { set } from 'node_modules/cypress/types/lodash';
 import { createContext, useState } from 'react'
 import { stringify } from 'yaml'
+import {
+  useGame,
+  useStage,
+  usePlayer,
+  useRound,
+  useStageTimer,
+} from "@empirica/core/player/classic/react";
 
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
@@ -14,6 +21,7 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
+  const player = usePlayer()
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
@@ -30,6 +38,7 @@ const StageProvider = ({ children }) => {
     treatment,
     setTreatment,
     editTreatment,
+    player,
     templatesMap,
     setTemplatesMap,
   }
