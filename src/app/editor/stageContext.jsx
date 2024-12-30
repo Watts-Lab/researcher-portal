@@ -1,5 +1,5 @@
 //import { set } from 'node_modules/cypress/types/lodash';
-import { createContext, useState, useEffect, useRef } from 'react'
+import { createContext, useState, useEffect, useRef, useMemo } from 'react'
 import { stringify } from 'yaml'
 import {
   useGame,
@@ -8,6 +8,7 @@ import {
   useRound,
   useStageTimer,
 } from "@empirica/core/player/classic/react";
+import { TimerProvider } from './TimerContext'; 
 
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
@@ -18,11 +19,9 @@ const StageContext = createContext()
 
 const StageProvider = ({ children }) => {
   const [currentStageIndex, setCurrentStageIndex] = useState('default')
-  const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
   const player = usePlayer()
-  const timerInterval = useRef(null);
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
@@ -30,38 +29,22 @@ const StageProvider = ({ children }) => {
     localStorage.setItem('code', stringify(newTreatment))
     window.location.reload()
   }
-
-    // Update elapsed time dynamically
-    useEffect(() => {
-      const start = Date.now() - elapsed * 1000; // Adjust start time to match current elapsed time
-  
-      // Clear any existing interval to avoid duplication
-      if (timerInterval.current) clearInterval(timerInterval.current);
-  
-      timerInterval.current = setInterval(() => {
-        const secondsElapsed = Math.floor((Date.now() - start) / 1000); // Calculate seconds
-        setElapsed(secondsElapsed);
-      }, 1000);
-  
-      return () => clearInterval(timerInterval.current); // Cleanup the interval
-    }, [elapsed]);
-
-  const contextValue = {
+  const stageContextValue = useMemo(() => ({
     currentStageIndex,
     setCurrentStageIndex,
-    elapsed,
-    setElapsed,
     treatment,
     setTreatment,
     editTreatment,
     player,
     templatesMap,
     setTemplatesMap,
-  }
+  }), [currentStageIndex, treatment, player, templatesMap]);
 
   return (
-    <StageContext.Provider value={contextValue}>
-      {children}
+    <StageContext.Provider value={stageContextValue}>
+      <TimerProvider>
+        {children}
+      </TimerProvider>
     </StageContext.Provider>
   )
 }

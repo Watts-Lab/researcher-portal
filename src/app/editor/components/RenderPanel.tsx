@@ -40,8 +40,6 @@ export function RenderPanel() {
   const {
     currentStageIndex,
     setCurrentStageIndex,
-    elapsed,
-    setElapsed,
     treatment,
     setTreatment,
     player,
@@ -59,11 +57,7 @@ export function RenderPanel() {
 
   //console.log('Current stage', localStorage.getItem('currentStageIndex'))
 
-  useEffect(() => {
-    // Updates value of timeline slider when elapsed time changes
-    console.log('Elapsed time changed:', elapsed)
-    setTime(elapsed)
-  }, [elapsed])
+
 
   return (
     <div className="flex" data-cy="render-panel">
@@ -76,8 +70,6 @@ export function RenderPanel() {
         <div className="min-w-fit">
           <h1>Preview of Stage {currentStageIndex} </h1>
           <TimePicker
-            value={time + ' s'}
-            setValue={setElapsed}
             maxValue={
               treatment.treatments?.[0].gameStages[currentStageIndex]
                 ?.duration ?? 0
