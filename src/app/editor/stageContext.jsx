@@ -1,5 +1,5 @@
 //import { set } from 'node_modules/cypress/types/lodash';
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useRef } from 'react'
 import { stringify } from 'yaml'
 import {
   useGame,
@@ -22,6 +22,7 @@ const StageProvider = ({ children }) => {
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
   const player = usePlayer()
+  const timerInterval = useRef(null);
 
   // for updating code editor, requires reload
   function editTreatment(newTreatment) {
@@ -32,17 +33,18 @@ const StageProvider = ({ children }) => {
 
     // Update elapsed time dynamically
     useEffect(() => {
-      const start = Date.now(); 
+      const start = Date.now() - elapsed * 1000; // Adjust start time to match current elapsed time
   
-      // Create an interval that updates elapsed time every second
-      const interval = setInterval(() => {
-        const secondsElapsed = Math.floor((Date.now() - start) / 1000); 
+      // Clear any existing interval to avoid duplication
+      if (timerInterval.current) clearInterval(timerInterval.current);
+  
+      timerInterval.current = setInterval(() => {
+        const secondsElapsed = Math.floor((Date.now() - start) / 1000); // Calculate seconds
         setElapsed(secondsElapsed);
       }, 1000);
   
-      // Cleanup the interval on component unmount
-      return () => clearInterval(interval);
-    }, []); 
+      return () => clearInterval(timerInterval.current); // Cleanup the interval
+    }, [elapsed]);
 
   const contextValue = {
     currentStageIndex,
