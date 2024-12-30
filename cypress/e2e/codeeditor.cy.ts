@@ -13,7 +13,7 @@ function setInitialTreatment(appendTreatmentTextWith: string = '') {
     // the yamltreatment variable has no line numbers and line breaks
     // so right now comparison is only on the treatmentName
     cy.containsInCodeEditor('cypress_code_editor_test')
-    cy.get('[data-cy="yaml-save"]').realClick()
+    cy.get('[data-cy="code-editor-save"]').realClick()
 }
 
 describe('code editor', () => {

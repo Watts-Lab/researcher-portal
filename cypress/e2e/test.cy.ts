@@ -20,7 +20,7 @@ describe('test spec', () => {
         // the yamltreatment variable has no line numbers and line breaks
         // so right now comparison is only on the treatmentName
         cy.containsInCodeEditor('cypress3_load_test')
-        cy.get('[data-cy="yaml-save"]').realClick()
+        cy.get('[data-cy="code-editor-save"]').realClick()
 
         // // view template in render panel
         // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
@@ -126,7 +126,7 @@ describe('test spec', () => {
 
         // add fourth element to second stage via code editor
         cy.typeInCodeEditor("{moveToEnd}{enter}{home}          - name: Element 4 {enter}  type: prompt {enter}file: file/address")
-        cy.get('[data-cy="yaml-save"]').click()
+        cy.get('[data-cy="code-editor-save"]').click()
 
         cy.containsInCodeEditor("name: Element 4")
         cy.get('[data-cy="element-1-1"]').contains("prompt").should("be.visible")
@@ -134,7 +134,7 @@ describe('test spec', () => {
 
         // add third stage via code editor
         cy.typeInCodeEditor("{moveToEnd}{enter}{home}      - name: Stage 3 {enter}  duration: 300 {enter}elements: []")
-        cy.get('[data-cy="yaml-save"]').click()
+        cy.get('[data-cy="code-editor-save"]').click()
 
         cy.containsInCodeEditor("name: Stage 3")
         cy.get('[data-cy="stage-2"]').should('exist')
