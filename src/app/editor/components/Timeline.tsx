@@ -47,11 +47,11 @@ export default function Timeline({
       setCurrentStageName(storedFilter)
 
       const storedTreatmentIndex =
-        localStorage.getItem('selectedTreatmentIndex') || 0
+        parseInt(localStorage.getItem('selectedTreatmentIndex') || '0', 10)
       setSelectedTreatmentIndex(storedTreatmentIndex)
 
       const storedIntroSequenceIndex =
-        localStorage.getItem('selectedIntroSequenceIndex') || 0
+        parseInt(localStorage.getItem('selectedIntroSequenceIndex') || '0', 10)
       setSelectedIntroSequenceIndex(storedIntroSequenceIndex)
     }
   }, [setTreatment, setSelectedTreatmentIndex, setSelectedIntroSequenceIndex])
@@ -81,12 +81,11 @@ export default function Timeline({
         )
         setTreatmentOptions(treatmentNames)
 
-        localStorage.setItem('selectedTreatmentIndex', selectedTreatmentIndex)
         const selectedTreatment = treatment.treatments[selectedTreatmentIndex]
         const filteredStages = filterStages(selectedTreatment)
 
         if (filteredStages.length > 0) {
-          setCurrentStageIndex(filteredStages[0].originalIndex) // default to first filtered stage
+          setCurrentStageIndex(filteredStages[0].originalIndex) // default to first filtered stage, in case some stages have the same name
         }
 
         const stageNames =
@@ -142,19 +141,20 @@ export default function Timeline({
     }
   }
 
-  function handleTreatmentChange(event: any) {
+  function handleTreatmentChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const newIndex = parseInt(event.target.value, 10)
     setCurrentStageIndex(0)
-    setSelectedTreatmentIndex(event.target.value)
-    localStorage.setItem('selectedTreatmentIndex', event.target.value)
+    setSelectedTreatmentIndex(newIndex)
+    localStorage.setItem('selectedTreatmentIndex', newIndex.toString())
     setCurrentStageName('all')
     localStorage.setItem('currentStageName', 'all')
   }
 
-  function handleIntroSequenceChange(event: any) {
-    setSelectedIntroSequenceIndex(event.target.value)
-    localStorage.setItem('selectedIntroSequenceIndex', event.target.value)
+  function handleIntroSequenceChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const newIndex = parseInt(event.target.value, 10)
+    setSelectedIntroSequenceIndex(newIndex)
+    localStorage.setItem('selectedIntroSequenceIndex', newIndex.toString())
     setCurrentStageName('all')
-    localStorage.setItem('currentStageName', 'all')
   }
 
   // drag and drop handler
@@ -191,17 +191,19 @@ export default function Timeline({
         <Dropdown
           label="Select treatment:"
           options={treatmentOptions}
-          value={Number(selectedTreatmentIndex)}
+          value={selectedTreatmentIndex}
           onChange={handleTreatmentChange}
           dataCy="treatments-dropdown"
         />
+
         <Dropdown
           label="Select intro sequence:"
           options={introSequenceOptions}
-          value={Number(selectedIntroSequenceIndex)}
+          value={selectedIntroSequenceIndex}
           onChange={handleIntroSequenceChange}
           dataCy="intro-sequence-dropdown"
         />
+
         <Dropdown
           label="Select stage:"
           options={stageOptions}
