@@ -193,9 +193,9 @@ describe('timeline filter stages and treatments', () => {
 
     it('should persist selected treatment after page reload', () => {
         // Initial treatment
-        cy.get('[data-cy="treatments-dropdown"] select').should('have.value', 'treatment_one');
+        cy.get('[data-cy="treatments-dropdown"] select').should('have.value', '0');
 
-        // Select a new treatment
+        // Select a new treatment and verify timeline contents
         cy.get('[data-cy="treatments-dropdown"] select').select('1');
         cy.get('[data-cy="treatments-dropdown"] select').should('have.value', '1');
         cy.get('[data-cy="stage-0"]').contains("test").should("be.visible");
@@ -211,10 +211,11 @@ describe('timeline filter stages and treatments', () => {
         cy.get('[data-cy^="stage-"]').should('have.length', 2);
     })
 
-    // this might throw an error in app
     it('should show a useful message when stages array is empty', () => {
         // Add a treatment with an empty stages array
-        cy.typeInCodeEditor(`{backspace}`);
+        cy.typeInCodeEditor(`\n`);
+        cy.typeInCodeEditor(` `);
+        cy.typeInCodeEditor(` `);
         let emptyStagesTreatment = "- name: treatment_three\n  playerCount: 1\ngameStages: []\n";
         cy.typeInCodeEditor(`${emptyStagesTreatment}`);
         cy.get('[data-cy="yaml-save"]').realClick();
@@ -224,7 +225,7 @@ describe('timeline filter stages and treatments', () => {
         cy.get('[data-cy="treatments-dropdown"] select').should('have.value', '2');
 
         // Verify the message
-        cy.get('[data-cy="stages-dropdown"]').contains("Nothing available").should("be.visible");
+        cy.get('[data-cy="stages-dropdown"] select').should('contain', 'Nothing available');
     })
 
     it('should show a useful message when treatments array is empty', () => {
@@ -234,6 +235,6 @@ describe('timeline filter stages and treatments', () => {
         cy.get('[data-cy="yaml-save"]').realClick();
 
         // Verify the messages
-        cy.get('[data-cy="treatments-dropdown"]').contains("Nothing available").should("be.visible");
+        cy.get('[data-cy="treatments-dropdown"] select').should('contain', 'Nothing available');
     })
 })
