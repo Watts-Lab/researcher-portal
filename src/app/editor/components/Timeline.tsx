@@ -127,8 +127,19 @@ export default function Timeline({
   }
 
   function handleStageNameChange(event: any) {
-    setCurrentStageName(event.target.value)
-    localStorage.setItem('currentStageName', event.target.value)
+    const selectedStageName = event.target.value
+    setCurrentStageName(selectedStageName)
+    localStorage.setItem('currentStageName', selectedStageName)
+
+    if (selectedStageName === 'all') {
+      setCurrentStageIndex(0)
+    } else {
+      const selectedTreatment = treatment.treatments[selectedTreatmentIndex]
+      const stageIndex = selectedTreatment.gameStages.findIndex(
+        (stage: any) => stage.name === selectedStageName
+      )
+      setCurrentStageIndex(stageIndex)
+    }
   }
 
   function handleTreatmentChange(event: any) {
