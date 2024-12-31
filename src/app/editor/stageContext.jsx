@@ -1,5 +1,5 @@
 //import { set } from 'node_modules/cypress/types/lodash';
-import { createContext, useState } from 'react'
+import { createContext, useState, useCallback, useMemo, useEffect } from 'react'
 import { stringify } from 'yaml'
 import {
   useGame,
@@ -27,13 +27,13 @@ const StageProvider = ({ children }) => {
   const player = usePlayer()
 
   // for updating code editor, requires reload
-  function editTreatment(newTreatment) {
+  const editTreatment = useCallback((newTreatment) => {
     setTreatment(newTreatment)
     localStorage.setItem('code', stringify(newTreatment))
     window.location.reload()
-  }
+  }, [setTreatment])
 
-  const contextValue = {
+  const contextValue = useMemo(() => ({
     currentStageIndex,
     setCurrentStageIndex,
     elapsed,
@@ -48,7 +48,27 @@ const StageProvider = ({ children }) => {
     setSelectedTreatmentIndex,
     selectedIntroSequenceIndex,
     setSelectedIntroSequenceIndex,
-  }
+  }), [
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+    editTreatment,
+    player,
+    templatesMap,
+    setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
+    selectedIntroSequenceIndex,
+    setSelectedIntroSequenceIndex,
+  ])
+
+  // expose context values to the window object
+  useEffect(() => {
+    window.stageContext = contextValue
+  }, [contextValue])
 
   return (
     <StageContext.Provider value={contextValue}>
