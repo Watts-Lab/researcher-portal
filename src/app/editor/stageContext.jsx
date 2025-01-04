@@ -1,5 +1,5 @@
 //import { set } from 'node_modules/cypress/types/lodash';
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect, useRef, useMemo } from 'react'
 import { stringify } from 'yaml'
 import {
   useGame,
@@ -8,6 +8,7 @@ import {
   useRound,
   useStageTimer,
 } from "@empirica/core/player/classic/react";
+import { TimerProvider } from './TimerContext'; 
 
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
@@ -18,7 +19,6 @@ const StageContext = createContext()
 
 const StageProvider = ({ children }) => {
   const [currentStageIndex, setCurrentStageIndex] = useState('default')
-  const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
   const player = usePlayer()
@@ -29,23 +29,22 @@ const StageProvider = ({ children }) => {
     localStorage.setItem('code', stringify(newTreatment))
     window.location.reload()
   }
-
-  const contextValue = {
+  const stageContextValue = useMemo(() => ({
     currentStageIndex,
     setCurrentStageIndex,
-    elapsed,
-    setElapsed,
     treatment,
     setTreatment,
     editTreatment,
     player,
     templatesMap,
     setTemplatesMap,
-  }
+  }), [currentStageIndex, treatment, player, templatesMap]);
 
   return (
-    <StageContext.Provider value={contextValue}>
-      {children}
+    <StageContext.Provider value={stageContextValue}>
+      <TimerProvider>
+        {children}
+      </TimerProvider>
     </StageContext.Provider>
   )
 }
