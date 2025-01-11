@@ -7,7 +7,7 @@ templates:
           - type: prompt
             file: projects/example/multipleChoiceColors.md
           - type: submitButton
-            buttonText: TestButtonTextProceed
+            buttonText: ${submitButtonText}
 
 treatments:
   - name: simple template test

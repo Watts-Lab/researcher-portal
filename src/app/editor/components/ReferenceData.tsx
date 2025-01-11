@@ -16,15 +16,25 @@ const getPlaceholderText = (reference: string) => {
 }
 
 // find 'references' in the treatment object by stage (recursively..hopefully runtime not too bad)
-const findReferencesByStage = (obj: any): any[] => {
+const findReferencesByStage = (obj: any, templatesMap: any): any[] => {
   let references: any[] = []
 
   if (typeof obj === 'object' && obj !== null) {
     for (const key in obj) {
       if (key === 'reference') {
         references.push(obj[key])
+      } else if (key === 'template') {
+        const templateReferences = templatesMap
+          .get(obj[key])
+          .flatMap((templateElement: any) =>
+            findReferencesByStage(templateElement, templatesMap)
+          )
+
+        references = references.concat(templateReferences)
       } else if (typeof obj[key] === 'object') {
-        references = references.concat(findReferencesByStage(obj[key]))
+        references = references.concat(
+          findReferencesByStage(obj[key], templatesMap)
+        )
       }
     }
   }
@@ -33,10 +43,10 @@ const findReferencesByStage = (obj: any): any[] => {
 }
 
 // initializing json data for each stage
-const initializeJsonData = (treatment: any) => {
+const initializeJsonData = (treatment: any, templatesMap: any) => {
   const jsonData: { [key: string]: any } = {}
   treatment?.gameStages?.forEach((stage: any, index: number) => {
-    const references = findReferencesByStage(stage)
+    const references = findReferencesByStage(stage, templatesMap)
     jsonData[`stage_${index}`] = {}
     references.forEach((reference) => {
       jsonData[`stage_${index}`][reference] = ''
@@ -71,18 +81,18 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
   const [jsonData, setJsonData] = useState<JsonData>({})
   const [inputValues, setInputValues] = useState<InputValues>({})
 
-  const { refData, setRefData } = useContext(StageContext)
+  const { refData, setRefData, templatesMap } = useContext(StageContext)
 
   // load refs for curr stage
   useEffect(() => {
     if (treatment?.gameStages?.[stageIndex]) {
       const stage = treatment.gameStages[stageIndex]
-      const allReferences = findReferencesByStage(stage)
+      const allReferences = findReferencesByStage(stage, templatesMap)
       setReferences(allReferences)
 
       // load json data for curr stage
       if (!jsonData[`stage_${stageIndex}`]) {
-        const initializedJson = initializeJsonData(treatment)
+        const initializedJson = initializeJsonData(treatment, templatesMap)
         setJsonData((prev) => ({ ...prev, ...initializedJson }))
       }
 

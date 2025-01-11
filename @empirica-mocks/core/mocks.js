@@ -111,25 +111,54 @@ export function useStage() {
 
 
       if (varName === "elements") {
+        var elements
         if (tempStage) {
-          return tempStage.elements;
+          elements = tempStage.elements;
+        } else {
+          elements = treatment.treatments[0]?.gameStages[currentStageIndex]?.elements;
         }
 
-        var elements = treatment.treatments[0]?.gameStages[currentStageIndex]?.elements;
-        elements =  elements.flatMap((element) => {
+        console.log("CURRELEMENTS", elements)
+        
+        // TODO: change to template if needed
+        // map to templates first
+        elements = elements.flatMap((element) => {
           if (element.template) {
             return templatesMap.get(element.template);
+          } else {
+            return element;
           }
+        })
+
+        //console.log("ELEMENTS_TO_DISPLAY", elements)
+        // check all conditions
+        elements =  elements.flatMap((element) => {
           if (element.conditions) {
             // TODO: update with other comparators
-            // var refData = JSON.parse(localStorage.getItem('jsonData') || '{}');
             const conditions = element.conditions;
             const comparator = conditions[0]?.comparator || "x";
             const reference = conditions[0]?.reference || "x";
+            const value = conditions[0]?.value || "x";
             if (comparator === "x") {
               return [element];
             } else if (comparator === "exists") {
               if (refData[`stage_${currentStageIndex}`]?.[reference]) {
+                const newElement = {...element};
+                delete newElement.conditions;
+                return [newElement];
+              } else {
+                return [];
+              }
+            } else if (comparator === "equals") {
+              if (refData[`stage_${currentStageIndex}`]?.[reference] == value) {
+                const newElement = {...element};
+                delete newElement.conditions;
+                return [newElement];
+              } else {
+                return [];
+              }
+            } else if (comparator === "doesNotEqual") {
+              if (refData[`stage_${currentStageIndex}`]?.[reference] != value) {
                 const newElement = {...element};
                 delete newElement.conditions;
                 return [newElement];
