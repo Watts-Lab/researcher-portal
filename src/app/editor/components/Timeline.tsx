@@ -19,6 +19,7 @@ export default function Timeline({
   const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
   const [introSequenceOptions, setIntroSequenceOptions] = useState<string[]>([])
   const [currentStageName, setCurrentStageName] = useState('all') // filter for stage names
+  const [templateOptions, setTemplateOptions] = useState<string[]>([])
 
   const {
     currentStageIndex,
@@ -34,6 +35,8 @@ export default function Timeline({
     setSelectedTreatmentIndex,
     selectedIntroSequenceIndex,
     setSelectedIntroSequenceIndex,
+    selectedTemplateIndex,
+    setSelectedTemplateIndex,
   } = useContext(StageContext)
 
   useEffect(() => {
@@ -46,15 +49,30 @@ export default function Timeline({
       const storedFilter = localStorage.getItem('currentStageName') || 'all'
       setCurrentStageName(storedFilter)
 
-      const storedTreatmentIndex =
-        parseInt(localStorage.getItem('selectedTreatmentIndex') || '0', 10)
+      const storedTreatmentIndex = parseInt(
+        localStorage.getItem('selectedTreatmentIndex') || '0',
+        10
+      )
       setSelectedTreatmentIndex(storedTreatmentIndex)
 
-      const storedIntroSequenceIndex =
-        parseInt(localStorage.getItem('selectedIntroSequenceIndex') || '0', 10)
+      const storedIntroSequenceIndex = parseInt(
+        localStorage.getItem('selectedIntroSequenceIndex') || '0',
+        10
+      )
       setSelectedIntroSequenceIndex(storedIntroSequenceIndex)
+
+      const storedTemplateIndex = parseInt(
+        localStorage.getItem('selectedTemplateIndex') || '0',
+        10
+      )
+      setSelectedTemplateIndex(storedTemplateIndex)
     }
-  }, [setTreatment, setSelectedTreatmentIndex, setSelectedIntroSequenceIndex])
+  }, [
+    setTreatment,
+    setSelectedTreatmentIndex,
+    setSelectedIntroSequenceIndex,
+    setSelectedTemplateIndex,
+  ])
 
   // think about using useMemo here
   const filterStages = useCallback(
@@ -85,7 +103,7 @@ export default function Timeline({
         const filteredStages = filterStages(selectedTreatment)
 
         if (filteredStages.length > 0) {
-          setCurrentStageIndex(filteredStages[0].originalIndex) // default to first filtered stage, in case some stages have the same name
+          setCurrentStageIndex(filteredStages[0].originalIndex)
         }
 
         const stageNames =
@@ -93,7 +111,6 @@ export default function Timeline({
         setStageOptions(['all', ...stageNames])
       }
 
-      // Set intro sequence options
       if (treatment.introSequences) {
         const sequenceNames = treatment.introSequences.map(
           (sequence: any, index: number) =>
@@ -102,13 +119,16 @@ export default function Timeline({
         setIntroSequenceOptions(sequenceNames)
       }
 
-      // Set templates
       if (treatment.templates) {
         const templates = new Map<string, any>()
         treatment.templates.forEach((template: any) => {
           templates.set(template.templateName, template.templateContent)
         })
         setTemplatesMap(templates)
+
+        setTemplateOptions(
+          treatment.templates.map((temp: any) => temp.templateName)
+        )
       }
     }
   }, [
@@ -150,11 +170,19 @@ export default function Timeline({
     localStorage.setItem('currentStageName', 'all')
   }
 
-  function handleIntroSequenceChange(event: React.ChangeEvent<HTMLSelectElement>) {
+  function handleIntroSequenceChange(
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) {
     const newIndex = parseInt(event.target.value, 10)
     setSelectedIntroSequenceIndex(newIndex)
     localStorage.setItem('selectedIntroSequenceIndex', newIndex.toString())
     setCurrentStageName('all')
+  }
+
+  function handleTemplateChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const newIndex = parseInt(event.target.value, 10)
+    setSelectedTemplateIndex(newIndex)
+    localStorage.setItem('selectedTemplateIndex', newIndex.toString())
   }
 
   // drag and drop handler
@@ -196,12 +224,22 @@ export default function Timeline({
           dataCy="treatments-dropdown"
         />
 
+        {/*
+          <Dropdown
+            label="Select intro sequence:"
+            options={introSequenceOptions}
+            value={selectedIntroSequenceIndex}
+            onChange={handleIntroSequenceChange}
+            dataCy="intro-sequence-dropdown"
+          />
+        */}
+
         <Dropdown
-          label="Select intro sequence:"
-          options={introSequenceOptions}
-          value={selectedIntroSequenceIndex}
-          onChange={handleIntroSequenceChange}
-          dataCy="intro-sequence-dropdown"
+          label="Select template:"
+          options={templateOptions}
+          value={selectedTemplateIndex}
+          onChange={handleTemplateChange}
+          dataCy="templates-dropdown"
         />
 
         <Dropdown
@@ -228,31 +266,62 @@ export default function Timeline({
                 >
                   {filterStages(
                     treatment?.treatments?.[selectedTreatmentIndex]
-                  )?.map((obj: any, index: any) => (
-                    <Draggable
-                      key={obj.originalIndex}
-                      draggableId={`treatment-${selectedTreatmentIndex}-stage-${obj.originalIndex}`}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <StageCard
-                            title={obj.stage.name}
-                            elements={obj.stage.elements}
-                            duration={obj.stage.duration}
-                            scale={scale}
-                            sequence={'gameStage'}
-                            stageIndex={obj.originalIndex}
-                            setRenderPanelStage={setRenderPanelStage}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  )?.map((obj: any, index: any) => {
+                    // Get the selected template
+                    const selectedTemplate =
+                      templateOptions[selectedTemplateIndex]
+                    const stageData = obj.stage
+
+                    // CASE 1: The stage itself has a 'template' field that matches selectedTemplate
+                    const stageHasTemplate =
+                      stageData.template === selectedTemplate
+
+                    // CASE 2: The stage's elements have a matching template
+                    let highlightElementsIndices: number[] = []
+                    if (
+                      !stageHasTemplate &&
+                      Array.isArray(stageData.elements)
+                    ) {
+                      // ASK JAMES: can both a stage and its elements have the same template?
+                      stageData.elements.forEach((elem: any, index: number) => {
+                        if (elem.template === selectedTemplate) {
+                          highlightElementsIndices.push(index)
+                        }
+                      })
+                    }
+
+                    return (
+                      <Draggable
+                        key={obj.originalIndex}
+                        draggableId={`treatment-${selectedTreatmentIndex}-stage-${obj.originalIndex}`}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={`${
+                              stageHasTemplate ? 'bg-yellow-200' : ''
+                            } p-2 m-2 border`}
+                          >
+                            <StageCard
+                              title={obj.stage.name}
+                              elements={obj.stage.elements}
+                              duration={obj.stage.duration}
+                              scale={scale}
+                              sequence={'gameStage'}
+                              stageIndex={obj.originalIndex}
+                              setRenderPanelStage={setRenderPanelStage}
+                              highlightElementsIndices={
+                                highlightElementsIndices
+                              }
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    )
+                  })}
                   {provided.placeholder}
                 </div>
               )}

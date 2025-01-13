@@ -41,7 +41,7 @@ export function ElementCard({
   const editModalId = `modal-stage${stageIndex}-element-${elementIndex}`
   return (
     <div
-      className="card bg-base-200 shadow-md min-h-12 min-w-[10px] justify-center px-5"
+      className="card bg-base-200 shadow-md min-h-12 min-w-[10px] justify-center px-5 my-2"
       style={{ left: startTime * scale, width: scale * (endTime - startTime) }}
       data-cy={'element-' + stageIndex + '-' + elementIndex}
       tabIndex={0}

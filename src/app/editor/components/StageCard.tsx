@@ -22,6 +22,7 @@ export function StageCard({
   sequence,
   stageIndex,
   setRenderPanelStage,
+  highlightElementsIndices,
 }: {
   title: string
   elements: any[]
@@ -30,6 +31,7 @@ export function StageCard({
   sequence: string
   stageIndex: number
   setRenderPanelStage: any
+  highlightElementsIndices?: number[]
 }) {
   const {
     currentStageIndex,
@@ -100,8 +102,9 @@ export function StageCard({
 
     // update treatment
     const updatedTreatment = JSON.parse(JSON.stringify(treatment))
-    updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements =
-      updatedElements
+    updatedTreatment.treatments[selectedTreatmentIndex].gameStages[
+      stageIndex
+    ].elements = updatedElements
     editTreatment(updatedTreatment)
   }
 
@@ -153,8 +156,12 @@ export function StageCard({
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {elements !== undefined &&
-                elements.map((element, index) => (
+              {elements?.map((element, index) => {
+                // If the element's index is in highlightElementsIndices, highlight it
+                const isElementHighlighted =
+                  highlightElementsIndices?.includes(index)
+
+                return (
                   <Draggable
                     key={`element-${selectedTreatmentIndex}-${stageIndex}-${index}`}
                     draggableId={`element-${selectedTreatmentIndex}-${stageIndex}-${index}`}
@@ -165,6 +172,9 @@ export function StageCard({
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
+                        className={cn(
+                          isElementHighlighted ? 'bg-yellow-200' : ''
+                        )}
                       >
                         <ElementCard
                           key={`element ${index}`}
@@ -179,7 +189,8 @@ export function StageCard({
                       </div>
                     )}
                   </Draggable>
-                ))}
+                )
+              })}
               {provided.placeholder}
             </div>
           )}

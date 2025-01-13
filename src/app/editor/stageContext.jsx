@@ -24,6 +24,7 @@ const StageProvider = ({ children }) => {
   const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(0)
   const [selectedIntroSequenceIndex, setSelectedIntroSequenceIndex] =
     useState(0)
+  const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(0)
   const player = usePlayer()
 
   // for updating code editor, requires reload
@@ -48,6 +49,8 @@ const StageProvider = ({ children }) => {
     setSelectedTreatmentIndex,
     selectedIntroSequenceIndex,
     setSelectedIntroSequenceIndex,
+    selectedTemplateIndex,
+    setSelectedTemplateIndex
   }), [
     currentStageIndex,
     setCurrentStageIndex,
@@ -63,6 +66,8 @@ const StageProvider = ({ children }) => {
     setSelectedTreatmentIndex,
     selectedIntroSequenceIndex,
     setSelectedIntroSequenceIndex,
+    selectedTemplateIndex,
+    setSelectedTemplateIndex
   ])
 
   // expose context values to the window object
