@@ -8,57 +8,56 @@ import Timeline from './components/Timeline'
 
 import { StageProvider } from './stageContext.jsx'
 
-const STORAGE_KEYS = {
-  leftWidth: 'editor-left-width',
-  upperLeftHeight: 'editor-upper-left-height',
-}
-
 const defaultStageContext = {
   currentStageIndex: undefined,
   elapsed: 0,
 }
 
 export default function EditorPage({}) {
-  // Retrieve values from localStorage or set defaults
-  const DEFAULT_LEFT_WIDTH = 1000;
-  const DEFAULT_UPPER_LEFT_HEIGHT = 500;
 
-  // State for layout dimensions
-  const [leftWidth, setLeftWidth] = useState(DEFAULT_LEFT_WIDTH);
-  const [upperLeftHeight, setUpperLeftHeight] = useState(DEFAULT_UPPER_LEFT_HEIGHT);
-
-  // Load saved sizes on mount (only runs in browser)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedLeftWidth = localStorage.getItem(STORAGE_KEYS.leftWidth);
-      const storedUpperLeftHeight = localStorage.getItem(STORAGE_KEYS.upperLeftHeight);
-
-      if (storedLeftWidth) setLeftWidth(parseInt(storedLeftWidth, 10));
-      if (storedUpperLeftHeight) setUpperLeftHeight(parseInt(storedUpperLeftHeight, 10));
-    }
-  }, []);
-
-  const { position: newLeftWidth, separatorProps: codeSeparatorProps } = useResizable({
-    axis: 'x',
-    initial: leftWidth,
-    min: 250, 
-    max: window.innerWidth * 0.75, 
-    onResizeEnd: ({ position }) => {
-      setLeftWidth(position)
-      localStorage.setItem(STORAGE_KEYS.leftWidth, position.toString())
-    },
+  const [leftWidth, setLeftWidth] = useState(() => {
+    const stored = localStorage.getItem('editor.leftWidth')
+    return stored ? Number(stored) : 1000 // default if not found
+  })
+  const [upperLeftHeight, setUpperLeftHeight] = useState(() => {
+    const stored = localStorage.getItem('editor.upperLeftHeight')
+    return stored ? Number(stored) : 500 // default if not found
   })
 
-  const { position: newUpperLeftHeight, separatorProps: timelineSeparatorProps } = useResizable({
-    axis: 'y',
-    initial: upperLeftHeight,
-    min: 150, 
-    max: window.innerHeight * 0.75, 
-    onResizeEnd: ({ position }) => {
-      setUpperLeftHeight(position)
-      localStorage.setItem(STORAGE_KEYS.upperLeftHeight, position.toString())
-    },
-  })
+  const { position: leftWidthPosition, separatorProps: codeSeparatorProps } =
+    useResizable({
+      axis: 'x',
+      initial: leftWidth,
+      min: 100,
+      onResizeEnd: ({ position }) => {
+        setLeftWidth(position)
+        localStorage.setItem('editor.leftWidth', String(position))
+      },
+    })
+
+  const { position: upperLeftHeightPosition, separatorProps: timelineSeparatorProps } =
+    useResizable({
+      axis: 'y',
+      initial: upperLeftHeight,
+      min: 100,
+      // Called after every drag
+      onResizeEnd: ({position}) => {
+        setUpperLeftHeight(position)
+        localStorage.setItem('editor.upperLeftHeight', String(position))
+      },
+    })
+
+    useEffect(() => {
+      if (leftWidth !== leftWidthPosition) {
+        setLeftWidth(leftWidthPosition)
+      }
+    }, [leftWidth, leftWidthPosition])
+  
+    useEffect(() => {
+      if (upperLeftHeight !== upperLeftHeightPosition) {
+        setUpperLeftHeight(upperLeftHeightPosition)
+      }
+    }, [upperLeftHeight, upperLeftHeightPosition])
   
   const [renderElements, setRenderElements] = useState([])
   const [renderPanelStage, setRenderPanelStage] = useState({})
@@ -69,12 +68,12 @@ export default function EditorPage({}) {
         <div
           id="leftColumn"
           className="flex flex-col h-full w-full"
-          style={{ width: leftWidth }}
+          style={{ width: leftWidthPosition }}
         >
           <div
             id="upperLeft"
             className="overflow-auto"
-            style={{ minHeight: 200, height: upperLeftHeight }}
+            style={{ minHeight: 200, height: upperLeftHeightPosition }}
           >
             <RenderPanel />
           </div>
