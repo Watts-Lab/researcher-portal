@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import { parse } from 'yaml'
 import { StageCard } from './StageCard'
 import TimelineTools from './TimelineTools'
@@ -19,18 +19,21 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   
-  const [scale, setScale] = useState(() => {
+  const [sliderValue, setSliderValue] = useState(() => {
     if (typeof window !== 'undefined') {
-      const savedScale = localStorage.getItem('timeline.scale')
-      return savedScale ? parseFloat(savedScale) : 1
+      const stored = localStorage.getItem('timeline.sliderValue')
+      return stored ? Number(stored) : 0
     }
-    return 1
+    return 0
   })
 
-  // Whenever scale changes, update localStorage
   useEffect(() => {
-    localStorage.setItem('timeline.scale', String(scale))
-  }, [scale])
+    localStorage.setItem('timeline.sliderValue', String(sliderValue))
+  }, [sliderValue])
+
+  const scale = useMemo(() => {
+    return 10 ** (sliderValue / 100)
+  }, [sliderValue])
 
   const [filterCriteria, setFilterCriteria] = useState('all') // state for selected filter
   const [filterOptions, setFilterOptions] = useState<string[]>([]) // state to store filter options (stage names)
@@ -145,7 +148,7 @@ export default function Timeline({
 
   return (
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
-      <TimelineTools setScale={setScale} />
+      <TimelineTools sliderValue={sliderValue} setSliderValue={setSliderValue} />
 
       {/* select section dropdown */}
       <div
