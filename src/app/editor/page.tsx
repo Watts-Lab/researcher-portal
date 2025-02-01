@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useResizable } from 'react-resizable-layout'
 import DraggableSplitter from '../components/DraggableSplitter'
 import CodeEditor from './components/CodeEditor'
@@ -8,27 +8,58 @@ import Timeline from './components/Timeline'
 
 import { StageProvider } from './stageContext.jsx'
 
+const STORAGE_KEYS = {
+  leftWidth: 'editor-left-width',
+  upperLeftHeight: 'editor-upper-left-height',
+}
+
 const defaultStageContext = {
   currentStageIndex: undefined,
   elapsed: 0,
 }
 
 export default function EditorPage({}) {
-  const { position: leftWidth, separatorProps: codeSeparatorProps } =
-    useResizable({
-      axis: 'x',
-      initial: 1000,
-      min: 100,
-    })
+  // Retrieve values from localStorage or set defaults
+  const DEFAULT_LEFT_WIDTH = 400;
+  const DEFAULT_UPPER_LEFT_HEIGHT = 300;
 
-  console.log('page.tsx, context', defaultStageContext)
+  // State for layout dimensions
+  const [leftWidth, setLeftWidth] = useState(DEFAULT_LEFT_WIDTH);
+  const [upperLeftHeight, setUpperLeftHeight] = useState(DEFAULT_UPPER_LEFT_HEIGHT);
 
-  const { position: upperLeftHeight, separatorProps: timelineSeparatorProps } =
-    useResizable({
-      axis: 'y',
-      initial: 500,
-    })
+  // Load saved sizes on mount (only runs in browser)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedLeftWidth = localStorage.getItem(STORAGE_KEYS.leftWidth);
+      const storedUpperLeftHeight = localStorage.getItem(STORAGE_KEYS.upperLeftHeight);
 
+      if (storedLeftWidth) setLeftWidth(parseInt(storedLeftWidth, 10));
+      if (storedUpperLeftHeight) setUpperLeftHeight(parseInt(storedUpperLeftHeight, 10));
+    }
+  }, []);
+
+  const { position: newLeftWidth, separatorProps: codeSeparatorProps } = useResizable({
+    axis: 'x',
+    initial: leftWidth,
+    min: 250, 
+    max: window.innerWidth * 0.75, 
+    onResizeEnd: ({ position }) => {
+      setLeftWidth(position)
+      localStorage.setItem(STORAGE_KEYS.leftWidth, position.toString())
+    },
+  })
+
+  const { position: newUpperLeftHeight, separatorProps: timelineSeparatorProps } = useResizable({
+    axis: 'y',
+    initial: upperLeftHeight,
+    min: 150, 
+    max: window.innerHeight * 0.75, 
+    onResizeEnd: ({ position }) => {
+      setUpperLeftHeight(position)
+      localStorage.setItem(STORAGE_KEYS.upperLeftHeight, position.toString())
+    },
+  })
+  
   const [renderElements, setRenderElements] = useState([])
   const [renderPanelStage, setRenderPanelStage] = useState({})
 
