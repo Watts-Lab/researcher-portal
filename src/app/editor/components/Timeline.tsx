@@ -18,7 +18,20 @@ export default function Timeline({
 }: {
   setRenderPanelStage: any
 }) {
-  const [scale, setScale] = useState(1) // pixels per second
+  
+  const [scale, setScale] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedScale = localStorage.getItem('timeline.scale')
+      return savedScale ? parseFloat(savedScale) : 1
+    }
+    return 1
+  })
+
+  // Whenever scale changes, update localStorage
+  useEffect(() => {
+    localStorage.setItem('timeline.scale', String(scale))
+  }, [scale])
+
   const [filterCriteria, setFilterCriteria] = useState('all') // state for selected filter
   const [filterOptions, setFilterOptions] = useState<string[]>([]) // state to store filter options (stage names)
 
