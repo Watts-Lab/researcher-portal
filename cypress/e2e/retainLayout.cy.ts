@@ -73,5 +73,56 @@ describe('editor layout persistence', () => {
             expect(newHeight).to.be.gt(oldHeight);
         });
     });
+
+    it('remembers slider position and scale after a page reload', () => {
+        
+      cy.get('#scaleSlider')
+        .invoke('val')
+        .should('equal', '0');
+    
+      let oldWidth: number;
+      cy.get('[data-cy="stage-0"]')
+        .then(($el) => {
+        oldWidth = $el[0].getBoundingClientRect().width;
+        cy.log('Initial stage width: ' + oldWidth);
+        });
+
+      cy.get('#scaleSlider')
+        .invoke('val', '50')
+        .trigger('input', { force: true }) 
+        .trigger('change', { force: true });
+
+        cy.wait(500);
+
+      cy.get('#scaleSlider')
+        .invoke('val')
+        .should('equal', '50');
+
+      let newWidth : number;
+      cy.get('[data-cy="stage-0"]')
+        .then(($el) => {
+            newWidth = $el[0].getBoundingClientRect().width;
+            cy.log('After dragging, new width: ' + newWidth);
+            expect(newWidth).to.be.greaterThan(oldWidth);
+        });
+    
+    
+      cy.reload();
+      cy.wait(500)
+    
+      // After reload, check the slider position
+      cy.get('#scaleSlider')
+        .invoke('val')
+        .should('equal', '50');
+    
+      // Check that the stage block is still the new size
+      cy.get('[data-cy="stage-0"]')
+        .then(($el) => {
+        const reloadedWidth = $el[0].getBoundingClientRect().width;
+        cy.log('Reloaded stage width: ' + reloadedWidth);
+        expect(reloadedWidth).to.be.closeTo(newWidth, 2);
+        
+      });
+    });
   });
   

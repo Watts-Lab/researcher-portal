@@ -75,7 +75,7 @@ export default function Timeline({
         setTemplatesMap(templates)
       }
     }
-  }, [setTreatment])
+  }, [setTemplatesMap, setTreatment])
 
   const filterStages = useCallback(
     (treatment: any) => {
