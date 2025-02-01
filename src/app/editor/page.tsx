@@ -20,8 +20,8 @@ const defaultStageContext = {
 
 export default function EditorPage({}) {
   // Retrieve values from localStorage or set defaults
-  const DEFAULT_LEFT_WIDTH = 400;
-  const DEFAULT_UPPER_LEFT_HEIGHT = 300;
+  const DEFAULT_LEFT_WIDTH = 1000;
+  const DEFAULT_UPPER_LEFT_HEIGHT = 500;
 
   // State for layout dimensions
   const [leftWidth, setLeftWidth] = useState(DEFAULT_LEFT_WIDTH);
