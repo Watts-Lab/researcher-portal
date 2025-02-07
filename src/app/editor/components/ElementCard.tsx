@@ -34,6 +34,8 @@ export function ElementCard({
     setTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
   } = useContext(StageContext)
 
   const editModalId = `modal-stage${stageIndex}-element-${elementIndex}`

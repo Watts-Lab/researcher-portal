@@ -79,6 +79,8 @@ export function useStage() {
     setTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex
   } = useContext(StageContext)
   // const stage1 = useContext(StageContext);
   // console.log("useStageMock", stage1)
@@ -91,21 +93,25 @@ export function useStage() {
       //const treatmentString = localStorage.getItem("treatment");
       //const treatment = JSON.parse(treatmentString);
       if (varName === "elements") {
-        var elements = treatment.treatments[0]?.gameStages[currentStageIndex]?.elements
-        elements =  elements.flatMap((element) => {
-          if (element.template) {
-            return templatesMap.get(element.template);
-          }
-          return [element];
-        });
+        let elements = treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.elements;
+        if (Array.isArray(elements)) {
+          elements = elements.flatMap((element) => {
+            if (element.template) {
+              return templatesMap.get(element.template);
+            }
+            return [element];
+          });
+        } else {
+          elements = [];
+        }
         console.log("revised elements", elements)
         return elements;
       } else if (varName === "discussion") {
-        return treatment.treatments[0]?.gameStages[currentStageIndex]?.discussion
+        return treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.discussion;
       } else if (varName === "name") {
-        return treatment.treatments[0]?.gameStages[currentStageIndex]?.name
+        return treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.name;
       } else if (varName === "index") {
-        return currentStageIndex
+        return currentStageIndex;
       }
     },
     
