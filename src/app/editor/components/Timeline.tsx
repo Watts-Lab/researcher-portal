@@ -19,21 +19,17 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   
-  const [sliderValue, setSliderValue] = useState(() => {
+  const [scale, setScale] = useState(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('timeline.sliderValue')
-      return stored ? Number(stored) : 0
+      const storedScale = localStorage.getItem('timeline.scale');
+      return storedScale ? Number(storedScale) : 1;
     }
-    return 0
-  })
+    return 1;
+  });
 
   useEffect(() => {
-    localStorage.setItem('timeline.sliderValue', String(sliderValue))
-  }, [sliderValue])
-
-  const scale = useMemo(() => {
-    return 10 ** (sliderValue / 100)
-  }, [sliderValue])
+    localStorage.setItem('timeline.scale', scale.toString());
+  }, [scale]);
 
   const [filterCriteria, setFilterCriteria] = useState('all') // state for selected filter
   const [filterOptions, setFilterOptions] = useState<string[]>([]) // state to store filter options (stage names)
@@ -148,8 +144,8 @@ export default function Timeline({
 
   return (
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
-      <TimelineTools sliderValue={sliderValue} setSliderValue={setSliderValue} />
-
+      <TimelineTools scale={scale} setScale={setScale} />
+      
       {/* select section dropdown */}
       <div
         className="flex items-center justify-start space-x-2 p-1 bg-slate-200 h-12"

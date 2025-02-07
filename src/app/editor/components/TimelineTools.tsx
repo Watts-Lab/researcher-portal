@@ -2,11 +2,11 @@ import React from "react";
 import TimePicker from "./TimePicker";
 
 export default function TimelineTools({
-  sliderValue,
-  setSliderValue,
+  scale,
+  setScale,
 }: {
-  sliderValue: number;
-  setSliderValue: React.Dispatch<React.SetStateAction<number>>;
+  scale: number;
+  setScale: (scale: number) => void;
 }){
   return (
     <div data-test="timelineTools" className="bg-black h-6 w-full text-white">
@@ -16,10 +16,11 @@ export default function TimelineTools({
           type="range"
           min="-100"
           max="100"
-          value={sliderValue}
+          value={Math.log10(scale) * 100}
           id="scaleSlider"
           onChange={(e) => {
-            setSliderValue(Number(e.target.value));
+            const newScale = 10 ** (Number(e.target.value) / 100);
+            setScale(newScale);
           }}
         />
       </div>

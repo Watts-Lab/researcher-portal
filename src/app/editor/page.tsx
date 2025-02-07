@@ -17,11 +17,11 @@ export default function EditorPage({}) {
 
   const [leftWidth, setLeftWidth] = useState(() => {
     const stored = localStorage.getItem('editor.leftWidth')
-    return stored ? Number(stored) : 1000 // default if not found
+    return stored ? Number(stored) : 1000 
   })
   const [upperLeftHeight, setUpperLeftHeight] = useState(() => {
     const stored = localStorage.getItem('editor.upperLeftHeight')
-    return stored ? Number(stored) : 500 // default if not found
+    return stored ? Number(stored) : 500 
   })
 
   const { position: leftWidthPosition, separatorProps: codeSeparatorProps } =

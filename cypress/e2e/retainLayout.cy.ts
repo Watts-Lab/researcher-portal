@@ -86,17 +86,16 @@ describe('editor layout persistence', () => {
         oldWidth = $el[0].getBoundingClientRect().width;
         cy.log('Initial stage width: ' + oldWidth);
         });
-
+      
       cy.get('#scaleSlider')
-        .invoke('val', '50')
-        .trigger('input', { force: true }) 
-        .trigger('change', { force: true });
+        .invoke("val", 75)
+        .click();
 
-        cy.wait(500);
+      cy.wait(500);
 
       cy.get('#scaleSlider')
         .invoke('val')
-        .should('equal', '50');
+        .should('equal', '75');
 
       let newWidth : number;
       cy.get('[data-cy="stage-0"]')
@@ -113,7 +112,7 @@ describe('editor layout persistence', () => {
       // After reload, check the slider position
       cy.get('#scaleSlider')
         .invoke('val')
-        .should('equal', '50');
+        .should('equal', '75');
     
       // Check that the stage block is still the new size
       cy.get('[data-cy="stage-0"]')
