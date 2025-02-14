@@ -74,38 +74,53 @@ describe('editor layout persistence', () => {
         });
     });
 
-    it('remembers the stage card scale after a reload', () => {
-      let oldCardWidth: number;
-  
-      // Get the initial width of a stage card
-      cy.get('[data-cy="stage-card"]').first()
+    it('remembers slider position and scale after a page reload', () => {
+        
+      cy.get('#scaleSlider')
+        .invoke('val')
+        .should('equal', '0');
+    
+      let oldWidth: number;
+      cy.get('[data-cy="stage-0"]')
         .then(($el) => {
-            oldCardWidth = $el[0].getBoundingClientRect().width;
-            cy.log('Initial stage card width: ' + oldCardWidth);
+        oldWidth = $el[0].getBoundingClientRect().width;
+        cy.log('Initial stage width: ' + oldWidth);
         });
-  
-      // Adjust the scale slider
-      cy.get('[data-test="scaleSlider"] input[type="range"]')
-        .invoke('val', 50) // Set the slider to a value (e.g., 50)
-        .trigger('change');
-  
-      // Verify the stage card width has changed
-      cy.get('[data-cy="stage-card"]').first()
-        .then(($el) => {
-            const newCardWidth = $el[0].getBoundingClientRect().width;
-            cy.log('New stage card width: ' + newCardWidth);
-            expect(newCardWidth).to.not.equal(oldCardWidth);
-        });
-  
-      // Reload the page
-      cy.reload();
+      
+      cy.get('#scaleSlider')
+        .invoke("val", 75)
+        .trigger("input");
+
       cy.wait(500);
 
-      cy.get('[data-cy="stage-card"]').first()
-      .then(($el) => {
-          const newCardWidth = $el[0].getBoundingClientRect().width;
-          cy.log('Stage card width after reload: ' + newCardWidth);
-          expect(newCardWidth).to.not.equal(oldCardWidth);
+      cy.get('#scaleSlider')
+        .invoke('val')
+        .should('equal', '75');
+
+      let newWidth : number;
+      cy.get('[data-cy="stage-0"]')
+        .then(($el) => {
+            newWidth = $el[0].getBoundingClientRect().width;
+            cy.log('After dragging, new width: ' + newWidth);
+            expect(newWidth).to.be.greaterThan(oldWidth);
+        });
+    
+    
+      cy.reload();
+      cy.wait(500)
+    
+      // After reload, check the slider position
+      cy.get('#scaleSlider')
+        .invoke('val')
+        .should('equal', '75');
+    
+      // Check that the stage block is still the new size
+      cy.get('[data-cy="stage-0"]')
+        .then(($el) => {
+        const reloadedWidth = $el[0].getBoundingClientRect().width;
+        cy.log('Reloaded stage width: ' + reloadedWidth);
+        expect(reloadedWidth).to.be.closeTo(newWidth, 2);
+        
       });
     });
   });

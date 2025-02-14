@@ -18,7 +18,7 @@ export default function TimelineTools({ setScale }: { setScale: any }) {
           max="100"
           defaultValue={localStorage.getItem('timelineScale') || "0"} // Retrieve the slider value
           id="scaleSlider"
-          onChange={handleScaleChange}
+          onInput={handleScaleChange}
         />
       </div>
     </div>
