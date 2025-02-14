@@ -89,7 +89,7 @@ describe('editor layout persistence', () => {
       
       cy.get('#scaleSlider')
         .invoke("val", 75)
-        .click();
+        .trigger("input");
 
       cy.wait(500);
 
