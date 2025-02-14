@@ -3,15 +3,11 @@ import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { parse } from 'yaml'
 import { StageCard } from './StageCard'
 import TimelineTools from './TimelineTools'
-import { stringify } from 'yaml'
 import { Modal } from './Modal'
 import { EditStage } from './EditStage'
-import {
-  treatmentSchema,
-  TreatmentType,
-} from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { StageContext } from '@/editor/stageContext'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import Dropdown from './Dropdown'
 
 export default function Timeline({
   setRenderPanelStage,
@@ -19,8 +15,10 @@ export default function Timeline({
   setRenderPanelStage: any
 }) {
   const [scale, setScale] = useState(1) // pixels per second
-  const [filterCriteria, setFilterCriteria] = useState('all') // state for selected filter
-  const [filterOptions, setFilterOptions] = useState<string[]>([]) // state to store filter options (stage names)
+  const [stageOptions, setStageOptions] = useState<string[]>([])
+  const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
+  const [introSequenceOptions, setIntroSequenceOptions] = useState<string[]>([])
+  const [currentStageName, setCurrentStageName] = useState('all') // filter for stage names
 
   const {
     currentStageIndex,
@@ -32,6 +30,10 @@ export default function Timeline({
     editTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
+    selectedIntroSequenceIndex,
+    setSelectedIntroSequenceIndex,
   } = useContext(StageContext)
 
   useEffect(() => {
@@ -41,59 +43,118 @@ export default function Timeline({
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
 
-      const storedFilter = localStorage.getItem('filterCriteria') || 'all' // persist filter option
-      setFilterCriteria(storedFilter)
+      const storedFilter = localStorage.getItem('currentStageName') || 'all'
+      setCurrentStageName(storedFilter)
 
-      // generate dynamic selector options
-      if (parsedCode && parsedCode.treatments?.[0].gameStages) {
-        const stageNames = parsedCode.treatments[0].gameStages.map(
-          (stage: any) => stage.name
+      const storedTreatmentIndex =
+        parseInt(localStorage.getItem('selectedTreatmentIndex') || '0', 10)
+      setSelectedTreatmentIndex(storedTreatmentIndex)
+
+      const storedIntroSequenceIndex =
+        parseInt(localStorage.getItem('selectedIntroSequenceIndex') || '0', 10)
+      setSelectedIntroSequenceIndex(storedIntroSequenceIndex)
+    }
+  }, [setTreatment, setSelectedTreatmentIndex, setSelectedIntroSequenceIndex])
+
+  // think about using useMemo here
+  const filterStages = useCallback(
+    (treatment: any) => {
+      if (!treatment || !treatment.gameStages) return []
+
+      const filteredStages = treatment.gameStages
+        .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
+        .filter(({ stage }: { stage: any }) =>
+          currentStageName === 'all' ? true : stage.name === currentStageName
         )
-        setFilterOptions(['all', ...stageNames]) // 'all' as default
+
+      return filteredStages
+    },
+    [currentStageName]
+  )
+
+  useEffect(() => {
+    if (treatment) {
+      // Set treatment options
+      if (treatment.treatments) {
+        const treatmentNames = treatment.treatments.map(
+          (treatment: any) => treatment.name
+        )
+        setTreatmentOptions(treatmentNames)
+
+        const selectedTreatment = treatment.treatments[selectedTreatmentIndex]
+        const filteredStages = filterStages(selectedTreatment)
+
+        if (filteredStages.length > 0) {
+          setCurrentStageIndex(filteredStages[0].originalIndex) // default to first filtered stage, in case some stages have the same name
+        }
+
+        const stageNames =
+          selectedTreatment?.gameStages?.map((stage: any) => stage.name) || []
+        setStageOptions(['all', ...stageNames])
       }
-      if (parsedCode?.templates) {
+
+      // Set intro sequence options
+      if (treatment.introSequences) {
+        const sequenceNames = treatment.introSequences.map(
+          (sequence: any, index: number) =>
+            sequence.fields?.sequenceName || `Sequence ${index + 1}`
+        )
+        setIntroSequenceOptions(sequenceNames)
+      }
+
+      // Set templates
+      if (treatment.templates) {
         const templates = new Map<string, any>()
-        parsedCode.templates.forEach((template: any) => {
+        treatment.templates.forEach((template: any) => {
           templates.set(template.templateName, template.templateContent)
         })
         setTemplatesMap(templates)
       }
     }
-  }, [setTreatment])
-
-  const filterStages = useCallback(
-    (treatment: any) => {
-      // think about using useMemo here
-      if (!treatment) return []
-
-      const filteredStages = treatment.gameStages
-        .map((stage: any, originalIndex: number) => ({ stage, originalIndex }))
-        .filter(({ stage }: { stage: any }) =>
-          filterCriteria === 'all' ? true : stage.name === filterCriteria
-        )
-
-      console.log('Filtered Stages:', filteredStages)
-
-      return filteredStages
-    },
-    [filterCriteria]
-  )
-
-  // change stage index whenever filterCriteria changes
-  useEffect(() => {
-    const filteredStages = filterStages(treatment?.treatments?.[0])
-    if (filteredStages.length > 0) {
-      setCurrentStageIndex(filteredStages[0].originalIndex)
-    }
-  }, [filterCriteria, treatment, setCurrentStageIndex, filterStages])
+  }, [
+    treatment,
+    selectedTreatmentIndex,
+    selectedIntroSequenceIndex,
+    currentStageName,
+    setCurrentStageIndex,
+    setTemplatesMap,
+    filterStages,
+  ])
 
   if (!treatment) {
     return null
   }
 
-  function handleFilterChange(event: any) {
-    setFilterCriteria(event.target.value)
-    localStorage.setItem('filterCriteria', event.target.value)
+  function handleStageNameChange(event: any) {
+    const selectedStageName = event.target.value
+    setCurrentStageName(selectedStageName)
+    localStorage.setItem('currentStageName', selectedStageName)
+
+    if (selectedStageName === 'all') {
+      setCurrentStageIndex(0)
+    } else {
+      const selectedTreatment = treatment.treatments[selectedTreatmentIndex]
+      const stageIndex = selectedTreatment.gameStages.findIndex(
+        (stage: any) => stage.name === selectedStageName
+      )
+      setCurrentStageIndex(stageIndex)
+    }
+  }
+
+  function handleTreatmentChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const newIndex = parseInt(event.target.value, 10)
+    setCurrentStageIndex(0)
+    setSelectedTreatmentIndex(newIndex)
+    localStorage.setItem('selectedTreatmentIndex', newIndex.toString())
+    setCurrentStageName('all')
+    localStorage.setItem('currentStageName', 'all')
+  }
+
+  function handleIntroSequenceChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const newIndex = parseInt(event.target.value, 10)
+    setSelectedIntroSequenceIndex(newIndex)
+    localStorage.setItem('selectedIntroSequenceIndex', newIndex.toString())
+    setCurrentStageName('all')
   }
 
   // drag and drop handler
@@ -105,52 +166,51 @@ export default function Timeline({
 
     const sourceIndex = source.index
     const destIndex = destination.index
-    const updatedStages = Array.from(treatment.treatments[0].gameStages)
+    const updatedStages = Array.from(
+      treatment.treatments[selectedTreatmentIndex].gameStages
+    )
     const [removed] = updatedStages.splice(sourceIndex, 1)
     updatedStages.splice(destIndex, 0, removed)
 
     // update treatment
     const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-    updatedTreatment.treatments[0].gameStages = updatedStages
+    updatedTreatment.treatments[selectedTreatmentIndex].gameStages =
+      updatedStages
     editTreatment(updatedTreatment)
   }
 
   console.log('treatment', treatment)
   console.log('templatesMap', templatesMap)
 
-  //const parsedCode = "";
-
-  // TODO: add a page before this that lets the researcher select what treatment to work on
-
-  // if we pass in a 'list' in our yaml (which we do when the treatments are in a list) then we take the first component of the treatment
-
-  const addStageOptions = [
-    { question: 'Name', responseType: 'text' },
-    { question: 'Duration', responseType: 'text' },
-    { question: 'Discussion', responseType: 'text' },
-  ]
-
   return (
     <div data-cy={'timeline'} id="timeline" className="h-full flex flex-col">
       <TimelineTools setScale={setScale} />
 
-      {/* select section dropdown */}
-      <div
-        className="flex items-center justify-start space-x-2 p-1 bg-slate-200 h-12"
-        data-cy="filter-dropdown"
-      >
-        <label className="text-gray font-medium">Select section:</label>
-        <select
-          value={filterCriteria}
-          onChange={handleFilterChange}
-          className="select select-bordered bg-white text-gray-700 font-medium h-full text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 truncate max-w-xs"
-        >
-          {filterOptions.map((option, index) => (
-            <option key={index} value={option} className="truncate">
-              {option === 'all' ? 'All Stages' : option}
-            </option>
-          ))}
-        </select>
+      {/* filter dropdowns */}
+      <div className="flex items-center justify-start space-x-6 p-1 bg-slate-200 h-12">
+        <Dropdown
+          label="Select treatment:"
+          options={treatmentOptions}
+          value={selectedTreatmentIndex}
+          onChange={handleTreatmentChange}
+          dataCy="treatments-dropdown"
+        />
+
+        <Dropdown
+          label="Select intro sequence:"
+          options={introSequenceOptions}
+          value={selectedIntroSequenceIndex}
+          onChange={handleIntroSequenceChange}
+          dataCy="intro-sequence-dropdown"
+        />
+
+        <Dropdown
+          label="Select stage:"
+          options={stageOptions}
+          value={currentStageName}
+          onChange={handleStageNameChange}
+          dataCy="stages-dropdown"
+        />
       </div>
 
       <div
@@ -166,33 +226,33 @@ export default function Timeline({
                   ref={provided.innerRef}
                   className="flex flex-row gap-x-1"
                 >
-                  {filterStages(treatment?.treatments?.[0])?.map(
-                    (obj: any, index: any) => (
-                      <Draggable
-                        key={obj.stage.name}
-                        draggableId={`stage-${obj.originalIndex}`}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <StageCard
-                              title={obj.stage.name}
-                              elements={obj.stage.elements}
-                              duration={obj.stage.duration}
-                              scale={scale}
-                              sequence={'gameStage'}
-                              stageIndex={obj.originalIndex}
-                              setRenderPanelStage={setRenderPanelStage}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    )
-                  )}
+                  {filterStages(
+                    treatment?.treatments?.[selectedTreatmentIndex]
+                  )?.map((obj: any, index: any) => (
+                    <Draggable
+                      key={obj.originalIndex}
+                      draggableId={`treatment-${selectedTreatmentIndex}-stage-${obj.originalIndex}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <StageCard
+                            title={obj.stage.name}
+                            elements={obj.stage.elements}
+                            duration={obj.stage.duration}
+                            scale={scale}
+                            sequence={'gameStage'}
+                            stageIndex={obj.originalIndex}
+                            setRenderPanelStage={setRenderPanelStage}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
                   {provided.placeholder}
                 </div>
               )}
