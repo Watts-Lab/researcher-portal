@@ -73,5 +73,40 @@ describe('editor layout persistence', () => {
             expect(newHeight).to.be.gt(oldHeight);
         });
     });
+
+    it('remembers the stage card scale after a reload', () => {
+      let oldCardWidth: number;
+  
+      // Get the initial width of a stage card
+      cy.get('[data-cy="stage-card"]').first()
+        .then(($el) => {
+            oldCardWidth = $el[0].getBoundingClientRect().width;
+            cy.log('Initial stage card width: ' + oldCardWidth);
+        });
+  
+      // Adjust the scale slider
+      cy.get('[data-test="scaleSlider"] input[type="range"]')
+        .invoke('val', 50) // Set the slider to a value (e.g., 50)
+        .trigger('change');
+  
+      // Verify the stage card width has changed
+      cy.get('[data-cy="stage-card"]').first()
+        .then(($el) => {
+            const newCardWidth = $el[0].getBoundingClientRect().width;
+            cy.log('New stage card width: ' + newCardWidth);
+            expect(newCardWidth).to.not.equal(oldCardWidth);
+        });
+  
+      // Reload the page
+      cy.reload();
+      cy.wait(500);
+
+      cy.get('[data-cy="stage-card"]').first()
+      .then(($el) => {
+          const newCardWidth = $el[0].getBoundingClientRect().width;
+          cy.log('Stage card width after reload: ' + newCardWidth);
+          expect(newCardWidth).to.not.equal(oldCardWidth);
+      });
+    });
   });
   

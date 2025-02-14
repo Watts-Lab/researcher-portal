@@ -14,7 +14,11 @@ export default function Timeline({
 }: {
   setRenderPanelStage: any
 }) {
-  const [scale, setScale] = useState(1) // pixels per second
+  const [scale, setScale] = useState(() => {
+    // Retrieve the scale value from localStorage on initial render
+    const storedScale = localStorage.getItem('timelineScale');
+    return storedScale ? 10 ** (Number(storedScale) / 100) : 1;
+  });
   const [stageOptions, setStageOptions] = useState<string[]>([])
   const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
   const [introSequenceOptions, setIntroSequenceOptions] = useState<string[]>([])
