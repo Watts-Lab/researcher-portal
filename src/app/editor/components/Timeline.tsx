@@ -93,7 +93,7 @@ export default function Timeline({
         setStageOptions(['all', ...stageNames])
       }
 
-      // Set intro sequence options
+      // TODO: need to re-engineer most of intro sequences logic
       if (treatment.introSequences) {
         const sequenceNames = treatment.introSequences.map(
           (sequence: any, index: number) =>

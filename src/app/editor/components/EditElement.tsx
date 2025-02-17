@@ -23,7 +23,7 @@ export function EditElement({
     templatesMap,
     setTemplatesMap,
     selectedTreatmentIndex,
-    setSelectedTreatmentIndex
+    setSelectedTreatmentIndex,
   } = useContext(StageContext)
 
   const {
@@ -35,25 +35,36 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       name:
-        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
-          elementIndex
-        ]?.name || '',
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.name || '',
       selectedOption:
-        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
-          elementIndex
-        ]?.type || 'Pick one',
-      file: 
-        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
-          elementIndex
-        ]?.file || 'No file provided',
-      url: '',
-      params: [],
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.type || 'Pick one',
+      file:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.file || '',
+      url:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.url || '',
+      params:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.params || [],
       onSubmit: '',
-      style: '',
-      buttonText: '',
-      startTime: '',
-      endTime: '',
-      surveyName: 'Pick one',
+      style:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.style || '',
+      buttonText:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.buttonText || '',
+      startTime:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.startTime || '',
+      endTime:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.endTime || '',
+      surveyName:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]
+          ?.elements[elementIndex]?.surveyName || 'Pick one',
     },
     resolver: zodResolver(elementSchema),
     mode: 'onChange',
@@ -93,13 +104,13 @@ export function EditElement({
     }
 
     if (elementIndex === -1) {
-      updatedTreatment?.treatments[selectedTreatmentIndex].gameStages[stageIndex]?.elements?.push(
-        inputs
-      )
+      updatedTreatment?.treatments[selectedTreatmentIndex].gameStages[
+        stageIndex
+      ]?.elements?.push(inputs)
     } else {
-      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements[
-        elementIndex
-      ] = inputs
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[
+        stageIndex
+      ].elements[elementIndex] = inputs
     }
 
     editTreatment(updatedTreatment)
@@ -111,10 +122,9 @@ export function EditElement({
     )
     if (confirm) {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements.splice(
-        elementIndex,
-        1
-      ) // delete in place
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[
+        stageIndex
+      ].elements.splice(elementIndex, 1) // delete in place
       editTreatment(updatedTreatment)
     }
   }
