@@ -42,7 +42,10 @@ export function EditElement({
         treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
           elementIndex
         ]?.type || 'Pick one',
-      file: '',
+      file: 
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
+          elementIndex
+        ]?.file || 'No file provided',
       url: '',
       params: [],
       onSubmit: '',
