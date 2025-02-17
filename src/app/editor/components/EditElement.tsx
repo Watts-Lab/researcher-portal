@@ -71,7 +71,7 @@ export function EditElement({
   })
 
   function saveEdits() {
-    const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
+    const updatedTreatment = JSON.parse(JSON.stringify(treatment))
 
     if (stageIndex === undefined) {
       throw new Error('No stage index given')
@@ -82,24 +82,51 @@ export function EditElement({
       type: watch('selectedOption'),
     }
 
-    if (watch('file') !== '') inputs.file = watch('file')
-    if (watch('url') !== '') inputs.url = watch('url')
-    if (JSON.stringify(watch('params')) !== JSON.stringify([]))
-      inputs.params = [] // To fix
-    if (watch('onSubmit') !== '') inputs.onSubmit = watch('onSubmit')
-    if (watch('style') !== '') inputs.style = watch('style')
-    if (watch('buttonText') !== '') inputs.buttonText = watch('buttonText')
-    if (watch('startTime') !== '')
-      inputs.startTime = parseInt(watch('startTime'))
-    if (watch('endTime') !== '') inputs.endTime = parseInt(watch('endTime'))
-    if (watch('surveyName') !== 'Pick one')
-      inputs.surveyName = watch('surveyName')
+    if (watch('file')?.trim()) inputs.file = watch('file').trim()
+    if (watch('url')?.trim()) inputs.url = watch('url').trim()
+    if (Array.isArray(watch('params')) && watch('params').length > 0)
+      inputs.params = watch('params')
+    if (watch('onSubmit')?.trim()) inputs.onSubmit = watch('onSubmit').trim()
+    if (watch('style')?.trim()) inputs.style = watch('style').trim()
+    if (watch('buttonText')?.trim())
+      inputs.buttonText = watch('buttonText').trim()
 
-    const result = elementSchema.safeParse(inputs)
-    if (!result.success) {
-      // To add: render error message
-      console.log('Error message below:')
-      console.error(result.error.errors)
+    // Convert string inputs to numbers safely
+    if (watch('startTime')) {
+      const startTime = parseInt(watch('startTime'), 10)
+      if (isNaN(startTime) || startTime < 0) {
+        alert('Invalid startTime: must be a non-negative integer.')
+        return
+      }
+      inputs.startTime = startTime
+    }
+
+    if (watch('endTime')) {
+      const endTime = parseInt(watch('endTime'), 10)
+      if (isNaN(endTime) || endTime <= 0) {
+        alert('Invalid endTime: must be a positive integer.')
+        return
+      }
+      if (endTime <= inputs.startTime) {
+        alert('Invalid endTime: must be greater than startTime.')
+        return
+      }
+      inputs.endTime = endTime
+    }
+
+    if (watch('surveyName') && watch('surveyName') !== 'Pick one') {
+      inputs.surveyName = watch('surveyName')
+    }
+
+    // Validate inputs against the schema
+    const validationResult = elementSchema.safeParse(inputs)
+    if (!validationResult.success) {
+      console.error('Validation failed:', validationResult.error.errors)
+      alert(
+        `Validation error: ${validationResult.error.errors
+          .map((e) => e.message)
+          .join('\n')}`
+      )
       return
     }
 
@@ -202,7 +229,7 @@ export function EditElement({
               data-cy={`edit-element-file-${stageIndex}-${
                 elementIndex === -1 ? 'new' : elementIndex
               }`}
-              placeholder="Enter number here."
+              placeholder="Enter file here."
               className="input input-bordered w-full max-w-xs"
             />
             {errors.file && (
@@ -225,7 +252,7 @@ export function EditElement({
                 data-cy={`edit-element-start-time-stage${stageIndex}-element${
                   elementIndex || 'new'
                 }`}
-                placeholder="Enter text here."
+                placeholder="Enter time here."
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -240,7 +267,7 @@ export function EditElement({
                 data-cy={`edit-element-end-time-stage${stageIndex}-element${
                   elementIndex || 'new'
                 }`}
-                placeholder="Enter text here."
+                placeholder="Enter time here."
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -259,7 +286,7 @@ export function EditElement({
               data-cy={`edit-element-url-${stageIndex}-${
                 elementIndex === -1 ? 'new' : elementIndex
               }`}
-              placeholder="Enter text here."
+              placeholder="Enter url here."
               className="input input-bordered w-full max-w-xs"
             />
           </label>
@@ -276,7 +303,7 @@ export function EditElement({
               data-cy={`edit-element-params-stage${stageIndex}-element${
                 elementIndex || 'new'
               }`}
-              placeholder="Enter text here."
+              placeholder="Enter parameters here."
               className="input input-bordered w-full max-w-xs"
             />
           </label>
@@ -312,7 +339,7 @@ export function EditElement({
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">{'Type'}</span>
+              <span className="label-text">{'Survey Type'}</span>
             </div>
             <select
               {...register('surveyName', { required: true })}
