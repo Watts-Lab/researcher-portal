@@ -26,6 +26,13 @@ export function EditElement({
     setSelectedTreatmentIndex
   } = useContext(StageContext)
 
+  const stageTemplateName =
+    treatment.treatments[0]?.gameStages[currentStageIndex]?.template || ''
+
+  console.log("stageTemplateName == ''", stageTemplateName == '')
+  console.log('stageIndex', stageIndex)
+  console.log('elementIndex', elementIndex)
+
   const {
     register,
     watch,
@@ -35,13 +42,17 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       name:
-        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
-          elementIndex
-        ]?.name || '',
+        stageTemplateName == ''
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements?.[
+              elementIndex
+            ]?.name || ''
+          : '',
       selectedOption:
-        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
-          elementIndex
-        ]?.type || 'Pick one',
+        stageTemplateName == ''
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements?.[
+              elementIndex
+            ]?.type || 'Pick one'
+          : 'Pick one',
       file: '',
       url: '',
       params: [],

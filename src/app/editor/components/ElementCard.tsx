@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Modal } from './Modal'
 import { EditElement } from './EditElement'
 import { TreatmentType } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
@@ -12,6 +12,7 @@ export function ElementCard({
   stageIndex,
   elementIndex,
   elementOptions,
+  isTemplate,
 }: {
   element: any
   scale: number
@@ -20,10 +21,18 @@ export function ElementCard({
   stageIndex: number
   elementIndex: number
   elementOptions: any
+  isTemplate: boolean
 }) {
   const startTime = element.displayTime || 0
   const endTime = element.hideTime || stageDuration
   const [modalOpen, setModalOpen] = useState(false)
+  const [isElementTemplate, setIsElementTemplate] = useState(false)
+
+  useEffect(() => {
+    if (element.template) {
+      setIsElementTemplate(true)
+    }
+  }, [element])
 
   const {
     currentStageIndex,
@@ -49,22 +58,25 @@ export function ElementCard({
       <div>
         {Object.keys(element).map((key) => (
           <p key={key}>
-            {key}: {element[key]}
+            {key}: {element[key].toString()}
           </p>
         ))}
       </div>
-      <button
-        data-cy={'edit-element-button-' + stageIndex + '-' + elementIndex}
-        className="btn h-5 flex bg-gray-300"
-        style={{ minHeight: 'unset' }}
-        onClick={() =>
-          (
-            document.getElementById(editModalId) as HTMLDialogElement | null
-          )?.showModal()
-        }
-      >
-        Edit
-      </button>
+
+      {!isElementTemplate && !isTemplate && (
+        <button
+          data-cy={'edit-element-button-' + stageIndex + '-' + elementIndex}
+          className="btn h-5 flex bg-gray-300"
+          style={{ minHeight: 'unset' }}
+          onClick={() =>
+            (
+              document.getElementById(editModalId) as HTMLDialogElement | null
+            )?.showModal()
+          }
+        >
+          Edit
+        </button>
+      )}
 
       <Modal id={editModalId}>
         <EditElement stageIndex={stageIndex} elementIndex={elementIndex} />
