@@ -19,18 +19,17 @@ export default function CodeEditor() {
   useEffect(() => {
     async function fetchDefaultTreatment() {
       var data = defaultTreatment
-      if (defaultTreatment) {
-        return // If defaultTreatment is already set, do nothing
-      } else {
-        const response = await fetch('/defaultTreatment.yaml')
-        const text = await response.text()
-        data = yaml.load(text)
-        setDefaultTreatment(data)
-      }
+      if (defaultTreatment) return // If defaultTreatment is already set, do nothing
+      
+      const response = await fetch('/defaultTreatment.yaml')
+      const text = await response.text()
+      data = yaml.load(text)
+      setDefaultTreatment(data)
 
       const storedCode = localStorage.getItem('code') || ''
       if (storedCode === '') {
         setCode(stringify(data))
+        localStorage.setItem('code', stringify(data))
       } else {
         setCode(storedCode)
       }

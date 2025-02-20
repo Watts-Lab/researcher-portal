@@ -56,11 +56,11 @@ describe('timeline drag and drop', () => {
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
 
         // swap first element with second element
-        cy.get('[data-cy="element-0-0"]')
-            .focus()
-            .type(" ") // space bar selects item to move
-            .type("{downArrow}") // move element down one
-            .type(" "); // stop moving item
+        cy.get('[data-cy="element-0-0"]').as('dragElement');
+        cy.get('@dragElement').focus();
+        cy.get('@dragElement').type(" "); // space bar selects item to move
+        cy.get('@dragElement').type("{downArrow}"); // move element down one
+        cy.get('@dragElement').type(" "); // stop moving item
 
         cy.wait(1000);
 
@@ -77,11 +77,11 @@ describe('timeline drag and drop', () => {
         cy.get('[data-cy^="stage-"]').should('have.length', 2);
 
         // swap first stage with second stage
-        cy.get('[data-cy="stage-0"]')
-            .focus()
-            .type(" ")
-            .type("{rightArrow}") // move stage 1 to the right
-            .type(" ");
+        cy.get('[data-cy="stage-0"]').as('dragStage');
+        cy.get('@dragStage').focus();
+        cy.get('@dragStage').type(" ");
+        cy.get('@dragStage').type("{rightArrow}");
+        cy.get('@dragStage').type(" ");
 
         cy.wait(1000);
 
@@ -98,11 +98,12 @@ describe('timeline drag and drop', () => {
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
 
         // try moving first element from stage 1 to stage 2
-        cy.get('[data-cy="element-0-0"]')
-            .focus()
-            .type(" ")
-            .type("{rightArrow}")
-            .type(" ");
+        cy.wait(1000);
+        cy.get('[data-cy="element-0-0"]').as('dragElement');
+        cy.get('@dragElement').focus();
+        cy.get('@dragElement').type(" ");
+        cy.get('@dragElement').type("{rightArrow}");
+        cy.get('@dragElement').type(" ");
 
         cy.wait(1000);
 
@@ -112,11 +113,11 @@ describe('timeline drag and drop', () => {
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
 
         // try moving second element outside of stage 1
-        cy.get('[data-cy="element-0-1"]')
-            .focus()
-            .type(" ")
-            .type("{rightArrow}")
-            .type(" ");
+        cy.get('[data-cy="element-0-1"]').as('dragElement2');
+        cy.get('@dragElement2').focus();
+        cy.get('@dragElement2').type(" ");
+        cy.get('@dragElement2').type("{rightArrow}");
+        cy.get('@dragElement2').type(" ");
 
         cy.wait(1000);
 
@@ -133,11 +134,11 @@ describe('timeline drag and drop', () => {
         cy.get('[data-cy^="stage-"]').should('have.length', 2);
 
         // try dragging stage outside of timeline 
-        cy.get('[data-cy="stage-0"]')
-            .focus()
-            .type(" ")
-            .type("{upArrow}")
-            .type(" ");
+        cy.get('[data-cy="stage-0"]').as('dragStage');
+        cy.get('@dragStage').focus();
+        cy.get('@dragStage').type(" ");
+        cy.get('@dragStage').type("{upArrow}");
+        cy.get('@dragStage').type(" ");
 
         cy.wait(1000);
 
