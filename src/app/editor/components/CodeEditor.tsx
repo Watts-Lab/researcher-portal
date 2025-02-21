@@ -20,7 +20,7 @@ export default function CodeEditor() {
     async function fetchDefaultTreatment() {
       var data = defaultTreatment
       if (defaultTreatment) return // If defaultTreatment is already set, do nothing
-      
+
       const response = await fetch('/defaultTreatment.yaml')
       const text = await response.text()
       data = yaml.load(text)

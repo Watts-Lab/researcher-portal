@@ -1,0 +1,43 @@
+templates:
+  - templateName: testA
+    templateContent:
+      - type: prompt
+        file: projects/example/multipleChoiceColors.md
+      - type: submitButton
+        buttonText: Finish Stage 1
+        conditions:
+          - comparator: exists
+            reference: prompt.Colors
+  - templateName: testB
+    templateContent:
+      - name: GameStageTemplate
+        duration: 200
+        elements:
+          - type: prompt
+            file: projects/example/multipleChoiceColors.md
+          - type: submitButton
+            buttonText: ${submitButtonText}
+treatments:
+  - name: simple template test
+    playerCount: 1
+    gameStages:
+      - name: TestTemplateA
+        duration: 150
+        elements:
+          - template: testA
+      - name: TestStage
+        duration: 300
+        elements:
+          - name: ExitTicket
+            type: prompt
+            file: projects/example/multipleChoiceColors.md
+          - name: submitButton
+            type: submitButton
+            buttonText: Finish Stage 2
+            conditions:
+              - comparator: doesNotEqual
+                reference: prompt.ExitTicket
+                value: 1
+      - template: testB
+        fields:
+          submitButtonText: Finish Stage 3
