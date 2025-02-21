@@ -31,17 +31,17 @@ describe('test spec', () => {
 
         // create first stage
         cy.get('[data-cy="add-stage-button"]').click()
-        cy.get('[data-cy="edit-stage-name-new"]').type("Stage 1")
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300")
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("Stage 1")
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}300")
         cy.get('[data-cy="edit-stage-save-new"]').click()
 
         cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
 
         // add first element to stage 1
         cy.get('[data-cy="add-element-button-0"]').click()
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 1")
+        cy.get('[data-cy="edit-element-name-0-new"]').should('exist').type("Element 1")
         cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt")
-        cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md")
+        cy.get('[data-cy="edit-element-file-0-new"]').should('exist').type("projects/example/preDiscussionInstructions.md")
         cy.get('[data-cy="edit-element-save-0-new"]').click()
 
         cy.get('[data-cy="element-0-0"]').contains("prompt").should("be.visible")
@@ -49,9 +49,9 @@ describe('test spec', () => {
 
         // add second element to stage 1
         cy.get('[data-cy="add-element-button-0"]').click()
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 2")
+        cy.get('[data-cy="edit-element-name-0-new"]').should('exist').type("Element 2")
         cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt")
-        cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md")
+        cy.get('[data-cy="edit-element-file-0-new"]').should('exist').type("projects/example/preDiscussionInstructions.md")
         cy.get('[data-cy="edit-element-save-0-new"]').click()
 
         cy.get('[data-cy="element-0-1"]').contains("prompt").should("be.visible")
@@ -59,7 +59,7 @@ describe('test spec', () => {
 
         // add third element to stage 1
         cy.get('[data-cy="add-element-button-0"]').click()
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 3")
+        cy.get('[data-cy="edit-element-name-0-new"]').should('exist').type("Element 3")
         cy.get('[data-cy="edit-element-type-0-new"]').select("Survey")
         cy.get('[data-cy="edit-element-surveyName-0-new"]').select("TIPI")
         cy.get('[data-cy="edit-element-save-0-new"]').click()
@@ -70,8 +70,8 @@ describe('test spec', () => {
 
         // edit first stage
         cy.get('[data-cy="edit-stage-button-0"]').click()
-        cy.get('[data-cy="edit-stage-name-0"]').clear().type("Stage 1 Edited")
-        cy.get('[data-cy="edit-stage-duration-0"]').clear().type("400")
+        cy.get('[data-cy="edit-stage-name-0"]').clear().should('exist').type("Stage 1 Edited")
+        cy.get('[data-cy="edit-stage-duration-0"]').clear().should('exist').type("400")
         cy.get('[data-cy="edit-stage-save-0"]').click()
 
         cy.get('[data-cy="stage-0"]').contains("Stage 1 Edited").should("be.visible")
@@ -88,8 +88,8 @@ describe('test spec', () => {
 
         // create second stage
         cy.get('[data-cy="add-stage-button"]').click()
-        cy.get('[data-cy="edit-stage-name-new"]').type("Stage 2")
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200")
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("Stage 2")
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}200")
         cy.get('[data-cy="edit-stage-save-new"]').click()
 
         cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
@@ -97,9 +97,9 @@ describe('test spec', () => {
 
         // add third element to stage 2
         cy.get('[data-cy="add-element-button-1"]').click()
-        cy.get('[data-cy="edit-element-name-1-new"]').type("Element 3")
+        cy.get('[data-cy="edit-element-name-1-new"]').should('exist').type("Element 3")
         cy.get('[data-cy="edit-element-type-1-new"]').select("Training Video")
-        cy.get('[data-cy="edit-element-url-1-new"]').type("https://www.youtube.com/")
+        cy.get('[data-cy="edit-element-url-1-new"]').should('exist').type("https://www.youtube.com/")
         cy.get('[data-cy="edit-element-save-1-new"]').click()
 
         cy.get('[data-cy="element-1-0"]').contains("video").should("be.visible")
@@ -113,7 +113,7 @@ describe('test spec', () => {
         // edit second element in first stage
         cy.get('[data-cy="edit-element-button-0-1"]').click()
         cy.get('[data-cy="edit-element-name-0-1"]').should("have.value", "Element 2").should("be.visible").type(" Edited")
-        cy.get('[data-cy="edit-element-file-0-1"]').type("projects/example/discussionInstructions.md")
+        cy.get('[data-cy="edit-element-file-0-1"]').should('exist').type("projects/example/discussionInstructions.md")
         cy.get('[data-cy="edit-element-save-0-1"]').click()
 
         cy.get('[data-cy="element-0-1"]').contains("prompt").should("be.visible")

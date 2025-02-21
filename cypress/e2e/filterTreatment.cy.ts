@@ -19,14 +19,14 @@ describe('timeline filter stages and treatments', () => {
 
         // treatment one, first stage
         cy.get('[data-cy="add-stage-button"]').realClick();
-        cy.get('[data-cy="edit-stage-name-new"]').type("Role Assignment and General Instructions");
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300");
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("Role Assignment and General Instructions");
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}300");
         cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // treatment one, second stage
         cy.get('[data-cy="add-stage-button"]').realClick();
-        cy.get('[data-cy="edit-stage-name-new"]').type("Main Discussion");
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200");
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("Main Discussion");
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}200");
         cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // switch to the second treatment
@@ -35,14 +35,14 @@ describe('timeline filter stages and treatments', () => {
 
         // treatment two, first stage
         cy.get('[data-cy="add-stage-button"]').realClick();
-        cy.get('[data-cy="edit-stage-name-new"]').type("test");
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200");
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("test");
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}200");
         cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // treatment two, second stage
         cy.get('[data-cy="add-stage-button"]').realClick();
-        cy.get('[data-cy="edit-stage-name-new"]').type("test2");
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200");
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("test2");
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}200");
         cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // verify all stages in second treatment are visible

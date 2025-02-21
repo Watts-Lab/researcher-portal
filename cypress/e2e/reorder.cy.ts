@@ -20,28 +20,28 @@ describe('timeline drag and drop', () => {
 
         // add first stage
         cy.get('[data-cy="add-stage-button"]').click();
-        cy.get('[data-cy="edit-stage-name-new"]').type("Stage 1");
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300");
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("Stage 1");
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}300");
         cy.get('[data-cy="edit-stage-save-new"]').click();
 
         // add element 1 in stage 1
         cy.get('[data-cy="add-element-button-0"]').click();
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 1");
-        cy.get('[data-cy="edit-element-type-0-new"]').select("Prompt");
-        cy.get('[data-cy="edit-element-file-0-new"]').type("projects/example/preDiscussionInstructions.md");
+        cy.get('[data-cy="edit-element-name-0-new"]').should('exist').type("Element 1");
+        cy.get('[data-cy="edit-element-type-0-new"]').should('exist').select("Prompt");
+        cy.get('[data-cy="edit-element-file-0-new"]').should('exist').type("projects/example/preDiscussionInstructions.md");
         cy.get('[data-cy="edit-element-save-0-new"]').click();
 
         // add element 2 in stage 1
         cy.get('[data-cy="add-element-button-0"]').click();
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 2");
-        cy.get('[data-cy="edit-element-type-0-new"]').select("Survey");
+        cy.get('[data-cy="edit-element-name-0-new"]').should('exist').type("Element 2");
+        cy.get('[data-cy="edit-element-type-0-new"]').should('exist').select("Survey");
         cy.get('[data-cy="edit-element-surveyName-0-new"]').select("TIPI");
         cy.get('[data-cy="edit-element-save-0-new"]').click();
 
         // add second stage
         cy.get('[data-cy="add-stage-button"]').click();
-        cy.get('[data-cy="edit-stage-name-new"]').type("Stage 2");
-        cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200");
+        cy.get('[data-cy="edit-stage-name-new"]').should('exist').type("Stage 2");
+        cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}200");
         cy.get('[data-cy="edit-stage-save-new"]').click();
 
         cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible");
@@ -59,9 +59,9 @@ describe('timeline drag and drop', () => {
         // swap first element with second element
         cy.get('[data-cy="element-0-0"]').as('dragElement');
         cy.get('@dragElement').focus();
-        cy.get('@dragElement').type(" "); // space bar selects item to move
-        cy.get('@dragElement').type("{downArrow}"); // move element down one
-        cy.get('@dragElement').type(" "); // stop moving item
+        cy.get('@dragElement').should('exist').type(" "); // space bar selects item to move
+        cy.get('@dragElement').should('exist').type("{downArrow}"); // move element down one
+        cy.get('@dragElement').should('exist').type(" "); // stop moving item
 
         cy.wait(1000);
 
@@ -80,9 +80,9 @@ describe('timeline drag and drop', () => {
         // swap first stage with second stage
         cy.get('[data-cy="stage-0"]').as('dragStage');
         cy.get('@dragStage').focus();
-        cy.get('@dragStage').type(" ");
-        cy.get('@dragStage').type("{rightArrow}");
-        cy.get('@dragStage').type(" ");
+        cy.get('@dragStage').should('exist').type(" ");
+        cy.get('@dragStage').should('exist').type("{rightArrow}");
+        cy.get('@dragStage').should('exist').type(" ");
 
         cy.wait(1000);
 
@@ -102,9 +102,9 @@ describe('timeline drag and drop', () => {
         cy.wait(1000);
         cy.get('[data-cy="element-0-0"]').as('dragElement');
         cy.get('@dragElement').focus();
-        cy.get('@dragElement').type(" ");
-        cy.get('@dragElement').type("{rightArrow}");
-        cy.get('@dragElement').type(" ");
+        cy.get('@dragElement').should('exist').type(" ");
+        cy.get('@dragElement').should('exist').type("{rightArrow}");
+        cy.get('@dragElement').should('exist').type(" ");
 
         cy.wait(1000);
 
@@ -116,9 +116,9 @@ describe('timeline drag and drop', () => {
         // try moving second element outside of stage 1
         cy.get('[data-cy="element-0-1"]').as('dragElement2');
         cy.get('@dragElement2').focus();
-        cy.get('@dragElement2').type(" ");
-        cy.get('@dragElement2').type("{rightArrow}");
-        cy.get('@dragElement2').type(" ");
+        cy.get('@dragElement2').should('exist').type(" ");
+        cy.get('@dragElement2').should('exist').type("{rightArrow}");
+        cy.get('@dragElement2').should('exist').type(" ");
 
         cy.wait(1000);
 
@@ -137,9 +137,9 @@ describe('timeline drag and drop', () => {
         // try dragging stage outside of timeline 
         cy.get('[data-cy="stage-0"]').as('dragStage');
         cy.get('@dragStage').focus();
-        cy.get('@dragStage').type(" ");
-        cy.get('@dragStage').type("{upArrow}");
-        cy.get('@dragStage').type(" ");
+        cy.get('@dragStage').should('exist').type(" ");
+        cy.get('@dragStage').should('exist').type("{upArrow}");
+        cy.get('@dragStage').should('exist').type(" ");
 
         cy.wait(1000);
 

@@ -43,7 +43,7 @@ describe('code editor', () => {
 
         // add new element using stage cards
         cy.get('[data-cy="add-element-button-0"]').click()
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 2")
+        cy.get('[data-cy="edit-element-name-0-new"]').should('exist').type("Element 2")
         cy.get('[data-cy="edit-element-type-0-new"]').select("Survey")
         cy.get('[data-cy="edit-element-surveyName-0-new"]').select("TIPI")
         cy.get('[data-cy="edit-element-save-0-new"]').click()
