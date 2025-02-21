@@ -1,25 +1,31 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
-import {
-  TreatmentType,
-  ElementType,
-  elementSchema,
-  elementBaseSchema,
-} from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
+import { elementSchema } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+import { StageContext } from '../stageContext.jsx'
 
 export function EditElement({
-  treatment,
-  editTreatment,
   stageIndex,
   elementIndex, // -1 if adding element
 }: {
-  treatment: TreatmentType
-  editTreatment: (treatment: TreatmentType) => void
   stageIndex: number
   elementIndex: number
 }) {
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+    editTreatment,
+    templatesMap,
+    setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex
+  } = useContext(StageContext)
+
   const {
     register,
     watch,
@@ -29,10 +35,13 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       name:
-        treatment?.gameStages[stageIndex]?.elements[elementIndex]?.name || '',
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
+          elementIndex
+        ]?.name || '',
       selectedOption:
-        treatment?.gameStages[stageIndex]?.elements[elementIndex]?.type ||
-        'Pick one',
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements[
+          elementIndex
+        ]?.type || 'Pick one',
       file: '',
       url: '',
       params: [],
@@ -81,9 +90,13 @@ export function EditElement({
     }
 
     if (elementIndex === -1) {
-      updatedTreatment?.gameStages[stageIndex]?.elements?.push(inputs)
+      updatedTreatment?.treatments[selectedTreatmentIndex].gameStages[stageIndex]?.elements?.push(
+        inputs
+      )
     } else {
-      updatedTreatment.gameStages[stageIndex].elements[elementIndex] = inputs
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements[
+        elementIndex
+      ] = inputs
     }
 
     editTreatment(updatedTreatment)
@@ -95,7 +108,10 @@ export function EditElement({
     )
     if (confirm) {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      updatedTreatment.gameStages[stageIndex].elements.splice(elementIndex, 1) // delete in place
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].elements.splice(
+        elementIndex,
+        1
+      ) // delete in place
       editTreatment(updatedTreatment)
     }
   }

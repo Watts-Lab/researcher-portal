@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   TreatmentType,
@@ -9,16 +9,27 @@ import {
 } from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+import { StageContext } from '../stageContext.jsx'
 
 export function EditStage({
-  treatment,
-  editTreatment,
   stageIndex, // an index if the stage already exists, otherwise -1
 }: {
-  treatment: TreatmentType
-  editTreatment: (treatment: TreatmentType) => void
   stageIndex: number
 }) {
+  const {
+    currentStageIndex,
+    setCurrentStageIndex,
+    elapsed,
+    setElapsed,
+    treatment,
+    setTreatment,
+    editTreatment,
+    templatesMap,
+    setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
+  } = useContext(StageContext)
+
   const {
     register,
     watch,
@@ -27,9 +38,18 @@ export function EditStage({
     formState: { errors },
   } = useForm<StageType>({
     defaultValues: {
-      name: treatment?.gameStages[stageIndex]?.name || '',
-      duration: treatment?.gameStages[stageIndex]?.duration || 0,
-      elements: treatment?.gameStages[stageIndex]?.elements || [],
+      name:
+        stageIndex != -1
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.name
+          : '',
+      duration:
+        stageIndex != -1
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.duration
+          : 0,
+      elements:
+        stageIndex != -1
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements
+          : [],
       // desc: "",
       // discussion: {
       //   chatType: "text",
@@ -47,7 +67,8 @@ export function EditStage({
     const inputs: { name: any; duration: any; elements: ElementType[] } = {
       name: watch('name'),
       duration: watch('duration'),
-      elements: treatment?.gameStages[stageIndex]?.elements || [],
+      elements:
+        treatment?.treatments?.[selectedTreatmentIndex].gameStages[stageIndex]?.elements || [],
       // discussion: undefined,
       // desc: watch('desc'),
     }
@@ -56,28 +77,30 @@ export function EditStage({
     // if (watch('desc') !== "") inputs.desc = watch('desc')
     // if (watch('elements') !== null) inputs.elements = watch('elements')
 
-    const result = stageSchema.safeParse(inputs)
-    if (!result.success) {
-      const parsedError = result.error.errors
-      if (
-        parsedError[0].message === 'Array must contain at least 1 element(s)' &&
-        stageIndex === -1
-      ) {
-        // do nothing --> ignore the error
-      } else {
-        console.error('Error described below:')
-        console.error(result.error.errors)
-        return
-      }
-    }
+    // ZOD SCHEMA VALIDATION NOT WORKING WITH TEMPLATES
+    //const result = stageSchema.safeParse(inputs)
+    // if (!result.success) {
+    //   const parsedError = result.error.errors
+    //   if (
+    //     parsedError[0].message === 'Array must contain at least 1 element(s)' &&
+    //     stageIndex === -1
+    //   ) {
+    //     // do nothing --> ignore the error
+    //   } else {
+    //     console.error('Error described below:')
+    //     console.error(result.error.errors)
+    //     return
+    //   }
+    // }
 
     if (stageIndex === -1) {
       // create new stage
-      updatedTreatment?.gameStages?.push(inputs)
+      updatedTreatment?.treatments?.[selectedTreatmentIndex].gameStages?.push(inputs)
     } else {
       // modify existing stage
-      updatedTreatment.gameStages[stageIndex].name = watch('name')
-      updatedTreatment.gameStages[stageIndex].duration = watch('duration')
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].name = watch('name')
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[stageIndex].duration =
+        watch('duration')
       // todo: add discussion component
     }
     editTreatment(updatedTreatment)
@@ -89,7 +112,7 @@ export function EditStage({
     )
     if (confirm) {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      updatedTreatment.gameStages.splice(stageIndex, 1) // delete in place
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages.splice(stageIndex, 1) // delete in place
       editTreatment(updatedTreatment)
     }
   }

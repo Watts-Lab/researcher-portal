@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import { isFunctionDeclaration } from "typescript";
-// import { StageContext } from '@/editor/stageContext'; # don't know why this doesn't work
+// import { StageContext } from '@/editor/stageContext'; // # don't know why this doesn't work
 
 // file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
-import { StageContext } from "../../../../../src/app/editor/stageContext"
+import { StageContext } from "../../src/app/editor/stageContext"
+// "../../../../src/app/editor/stageContext"
 
 
 
@@ -16,6 +17,14 @@ export function usePlayer() {
     exitStep: 0, //TODO,
     gameID: 21,
     position: 0, //TODO - set with toggle
+    stage: {
+      set: function (varName, value) {
+        this[varName] = value;
+      },
+      get: function (varName) {
+        return this[varName];
+      },
+    },
     get: function (varName) {
       return this[varName];
     },
@@ -23,7 +32,6 @@ export function usePlayer() {
       this[varName] = value;
     },
   };
-
   return player;
 }
 
@@ -46,11 +54,14 @@ export function useGame() {
 export function useStageTimer() {
   const stage = useContext(StageContext);
   console.log("useStageTimerMock", stage)
+  console.log("StageElapsed", stage.elapsed)
+  
   
   // This is a mock function that returns a mock stage timer object
   const stageTimer = {
     isMock: true,
-    elapsed: stage.elapsed // problem: this will be called every render cycle...
+    elapsed: stage.elapsed * 1000 // multiply by 1000 for conditionalRender component
+    // problem: this will be called every render cycle...
   };
 
   return stageTimer;
@@ -66,6 +77,10 @@ export function useStage() {
     setElapsed,
     treatment,
     setTreatment,
+    templatesMap,
+    setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex
   } = useContext(StageContext)
   // const stage1 = useContext(StageContext);
   // console.log("useStageMock", stage1)
@@ -78,13 +93,25 @@ export function useStage() {
       //const treatmentString = localStorage.getItem("treatment");
       //const treatment = JSON.parse(treatmentString);
       if (varName === "elements") {
-        return treatment.gameStages[currentStageIndex]?.elements
+        let elements = treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.elements;
+        if (Array.isArray(elements)) {
+          elements = elements.flatMap((element) => {
+            if (element.template) {
+              return templatesMap.get(element.template);
+            }
+            return [element];
+          });
+        } else {
+          elements = [];
+        }
+        console.log("revised elements", elements)
+        return elements;
       } else if (varName === "discussion") {
-        return treatment.gameStages[currentStageIndex]?.discussion
+        return treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.discussion;
       } else if (varName === "name") {
-        return treatment.gameStages[currentStageIndex]?.name
+        return treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.name;
       } else if (varName === "index") {
-        return currentStageIndex
+        return currentStageIndex;
       }
     },
     
@@ -110,6 +137,7 @@ export function usePlayers() {
 
 export function useGlobal() {
   // This is a mock function that returns a mock global object
+  // UPDATE CDN IF TESTING LOCALLY / DEPLOYING
   const global = {
     isMock: true,
     recruitingBatchConfig: {
