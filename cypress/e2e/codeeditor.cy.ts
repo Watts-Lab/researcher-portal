@@ -5,7 +5,8 @@ import { keyCodeDefinitions } from "node_modules/cypress-real-events/keyCodeDefi
 function setInitialTreatment(appendTreatmentTextWith: string = '') {
     // initial yaml treatment
     let yamltreatment = `treatments: {enter}- name: cypress_code_editor_test \n  playerCount: 1 \ngameStages: {enter}{home}        - name: Stage 1 \n  duration: 100 \nelements: {enter}{home}            - name: Element 1 \n  type: survey \nsurveyName: CRT ${appendTreatmentTextWith}`
-    cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+    cy.clearCodeEditor()
+    cy.typeInCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
 
     // verify initial text in editor
 
@@ -21,7 +22,7 @@ describe('code editor', () => {
         cy.viewport(2000, 1000, { log: false });
 
         cy.visit('http://localhost:3000/editor')
-        cy.typeInCodeEditor(`{ctrl+a}{del}`)
+        cy.clearCodeEditor()
     });
 
     it('reflects code editor changes in stage cards', () => {

@@ -4,7 +4,8 @@ describe('timeline filter stages and treatments', () => {
         let yamltreatment = "treatments:\n- name: treatment_one\n  playerCount: 1\ngameStages: []\n";
         cy.viewport(2000, 1000, { log: false });
         cy.visit('http://localhost:3000/editor');
-        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+        cy.clearCodeEditor();
+        cy.typeInCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
         cy.typeInCodeEditor(`{backspace}`);
         let secondTreatment = "- name: treatment_two\n  playerCount: 1\ngameStages: []\n";
         cy.typeInCodeEditor(`${secondTreatment}`);
@@ -17,32 +18,32 @@ describe('timeline filter stages and treatments', () => {
         cy.get('[data-cy="treatments-dropdown"] select').should('have.value', '0');
 
         // treatment one, first stage
-        cy.get('[data-cy="add-stage-button"]').click();
+        cy.get('[data-cy="add-stage-button"]').realClick();
         cy.get('[data-cy="edit-stage-name-new"]').type("Role Assignment and General Instructions");
         cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}300");
-        cy.get('[data-cy="edit-stage-save-new"]').click();
+        cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // treatment one, second stage
-        cy.get('[data-cy="add-stage-button"]').click();
+        cy.get('[data-cy="add-stage-button"]').realClick();
         cy.get('[data-cy="edit-stage-name-new"]').type("Main Discussion");
         cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200");
-        cy.get('[data-cy="edit-stage-save-new"]').click();
+        cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // switch to the second treatment
         cy.get('[data-cy="treatments-dropdown"] select').select('1');
         cy.get('[data-cy="treatments-dropdown"] select').should('have.value', '1');
 
         // treatment two, first stage
-        cy.get('[data-cy="add-stage-button"]').click();
+        cy.get('[data-cy="add-stage-button"]').realClick();
         cy.get('[data-cy="edit-stage-name-new"]').type("test");
         cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200");
-        cy.get('[data-cy="edit-stage-save-new"]').click();
+        cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // treatment two, second stage
-        cy.get('[data-cy="add-stage-button"]').click();
+        cy.get('[data-cy="add-stage-button"]').realClick();
         cy.get('[data-cy="edit-stage-name-new"]').type("test2");
         cy.get('[data-cy="edit-stage-duration-new"]').type("{backspace}200");
-        cy.get('[data-cy="edit-stage-save-new"]').click();
+        cy.get('[data-cy="edit-stage-save-new"]').realClick();
 
         // verify all stages in second treatment are visible
         cy.get('[data-cy="stage-0"]').contains("test").should("be.visible");
@@ -231,7 +232,8 @@ describe('timeline filter stages and treatments', () => {
     it('should show a useful message when treatments array is empty', () => {
         // Load an empty treatments array
         let emptyTreatments = "treatments: []\n";
-        cy.typeInCodeEditor(`{ctrl+a}{del}${emptyTreatments}`);
+        cy.clearCodeEditor();
+        cy.typeInCodeEditor(`${emptyTreatments}`);
         cy.get('[data-cy="yaml-save"]').realClick();
 
         // Verify the messages

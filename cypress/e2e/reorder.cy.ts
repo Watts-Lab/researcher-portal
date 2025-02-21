@@ -7,15 +7,16 @@ describe('timeline drag and drop', () => {
 
         cy.viewport(2000, 1000, { log: false });
         cy.visit('http://localhost:3000/editor');
-        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+        cy.clearCodeEditor();
+        cy.typeInCodeEditor(`${yamltreatment}`); // equivalent to clear() in cypress
 
         // verify initial text in editor
 
         // text values from monaco-editor will include line numbers and no line breaks
         // the yamltreatment variable has no line numbers and line breaks
         // so right now comparison is only on the treatmentName
-        cy.containsInCodeEditor('drag_and_drop_test')
-        cy.get('[data-cy="yaml-save"]').realClick()
+        cy.containsInCodeEditor('drag_and_drop_test');
+        cy.get('[data-cy="yaml-save"]').realClick();
 
         // add first stage
         cy.get('[data-cy="add-stage-button"]').click();
