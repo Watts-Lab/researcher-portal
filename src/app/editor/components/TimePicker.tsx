@@ -1,13 +1,14 @@
 import "react";
 import { useState } from "react";
+
 export default function TimePicker({
   value,
   setValue,
   maxValue,
 }: {
-  value: any;
-  setValue: any;
-  maxValue: any;
+  value: number;
+  setValue: (value: number) => void;
+  maxValue: number;
 }) {
   return (
     <div>
@@ -17,10 +18,10 @@ export default function TimePicker({
         type="range"
         min="0"
         max={maxValue}
-        defaultValue="0"
-        onChange={(e) => setValue(e.target.value)}
+        value={value}
+        onChange={(e) => setValue(Number(e.target.value))}
       />
-      {value}
+      {value} s
     </div>
   );
 }

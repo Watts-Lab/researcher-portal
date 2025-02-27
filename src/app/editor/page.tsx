@@ -47,7 +47,7 @@ export default function EditorPage({}) {
             style={{ minHeight: 200, height: upperLeftHeight }}
           >
             <TimerProvider>
-              <RenderPanel renderOnly="timer"/>
+              <RenderPanel/>
             </TimerProvider>
           </div>
 

@@ -14,8 +14,6 @@ import { StageContext } from '@/editor/stageContext'
 import { TimerContext, TimerProvider } from '@/editor/timerContext'
 import { Substitute } from 'styled-components/dist/types'
 
-const StyleContext = createContext({})
-
 const Stage = dynamic(
   () =>
     import('./../../../.././deliberation-empirica/client/src/Stage.jsx').then(
@@ -33,7 +31,6 @@ const MemoizedStageContainer = React.memo(() => (
 ))
 MemoizedStageContainer.displayName = 'MemoizedStageContainer'
 
-
 const TimerControls = React.memo(() => {
   const { elapsed, setElapsed } = useContext(TimerContext);
   const { currentStageIndex, treatment, selectedTreatmentIndex } = useContext(StageContext);
@@ -45,7 +42,7 @@ const TimerControls = React.memo(() => {
     <div className="min-w-fit">
       <h1>Preview of Stage {currentStageIndex}</h1>
       <TimePicker
-        value={`${elapsed} s`}
+        value={elapsed}
         setValue={setElapsed}
         maxValue={maxValue}
       />
@@ -58,14 +55,14 @@ const TimerControls = React.memo(() => {
 })
 TimerControls.displayName = 'TimerControls'
 
-interface RenderPanelProps {
-  renderOnly: 'timer' | 'stage' | string;
-}
+export function RenderPanel() {
+  const [time, setTime] = useState(0)
 
-export function RenderPanel({ renderOnly }: RenderPanelProps) {
   const {
     currentStageIndex,
     setCurrentStageIndex,
+    elapsed,
+    setElapsed,
     treatment,
     setTreatment,
     player,
@@ -87,25 +84,11 @@ export function RenderPanel({ renderOnly }: RenderPanelProps) {
 
   //console.log('Current stage', localStorage.getItem('currentStageIndex'))
 
-  if (currentStageIndex === 'default') {
-    return (
-      <div className="flex" data-cy="render-panel">
-        <h1>Click on a stage card to preview the stage from a participant view.</h1>
-      </div>
-    )
-  }
-
-  if (renderOnly === 'timer') {
-    return <TimerControls />;
-  }
-
-  if (renderOnly === 'stage') {
-    return (
-      <div className="w-full flex">
-        <MemoizedStageContainer />
-      </div>
-    );
-  }
+  useEffect(() => {
+    // Updates value of timeline slider when elapsed time changes
+    console.log('Elapsed time changed:', elapsed)
+    setTime(elapsed)
+  }, [elapsed])
 
   return (
     <div className="flex" data-cy="render-panel">
@@ -116,13 +99,7 @@ export function RenderPanel({ renderOnly }: RenderPanelProps) {
       )}
       {currentStageIndex !== 'default' && (
         <div className="min-w-fit">
-          <h1>Preview of Stage {currentStageIndex} </h1>
           <TimerControls/>
-          <ReferenceData
-            treatment={treatment.treatments?.[selectedTreatmentIndex]}
-            stageIndex={currentStageIndex}
-          />
-          {/* need to retrieve stage duration from treatment */}
         </div>
       )}
       {currentStageIndex !== 'default' && (
