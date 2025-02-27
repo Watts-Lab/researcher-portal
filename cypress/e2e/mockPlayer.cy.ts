@@ -1,4 +1,5 @@
 // npm run cypress:open
+
 describe('test spec', () => {
     it('passes', () => {
 
@@ -8,7 +9,8 @@ describe('test spec', () => {
         cy.viewport(2000, 1000, { log: false });
 
         cy.visit('http://localhost:3000/editor')
-        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+        cy.clearCodeEditor()
+        cy.typeInCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
 
         // verify initial text in editor
 
