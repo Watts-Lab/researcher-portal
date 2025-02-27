@@ -11,10 +11,8 @@ import './../../styles/player-classic.css'
 import './../../styles/player.css'
 
 import { StageContext } from '@/editor/stageContext'
+import { TimerContext, TimerProvider } from '@/editor/timerContext'
 import { Substitute } from 'styled-components/dist/types'
-
-const StyleContext = createContext({})
-const useStyle = () => useContext(StyleContext)
 
 const Stage = dynamic(
   () =>
@@ -26,13 +24,36 @@ const Stage = dynamic(
   }
 )
 
-const StyledStage = () => {
+const MemoizedStageContainer = React.memo(() => (
+  <div className="min-w-sm mx-auto aspect-video relative w-full">
+    <Stage />
+  </div>
+))
+MemoizedStageContainer.displayName = 'MemoizedStageContainer'
+
+const TimerControls = React.memo(() => {
+  const { elapsed, setElapsed } = useContext(TimerContext);
+  const { currentStageIndex, treatment, selectedTreatmentIndex } = useContext(StageContext);
+
+  // Derive maxValue from the stage configuration if available.
+  const maxValue = treatment?.treatments?.[selectedTreatmentIndex]?.gameStages?.[currentStageIndex]?.duration ?? 0;
+
   return (
-    <div className="min-w-sm mx-auto aspect-video relative w-full">
-      <Stage />
+    <div className="min-w-fit">
+      <h1>Preview of Stage {currentStageIndex}</h1>
+      <TimePicker
+        value={elapsed}
+        setValue={setElapsed}
+        maxValue={maxValue}
+      />
+      <ReferenceData
+        treatment={treatment?.treatments?.[selectedTreatmentIndex]}
+        stageIndex={currentStageIndex}
+      />
     </div>
-  )
-}
+  );
+})
+TimerControls.displayName = 'TimerControls'
 
 export function RenderPanel() {
   const [time, setTime] = useState(0)
@@ -78,20 +99,7 @@ export function RenderPanel() {
       )}
       {currentStageIndex !== 'default' && (
         <div className="min-w-fit">
-          <h1>Preview of Stage {currentStageIndex} </h1>
-          <TimePicker
-            value={time + ' s'}
-            setValue={setElapsed}
-            maxValue={
-              treatment.treatments?.[selectedTreatmentIndex].gameStages[currentStageIndex]
-                ?.duration ?? 0
-            }
-          />
-          <ReferenceData
-            treatment={treatment.treatments?.[selectedTreatmentIndex]}
-            stageIndex={currentStageIndex}
-          />
-          {/* need to retrieve stage duration from treatment */}
+          <TimerControls/>
         </div>
       )}
       {currentStageIndex !== 'default' && (
@@ -112,7 +120,7 @@ export function RenderPanel() {
       </div> */}
 
       <div className="w-full flex">
-        {currentStageIndex !== 'default' && <StyledStage />}
+        {currentStageIndex !== 'default' && <MemoizedStageContainer />}
       </div>
     </div>
   ) 
