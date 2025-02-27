@@ -21,7 +21,7 @@ export default function TimePicker({
         value={value}
         onChange={(e) => setValue(Number(e.target.value))}
       />
-      {value} s
+      {Math.min(value, maxValue)} s
     </div>
   );
 }
