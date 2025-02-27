@@ -1,23 +1,28 @@
-import { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, useMemo } from 'react';
 
-export const TimerContext = createContext({
-  elapsed: 0,
-  setElapsed: () => {},
-});
+// Create TimerContext
+export const TimerContext = createContext();
 
+// TimerProvider component
 export const TimerProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    const startTime = Date.now();
+    const start = Date.now() - elapsed * 1000; // Adjust start time based on current elapsed
+
     const interval = setInterval(() => {
-      setElapsed(Math.floor((Date.now() - startTime) / 1000));
+      const secondsElapsed = Math.floor((Date.now() - start) / 1000);
+      setElapsed(secondsElapsed);
     }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [elapsed]);
+
+  // Memoize the context value to prevent unnecessary re-creations
+  const value = useMemo(() => ({ elapsed, setElapsed }), [elapsed]);
 
   return (
-    <TimerContext.Provider value={{ elapsed, setElapsed }}>
+    <TimerContext.Provider value={value}>
       {children}
     </TimerContext.Provider>
   );
