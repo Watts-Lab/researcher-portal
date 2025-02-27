@@ -7,9 +7,9 @@ export default function TimePicker({
   setValue,
   maxValue,
 }: {
-  value: number;
-  setValue: (value: number) => void;
-  maxValue: number;
+  value: any;
+  setValue: any;
+  maxValue: any;
 }) {
   const { elapsed, setElapsed } = useContext(TimerContext);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
