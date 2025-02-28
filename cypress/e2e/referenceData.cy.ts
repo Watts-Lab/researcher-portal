@@ -7,8 +7,8 @@ describe('test spec', () => {
 
     cy.viewport(2000, 1000, { log: false });
     cy.visit('http://localhost:3000/editor')
-    // (3) cmd for mac
-    cy.typeInCodeEditor(`{cmd+a}{del}${yamltreatment}`)
+    //  cmd for mac
+    cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`)
 
 
     cy.containsInCodeEditor('no_refs_stage')
@@ -30,7 +30,7 @@ describe('test spec', () => {
     cy.viewport(2000, 1000, { log: false });
     cy.visit('http://localhost:3000/editor')
 
-    cy.typeInCodeEditor(`{cmd+a}{del}${yamltreatmentWithRefs}`)
+    cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatmentWithRefs}`)
 
     cy.get('[data-cy="yaml-save"]').click()
 
@@ -64,7 +64,7 @@ describe('test spec', () => {
     cy.viewport(2000, 1000, { log: false });
     cy.visit('http://localhost:3000/editor');
 
-    cy.typeInCodeEditor(`{cmd+a}{del}${yamltreatmentWithMultipleRefs}`);
+    cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatmentWithMultipleRefs}`);
 
     cy.get('[data-cy="yaml-save"]').click();
 
