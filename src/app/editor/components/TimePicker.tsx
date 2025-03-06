@@ -19,13 +19,13 @@ export default function TimePicker({
   return (
     <div>
       <h3>Select a time:</h3>
-      <input
+      <input data-test="time-picker"
         className="range"
         type="range"
         min="0"
         max={maxValue}
         value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) => setValue(Number(e.target.value))}
       />
       {Math.min(value, maxValue)} s
     </div>

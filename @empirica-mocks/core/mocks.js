@@ -4,6 +4,7 @@ import { isFunctionDeclaration } from "typescript";
 
 // file is in deliberation-empirica/client/node_modules/@empirica/core/mocks.js
 import { StageContext } from "../../src/app/editor/stageContext"
+import { TimerContext } from "../../src/app/editor/timerContext"
 // "../../../../src/app/editor/stageContext"
 
 
@@ -53,8 +54,9 @@ export function useGame() {
 
 export function useStageTimer() {
   const stage = useContext(StageContext);
+  const timer = useContext(TimerContext);
   console.log("useStageTimerMock", stage)
-  console.log("StageElapsed", stage.elapsed)
+  console.log("useStageTimerMock", timer)
   
   
   // This is a mock function that returns a mock stage timer object
@@ -96,6 +98,7 @@ export function useStage() {
         let elements = treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.elements;
         if (Array.isArray(elements)) {
           elements = elements.flatMap((element) => {
+            element.displayTime = element.displayTime ?? 0
             if (element.template) {
               return templatesMap.get(element.template);
             }
@@ -105,7 +108,10 @@ export function useStage() {
           elements = [];
         }
         console.log("revised elements", elements)
-        return elements;
+        return elements.map(element => ({
+          displayTime: 0,  // default value
+          ...element      // spread the rest of the element properties
+        }));
       } else if (varName === "discussion") {
         return treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.discussion;
       } else if (varName === "name") {

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react';
+import { useStageTimer } from '@empirica/core/player/classic/react'
 
 // Create TimerContext
 export const TimerContext = createContext();
