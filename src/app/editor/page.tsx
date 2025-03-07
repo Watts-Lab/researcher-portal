@@ -7,6 +7,7 @@ import { RenderPanel } from './components/RenderPanel'
 import Timeline from './components/Timeline'
 
 import { StageProvider } from './stageContext.jsx'
+import { TimerProvider } from './timerContext.jsx'
 
 const defaultStageContext = {
   currentStageIndex: undefined,
@@ -45,7 +46,9 @@ export default function EditorPage({}) {
             className="overflow-auto"
             style={{ minHeight: 200, height: upperLeftHeight }}
           >
-            <RenderPanel />
+            <TimerProvider>
+              <RenderPanel/>
+            </TimerProvider>
           </div>
 
           <DraggableSplitter dir="horizontal" {...timelineSeparatorProps} />

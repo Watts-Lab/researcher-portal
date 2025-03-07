@@ -1,5 +1,7 @@
 import "react";
-import { useState } from "react";
+import React, { useState, useContext } from "react";
+import { TimerContext } from "../timerContext";
+
 export default function TimePicker({
   value,
   setValue,
@@ -9,18 +11,23 @@ export default function TimePicker({
   setValue: any;
   maxValue: any;
 }) {
+  const { elapsed, setElapsed } = useContext(TimerContext);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newElapsed = Number(e.target.value);
+    setElapsed(newElapsed);
+  };
   return (
     <div>
       <h3>Select a time:</h3>
-      <input
+      <input data-test="time-picker"
         className="range"
         type="range"
         min="0"
         max={maxValue}
-        defaultValue="0"
-        onChange={(e) => setValue(e.target.value)}
+        value={value}
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) => setValue(Number(e.target.value))}
       />
-      {value}
+      {Math.min(value, maxValue)} s
     </div>
   );
 }

@@ -18,7 +18,6 @@ const StageContext = createContext()
 
 const StageProvider = ({ children }) => {
   const [currentStageIndex, setCurrentStageIndex] = useState('default')
-  const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
   const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(0)
@@ -36,8 +35,6 @@ const StageProvider = ({ children }) => {
   const contextValue = useMemo(() => ({
     currentStageIndex,
     setCurrentStageIndex,
-    elapsed,
-    setElapsed,
     treatment,
     setTreatment,
     editTreatment,
@@ -51,8 +48,6 @@ const StageProvider = ({ children }) => {
   }), [
     currentStageIndex,
     setCurrentStageIndex,
-    elapsed,
-    setElapsed,
     treatment,
     setTreatment,
     editTreatment,
