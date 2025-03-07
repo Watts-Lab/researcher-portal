@@ -147,85 +147,67 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-semibold mb-4">
+      <h2 className="text-lg font-semibold mb-4" data-cy="stage-title">
         Stage Refs and Dependencies
       </h2>
 
-      {references.map((reference, index) => {
-        const savedValue = jsonData[`stage_${stageIndex}`]?.[reference] || ''
-        const inputValue = inputValues[`stage_${stageIndex}`]?.[reference] || ''
+      {references.length > 0 ? (
+        <>
+          {references.map((reference, index) => {
+            const savedValue =
+              jsonData[`stage_${stageIndex}`]?.[reference] || ''
+            const inputValue =
+              inputValues[`stage_${stageIndex}`]?.[reference] || ''
 
-        return (
-          <div key={index} className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              {formatReference(reference)}
-            </label>
+            return (
+              <div key={index} className="mb-6">
+                <label
+                  className="block text-sm font-medium text-gray-700"
+                  data-cy={`reference-label-${reference}`}
+                >
+                  {formatReference(reference)}
+                </label>
 
-            {/* saved val */}
-            {savedValue && (
-              <p className="text-sm text-gray-500 mt-1">
-                <strong>Saved Value:</strong> {savedValue}
-              </p>
-            )}
+                {/* saved val */}
+                {savedValue && (
+                  <p
+                    className="text-sm text-gray-500 mt-1"
+                    data-cy={`reference-display-${reference}`}
+                  >
+                    <strong>Saved Value:</strong> {savedValue}
+                  </p>
+                )}
 
-            {/* input val */}
-            <input
-              type="text"
-              className="mt-2 block w-full rounded-md border-gray-300 bg-gray-100 p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder={`Enter value for ${getPlaceholderText(
-                formatReference(reference)
-              )}`}
-              value={inputValue}
-              onChange={(e) => handleInputChange(reference, e.target.value)}
-            />
-          </div>
-        )
-      })}
+                {/* input val */}
+                <input
+                  type="text"
+                  className="mt-2 block w-full rounded-md border-gray-300 bg-gray-100 p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  data-cy={`reference-input-${reference}`}
+                  placeholder={`Enter value for ${getPlaceholderText(
+                    formatReference(reference)
+                  )}`}
+                  value={inputValue}
+                  onChange={(e) => handleInputChange(reference, e.target.value)}
+                />
+              </div>
+            )
+          })}
 
-      <button
-        onClick={saveAsJson}
-        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Save
-      </button>
+          <button
+            onClick={saveAsJson}
+            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            data-cy="save-button"
+          >
+            Save
+          </button>
+        </>
+      ) : (
+        <p className="text-sm text-gray-500" data-cy="no-references-message">
+          No references found
+        </p>
+      )}
     </div>
   )
 }
 
 export default ReferenceData
-
-// const yamlString = `
-//   name: ManipulationCheck
-//   elements:
-//     - type: prompt
-//       file: projects/css_lab/ct_topic/consider_partner.md
-
-//     - type: display
-//       reference: participantInfo.name
-//       position: 0
-//       showToPositions: [1]
-
-//     - type: display
-//       reference: participantInfo.MEOW
-//       position: 1
-//       showToPositions: [0]
-
-//     - type: prompt
-//       file: projects/css_lab/ct_topic/guess_partner_party.md
-//       name: guessPartnerParty
-//       tags: ["outcome"]
-
-//     - type: prompt
-//       file: projects/css_lab/ct_topic/guess_partner_position.md
-
-//     - type: prompt
-//       file: "shared/yesNo/\${topicName}_survey.md"
-//       name: guessPartnerPosition
-//       tags: ["outcome"]
-
-//     - type: submitButton
-//       conditions:
-//         - reference: prompt.guessPartnerParty
-//           comparator: exists
-//         - reference: prompt.guessPartnerPosition
-//           comparator: exists
