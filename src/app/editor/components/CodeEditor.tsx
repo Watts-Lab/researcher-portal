@@ -9,6 +9,13 @@ import { parse } from 'yaml'
 import { stringify } from 'yaml'
 import { ZodError } from 'zod'
 
+// Extend the Window interface to include the editor property
+declare global {
+  interface Window {
+    editor: MonacoEditor.IStandaloneCodeEditor
+  }
+}
+
 export default function CodeEditor() {
   const [code, setCode] = useState('')
   const [defaultTreatment, setDefaultTreatment] = useState<any>(null)
@@ -208,6 +215,8 @@ export default function CodeEditor() {
           onMount={(editor: any, monaco: any) => {
             editorRef.current = editor
             monacoRef.current = monaco
+
+            window.editor = editor // Expose the Monaco Editor instance for testing
           }}
         />
       </div>

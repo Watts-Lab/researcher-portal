@@ -25,7 +25,7 @@ treatments:
         duration: 150
         elements:
           - template: testA
-      - name: TestStage
+      - name: TestStage1
         duration: 300
         elements:
           - name: ExitTicket
@@ -41,3 +41,13 @@ treatments:
       - template: testB
         fields:
           submitButtonText: Finish Stage 3
+      - name: TestStage2
+        duration: 300
+        elements:
+          - name: Video
+            type: video
+            url: https://www.youtube.com/watch?v=QY6E4DfyAoU
+          - name: submitButton
+            type: submitButton
+            buttonText: Finish Stage 4
+            displayTime: 150

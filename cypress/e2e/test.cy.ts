@@ -1,7 +1,7 @@
 import { createPublicKey } from "crypto";
 
 // npm run cypress:open
-describe('test spec', () => {
+describe('basic test spec', () => {
     it('passes', () => {
 
         // TO ADD: check for warning messages when invalid input is entered
