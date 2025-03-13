@@ -8,7 +8,7 @@ describe('test spec', () => {
         cy.viewport(2000, 1000, { log: false });
 
         cy.visit('http://localhost:3000/editor')
-        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+        cy.typeInCodeEditor(`${Cypress.platform === 'darwin' ? '{cmd+a}' : '{ctrl+a}'}{del}${yamltreatment}`) // equivalent to clear() in cypress
 
         // verify initial text in editor
 
@@ -21,7 +21,7 @@ describe('test spec', () => {
         // click on survey questions and complete survey
         cy.contains('Please answer the following questions').should('exist')
         //cy.contains('1').click({force: true})
-        cy.get('input[type="radio"]').should("have.value", "1").click({force: true, multiple: true})
+        cy.get('input[type="radio"]').should("have.value", "1").click({ force: true, multiple: true })
         // cy.get('input[id="sq_106i_0"]').click({force: true})
         // cy.get('input[id="sq_107i_0"]').click({force: true})
         // cy.get('input[id="sq_108i_0"]').click({force: true})

@@ -4,7 +4,7 @@ describe('timeline filter stages and treatments', () => {
         let yamltreatment = "treatments:\n- name: treatment_one\n  playerCount: 1\ngameStages: []\n";
         cy.viewport(2000, 1000, { log: false });
         cy.visit('http://localhost:3000/editor');
-        cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`) // equivalent to clear() in cypress
+        cy.typeInCodeEditor(`${Cypress.platform === 'darwin' ? '{cmd+a}' : '{ctrl+a}'}{del}${yamltreatment}`) // equivalent to clear() in cypress
         cy.typeInCodeEditor(`{backspace}`);
         let secondTreatment = "- name: treatment_two\n  playerCount: 1\ngameStages: []\n";
         cy.typeInCodeEditor(`${secondTreatment}`);
@@ -231,7 +231,7 @@ describe('timeline filter stages and treatments', () => {
     it('should show a useful message when treatments array is empty', () => {
         // Load an empty treatments array
         let emptyTreatments = "treatments: []\n";
-        cy.typeInCodeEditor(`{ctrl+a}{del}${emptyTreatments}`);
+        cy.typeInCodeEditor(`${Cypress.platform === 'darwin' ? '{cmd+a}' : '{ctrl+a}'}{del}${emptyTreatments}`);
         cy.get('[data-cy="yaml-save"]').realClick();
 
         // Verify the messages

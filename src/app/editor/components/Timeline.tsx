@@ -64,10 +64,13 @@ export default function Timeline({
       )
       setSelectedIntroSequenceIndex(storedIntroSequenceIndex)
 
-      if (parsedCode && parsedCode.treatments?.[0].gameStages) {
-        const stageNames = parsedCode.treatments[0].gameStages.map(
-          (stage: any) => stage.name
-        )
+      if (
+        parsedCode &&
+        parsedCode.treatments?.[selectedTreatmentIndex]?.gameStages
+      ) {
+        const stageNames = parsedCode.treatments[
+          selectedTreatmentIndex
+        ].gameStages.map((stage: any) => stage.name)
         setIntroSequenceOptions(['all', ...stageNames]) // 'all' as default
       }
       if (parsedCode?.templates) {

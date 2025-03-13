@@ -95,8 +95,8 @@ export function useStage() {
       //const treatmentString = localStorage.getItem("treatment");
       //const treatment = JSON.parse(treatmentString);
       var tempStage = null; // for template stages
-      const stageTemplateName = treatment.treatments[0]?.gameStages[currentStageIndex]?.template || "";
-      var fields = treatment.treatments[0]?.gameStages[currentStageIndex]?.fields || [];
+      const stageTemplateName = treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.template || "";
+      var fields = treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.fields || [];
       if (stageTemplateName !== "") {
         tempStage = templatesMap.get(stageTemplateName)[0]
       }
@@ -141,7 +141,7 @@ export function useStage() {
         if (tempStage) {
           elements = tempStage.elements;
         } else {
-          elements = treatment.treatments[0]?.gameStages[currentStageIndex]?.elements;
+          elements = treatment.treatments[selectedTreatmentIndex]?.gameStages[currentStageIndex]?.elements;
         }
 
         console.log("CURRELEMENTS", elements)
