@@ -147,7 +147,7 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-semibold mb-4" data-cy="stage-title">
+      <h2 className="text-lg font-semibold mb-4" data-cy="stagerefs-title">
         Stage Refs and Dependencies
       </h2>
 
@@ -211,4 +211,3 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
 }
 
 export default ReferenceData
-

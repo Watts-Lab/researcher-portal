@@ -15,7 +15,7 @@ describe('test spec', () => {
     cy.get('[data-cy="yaml-save"]').click()
 
     // test confirm the stage title
-    cy.contains('[data-cy="stage-title"]', 'Stage Refs and Dependencies')
+    cy.contains('[data-cy="stagerefs-title"]', 'Stage Refs and Dependencies')
       .should('exist')
 
     // "No references found"
