@@ -70,7 +70,7 @@ describe('timeline drag and drop', () => {
         cy.get('[data-cy^="element-0-"]').should('have.length', 2);
     })
 
-    it('allows reodering of stages', () => {
+    it('allows reordering of stages', () => {
         // verify initial order
         cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible");
         cy.get('[data-cy="stage-1"]').contains("Stage 2").should("be.visible");

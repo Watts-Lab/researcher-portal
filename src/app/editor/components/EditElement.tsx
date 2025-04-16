@@ -27,7 +27,9 @@ export function EditElement({
   } = useContext(StageContext)
 
   const stageTemplateName =
-    treatment.treatments[0]?.gameStages?.[currentStageIndex]?.template || ''
+    treatment.treatments[selectedTreatmentIndex]?.gameStages?.[
+      currentStageIndex
+    ]?.template || ''
 
   const {
     register,
@@ -39,8 +41,9 @@ export function EditElement({
     defaultValues: {
       name:
         stageTemplateName == ''
-          ? treatment?.treatments[selectedTreatmentIndex].gameStages[stageIndex]
-              ?.elements?.[elementIndex]?.name || ''
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[
+              stageIndex
+            ]?.elements?.[elementIndex]?.name || ''
           : '',
       selectedOption:
         stageTemplateName == ''

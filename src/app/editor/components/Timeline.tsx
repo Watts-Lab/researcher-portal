@@ -68,7 +68,7 @@ export default function Timeline({
         parsedCode &&
         parsedCode.treatments?.[selectedTreatmentIndex]?.gameStages
       ) {
-        const stageNames = parsedCode.treatments[
+        const stageNames = parsedCode.treatments?.[
           selectedTreatmentIndex
         ].gameStages.map((stage: any) => stage.name)
         setIntroSequenceOptions(['all', ...stageNames]) // 'all' as default
