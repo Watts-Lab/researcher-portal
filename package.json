@@ -5,9 +5,9 @@
   "scripts": {
     "build:deliberation-empirica": "(cd deliberation-empirica/client && npm install) && (cd deliberation-empirica/server && npm install)",
     "predev": "npm run build:deliberation-empirica && rsync -ar --delete @empirica-mocks/ ./deliberation-empirica/client/node_modules/@empirica/ && rm -rf ./.next",
-    "dev": "next dev",
+    "dev": "TINA_PUBLIC_IS_LOCAL=true tinacms dev -c \"next dev\"",
     "prebuild": "npm run predev",
-    "build": "next build",
+    "build": "tinacms build && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "npx cypress open",
@@ -20,8 +20,8 @@
     "@monaco-editor/react": "^4.6.0",
     "@uiw/react-textarea-code-editor": "^2.1.9",
     "@watts-lab/surveys": "^1.13.4",
-    "js-yaml": "^4.1.0",
     "cypress-real-events": "^1.13.0",
+    "js-yaml": "^4.1.0",
     "next": "^13.5.6",
     "next-auth": "^4.24.5",
     "octokit": "^3.1.1",
@@ -36,6 +36,7 @@
     "react-sweet-progress": "^1.1.2",
     "remark-gfm": "^4.0.0",
     "styled-components": "^6.1.13",
+    "tinacms": "^2.7.5",
     "yaml": "^2.4.0",
     "zod": "^3.23.8"
   },
@@ -43,8 +44,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@tinacms/cli": "^1.9.5",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20",
+    "@types/node": "^20.17.30",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10",
