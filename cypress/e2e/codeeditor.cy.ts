@@ -5,7 +5,8 @@ import { keyCodeDefinitions } from "node_modules/cypress-real-events/keyCodeDefi
 function setInitialTreatment(appendTreatmentTextWith: string = '') {
     // initial yaml treatment
     let yamltreatment = `treatments: {enter}- name: cypress_code_editor_test \n  playerCount: 1 \ngameStages: {enter}{home}        - name: Stage 1 \n  duration: 100 \nelements: {enter}{home}            - name: Element 1 \n  type: survey \nsurveyName: CRT ${appendTreatmentTextWith}`
-    cy.typeInCodeEditor(`${Cypress.platform === 'darwin' ? '{cmd+a}' : '{ctrl+a}'}{del}${yamltreatment}`) // equivalent to clear() in cypress
+    cy.clearCodeEditor()
+    cy.typeInCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
 
     // verify initial text in editor
 
@@ -21,7 +22,7 @@ describe('code editor', () => {
         cy.viewport(2000, 1000, { log: false });
 
         cy.visit('http://localhost:3000/editor')
-        cy.typeInCodeEditor(`${Cypress.platform === 'darwin' ? '{cmd+a}' : '{ctrl+a}'}{del}`)
+        cy.clearCodeEditor()
     });
 
     it('reflects code editor changes in stage cards', () => {
@@ -42,7 +43,7 @@ describe('code editor', () => {
 
         // add new element using stage cards
         cy.get('[data-cy="add-element-button-0"]').click()
-        cy.get('[data-cy="edit-element-name-0-new"]').type("Element 2")
+        cy.get('[data-cy="edit-element-name-0-new"]').should('exist').type("Element 2")
         cy.get('[data-cy="edit-element-type-0-new"]').select("Survey")
         cy.get('[data-cy="edit-element-surveyName-0-new"]').select("TIPI")
         cy.get('[data-cy="edit-element-save-0-new"]').click()
