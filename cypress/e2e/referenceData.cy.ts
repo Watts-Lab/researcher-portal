@@ -8,7 +8,7 @@ describe('test spec', () => {
     cy.viewport(2000, 1000, { log: false });
     cy.visit('http://localhost:3000/editor')
     //  cmd for mac
-    cy.typeInCodeEditor(`{ctrl+a}{del}${yamltreatment}`)
+    cy.appendCodeEditor(`{ctrl+a}{del}${yamltreatment}`)
 
 
     cy.containsInCodeEditor('no_refs_stage')

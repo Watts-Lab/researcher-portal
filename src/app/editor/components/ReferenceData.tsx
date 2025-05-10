@@ -211,7 +211,7 @@ const ReferenceData = ({ treatment, stageIndex }: ReferenceDataProps) => {
           <button
             onClick={saveAsJson}
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            data-cy="save-button"
+            data-cy="reference-save-button"
           >
             Save
           </button>

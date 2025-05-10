@@ -1,4 +1,3 @@
-import { createPublicKey } from "crypto";
 
 // npm run cypress:open
 describe('basic test spec', () => {
@@ -13,7 +12,7 @@ describe('basic test spec', () => {
 
                 cy.visit('http://localhost:3000/editor')
                 cy.clearCodeEditor()
-                cy.typeInCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
+                cy.appendCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
 
                 // verify initial text in editor
 
@@ -25,7 +24,7 @@ describe('basic test spec', () => {
 
                 // // view template in render panel
                 // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
-                // cy.get('[data-cy="stage-0"]').click(0, 0)
+                // cy.get('[data-cy="stage-card-0"]').click(0, 0)
                 // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
                 // cy.get('[data-cy="render-panel"]').contains("strong magical field").should("be.visible")
 
@@ -35,7 +34,7 @@ describe('basic test spec', () => {
                 cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}300")
                 cy.get('[data-cy="edit-stage-save-new"]').click()
 
-                cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
+                cy.get('[data-cy="stage-card-0"]').contains("Stage 1").should("be.visible")
 
                 // add first element to stage 1
                 cy.get('[data-cy="add-element-button-0"]').click()
@@ -74,12 +73,12 @@ describe('basic test spec', () => {
                 cy.get('[data-cy="edit-stage-duration-0"]').clear().should('exist').type("400")
                 cy.get('[data-cy="edit-stage-save-0"]').click()
 
-                cy.get('[data-cy="stage-0"]').contains("Stage 1 Edited").should("be.visible")
+                cy.get('[data-cy="stage-card-0"]').contains("Stage 1 Edited").should("be.visible")
 
                 // view first stage in render panel
                 // TODO check if needed
                 // cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("be.visible")
-                cy.get('[data-cy="stage-0"]').click(0, 0)
+                cy.get('[data-cy="stage-card-0"]').click(0, 0)
                 cy.wait(2000)
                 cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
                 // TODO check if needed
@@ -92,8 +91,8 @@ describe('basic test spec', () => {
                 cy.get('[data-cy="edit-stage-duration-new"]').should('exist').type("{backspace}200")
                 cy.get('[data-cy="edit-stage-save-new"]').click()
 
-                cy.get('[data-cy="stage-0"]').contains("Stage 1").should("be.visible")
-                cy.get('[data-cy="stage-1"]').contains("Stage 2").should("be.visible")
+                cy.get('[data-cy="stage-card-0"]').contains("Stage 1").should("be.visible")
+                cy.get('[data-cy="stage-card-1"]').contains("Stage 2").should("be.visible")
 
                 // add third element to stage 2
                 cy.get('[data-cy="add-element-button-1"]').click()
@@ -106,7 +105,7 @@ describe('basic test spec', () => {
                 cy.get('[data-cy="element-1-0"]').contains("https://www.youtube.com/").should("be.visible")
 
                 // view second stage in render panel
-                cy.get('[data-cy="stage-1"]').click(0, 0)
+                cy.get('[data-cy="stage-card-1"]').click(0, 0)
                 cy.get('[data-cy="render-panel"]').contains("Click on a stage card to preview the stage from a participant view.").should("not.exist")
                 cy.get('[data-cy="render-panel"]').contains("Click to continue the video").should("be.visible")
 
@@ -123,10 +122,10 @@ describe('basic test spec', () => {
                 cy.get('[data-cy="edit-element-button-0-2"]').click()
                 cy.get('[data-cy="edit-element-delete-0-2"]').click()
 
-                cy.get('[data-cy="stage-0"]').should("not.contain", "Element 3")
+                cy.get('[data-cy="stage-card-0"]').should("not.contain", "Element 3")
 
                 // add fourth element to second stage via code editor
-                cy.typeInCodeEditor("{moveToEnd}{enter}{home}          - name: Element 4 {enter}  type: prompt {enter}file: file/address")
+                cy.appendCodeEditor("{moveToEnd}{enter}{home}          - name: Element 4 {enter}  type: prompt {enter}file: file/address")
                 cy.get('[data-cy="yaml-save"]').click()
 
                 cy.containsInCodeEditor("name: Element 4")
@@ -134,11 +133,11 @@ describe('basic test spec', () => {
                 cy.get('[data-cy="element-1-1"]').contains("Element 4").should("be.visible")
 
                 // add third stage via code editor
-                cy.typeInCodeEditor("{moveToEnd}{enter}{home}      - name: Stage 3 {enter}  duration: 300 {enter}elements: []")
+                cy.appendCodeEditor("{moveToEnd}{enter}{home}      - name: Stage 3 {enter}  duration: 300 {enter}elements: []")
                 cy.get('[data-cy="yaml-save"]').click()
 
                 cy.containsInCodeEditor("name: Stage 3")
-                cy.get('[data-cy="stage-2"]').should('exist')
+                cy.get('[data-cy="stage-card-2"]').should('exist')
 
                 // delete third stage
                 cy.get('[data-cy="edit-stage-button-2"]').click()

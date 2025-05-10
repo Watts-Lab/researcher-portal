@@ -10,7 +10,7 @@ describe('test spec', () => {
 
                 cy.visit('http://localhost:3000/editor')
                 cy.clearCodeEditor()
-                cy.typeInCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
+                cy.appendCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
 
                 // verify initial text in editor
 

@@ -21,10 +21,10 @@ export default function Timeline({
 }) {
   const [scale, setScale] = useState(() => {
     // Retrieve the scale value from localStorage on initial render
-    const storedScale = localStorage.getItem('timelineScale');
-    return storedScale ? 10 ** (Number(storedScale) / 100) : 1;
-  });
-  
+    const storedScale = localStorage.getItem('timelineScale')
+    return storedScale ? 10 ** (Number(storedScale) / 100) : 1
+  })
+
   const [stageOptions, setStageOptions] = useState<string[]>([])
   const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
   const [introSequenceOptions, setIntroSequenceOptions] = useState<string[]>([])
@@ -273,6 +273,8 @@ export default function Timeline({
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          data-cy={`stage-drag-card-${index}`}
+                          tabIndex={0}
                         >
                           {obj.stage.name && (
                             <StageCard

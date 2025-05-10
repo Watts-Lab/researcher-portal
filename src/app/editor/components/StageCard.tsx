@@ -119,7 +119,7 @@ export function StageCard({
       )}
       style={{ width: scale * duration }}
       onClick={handleStageClick}
-      data-cy={'stage-' + stageIndex}
+      data-cy={'stage-card-' + stageIndex}
       tabIndex={0}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -187,6 +187,8 @@ export function StageCard({
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          data-cy={`element-drag-${stageIndex}-${index}`}
+                          tabIndex={0}
                         >
                           <ElementCard
                             key={`element ${index}`}
