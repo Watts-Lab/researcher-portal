@@ -1,0 +1,19 @@
+treatments:
+  - name: treatment_one
+    playerCount: 1
+    gameStages:
+      - name: Role Assignment and General Instructions
+        duration: 300
+        elements: []
+      - name: Main Discussion
+        duration: 200
+        elements: []
+  - name: treatment_two
+    playerCount: 1
+    gameStages:
+      - name: test
+        duration: 200
+        elements: []
+      - name: test2
+        duration: 200
+        elements: []

@@ -7,10 +7,12 @@ export default function DraggableSplitter({
   isDragging,
   ...props
 }: any) {
+  const dataCy = dir === 'horizontal' ? 'splitter-horizontal' : 'splitter-vertical'
   return (
     <div
       id={id}
       data-testid={id}
+      data-cy={dataCy}
       tabIndex={0}
       className={cn(
         'bg-gray-200',

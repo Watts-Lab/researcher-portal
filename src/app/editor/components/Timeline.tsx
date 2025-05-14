@@ -8,13 +8,23 @@ import { EditStage } from './EditStage'
 import { StageContext } from '@/editor/stageContext'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import Dropdown from './Dropdown'
+import { stringify } from 'yaml'
+import {
+  treatmentSchema,
+  TreatmentType,
+} from '../../../../deliberation-empirica/server/src/preFlight/validateTreatmentFile'
 
 export default function Timeline({
   setRenderPanelStage,
 }: {
   setRenderPanelStage: any
 }) {
-  const [scale, setScale] = useState(1) // pixels per second
+  const [scale, setScale] = useState(() => {
+    // Retrieve the scale value from localStorage on initial render
+    const storedScale = localStorage.getItem('timelineScale')
+    return storedScale ? 10 ** (Number(storedScale) / 100) : 1
+  })
+
   const [stageOptions, setStageOptions] = useState<string[]>([])
   const [treatmentOptions, setTreatmentOptions] = useState<string[]>([])
   const [introSequenceOptions, setIntroSequenceOptions] = useState<string[]>([])
@@ -39,20 +49,42 @@ export default function Timeline({
   useEffect(() => {
     // Access localStorage only on the client side
     if (typeof window !== 'undefined') {
-      const codeStr = localStorage.getItem('code') || ''
+      let codeStr = localStorage.getItem('code') || ''
+      //codeStr = '' // In case anything goes wrong, use to reset
       const parsedCode = parse(codeStr)
       setTreatment(parsedCode)
 
       const storedFilter = localStorage.getItem('currentStageName') || 'all'
       setCurrentStageName(storedFilter)
 
-      const storedTreatmentIndex =
-        parseInt(localStorage.getItem('selectedTreatmentIndex') || '0', 10)
+      const storedTreatmentIndex = parseInt(
+        localStorage.getItem('selectedTreatmentIndex') || '0',
+        10
+      )
       setSelectedTreatmentIndex(storedTreatmentIndex)
 
-      const storedIntroSequenceIndex =
-        parseInt(localStorage.getItem('selectedIntroSequenceIndex') || '0', 10)
+      const storedIntroSequenceIndex = parseInt(
+        localStorage.getItem('selectedIntroSequenceIndex') || '0',
+        10
+      )
       setSelectedIntroSequenceIndex(storedIntroSequenceIndex)
+
+      if (
+        parsedCode &&
+        parsedCode.treatments?.[selectedTreatmentIndex]?.gameStages
+      ) {
+        const stageNames = parsedCode.treatments?.[
+          selectedTreatmentIndex
+        ].gameStages.map((stage: any) => stage.name)
+        setIntroSequenceOptions(['all', ...stageNames]) // 'all' as default
+      }
+      if (parsedCode?.templates) {
+        const templates = new Map<string, any>()
+        parsedCode.templates.forEach((template: any) => {
+          templates.set(template.templateName, template.templateContent)
+        })
+        setTemplatesMap(templates)
+      }
     }
   }, [setTreatment, setSelectedTreatmentIndex, setSelectedIntroSequenceIndex])
 
@@ -150,7 +182,9 @@ export default function Timeline({
     localStorage.setItem('currentStageName', 'all')
   }
 
-  function handleIntroSequenceChange(event: React.ChangeEvent<HTMLSelectElement>) {
+  function handleIntroSequenceChange(
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) {
     const newIndex = parseInt(event.target.value, 10)
     setSelectedIntroSequenceIndex(newIndex)
     localStorage.setItem('selectedIntroSequenceIndex', newIndex.toString())
@@ -239,16 +273,39 @@ export default function Timeline({
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          data-cy={`stage-drag-card-${index}`}
+                          tabIndex={0}
                         >
-                          <StageCard
-                            title={obj.stage.name}
-                            elements={obj.stage.elements}
-                            duration={obj.stage.duration}
-                            scale={scale}
-                            sequence={'gameStage'}
-                            stageIndex={obj.originalIndex}
-                            setRenderPanelStage={setRenderPanelStage}
-                          />
+                          {obj.stage.name && (
+                            <StageCard
+                              title={obj.stage.name}
+                              elements={obj.stage.elements}
+                              duration={obj.stage.duration}
+                              scale={scale}
+                              sequence={'gameStage'}
+                              stageIndex={obj.originalIndex}
+                              setRenderPanelStage={setRenderPanelStage}
+                              isTemplate={false}
+                            />
+                          )}
+                          {obj.stage.template && (
+                            <StageCard
+                              title={
+                                templatesMap.get(obj.stage.template)[0].name
+                              }
+                              elements={
+                                templatesMap.get(obj.stage.template)[0].elements
+                              }
+                              duration={
+                                templatesMap.get(obj.stage.template)[0].duration
+                              }
+                              scale={scale}
+                              sequence={'gameStage'}
+                              stageIndex={index}
+                              setRenderPanelStage={setRenderPanelStage}
+                              isTemplate={true}
+                            />
+                          )}
                         </div>
                       )}
                     </Draggable>

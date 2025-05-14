@@ -77,14 +77,15 @@ export function RenderPanel() {
         </h1>
       )}
       {currentStageIndex !== 'default' && (
-        <div className="min-w-fit">
+        <div className="min-w-fit" data-cy="stage-tools">
           <h1>Preview of Stage {currentStageIndex} </h1>
           <TimePicker
             value={time + ' s'}
             setValue={setElapsed}
             maxValue={
-              treatment.treatments?.[selectedTreatmentIndex].gameStages[currentStageIndex]
-                ?.duration ?? 0
+              treatment.treatments?.[selectedTreatmentIndex].gameStages[
+                currentStageIndex
+              ]?.duration ?? 0
             }
           />
           <ReferenceData
@@ -115,5 +116,5 @@ export function RenderPanel() {
         {currentStageIndex !== 'default' && <StyledStage />}
       </div>
     </div>
-  ) 
+  )
 }
