@@ -126,6 +126,8 @@ export default function CodeEditor({ language = 'yaml' }) {
           onMount={(editor: any, monaco: any) => {
             editorRef.current = editor
             monacoRef.current = monaco
+
+            window.editor = editor // Expose the Monaco Editor instance for testing
           }}
         />
       </div>

@@ -45,6 +45,10 @@ export function RenderPanel() {
     treatment,
     setTreatment,
     player,
+    templatesMap,
+    setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
   } = useContext(StageContext)
 
   console.log('RenderPanel.tsx current stage index', currentStageIndex)
@@ -73,18 +77,19 @@ export function RenderPanel() {
         </h1>
       )}
       {currentStageIndex !== 'default' && (
-        <div className="min-w-fit">
+        <div className="min-w-fit" data-cy="stage-tools">
           <h1>Preview of Stage {currentStageIndex} </h1>
           <TimePicker
             value={time + ' s'}
             setValue={setElapsed}
             maxValue={
-              treatment.treatments?.[0].gameStages[currentStageIndex]
-                ?.duration ?? 0
+              treatment.treatments?.[selectedTreatmentIndex].gameStages[
+                currentStageIndex
+              ]?.duration ?? 0
             }
           />
           <ReferenceData
-            treatment={treatment.treatments?.[0]}
+            treatment={treatment.treatments?.[selectedTreatmentIndex]}
             stageIndex={currentStageIndex}
           />
           {/* need to retrieve stage duration from treatment */}
@@ -111,5 +116,5 @@ export function RenderPanel() {
         {currentStageIndex !== 'default' && <StyledStage />}
       </div>
     </div>
-  ) 
+  )
 }

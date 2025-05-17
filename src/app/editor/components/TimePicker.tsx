@@ -1,13 +1,13 @@
-import "react";
-import { useState } from "react";
+import 'react'
+import { useState } from 'react'
 export default function TimePicker({
   value,
   setValue,
   maxValue,
 }: {
-  value: any;
-  setValue: any;
-  maxValue: any;
+  value: any
+  setValue: any
+  maxValue: any
 }) {
   return (
     <div>
@@ -19,8 +19,9 @@ export default function TimePicker({
         max={maxValue}
         defaultValue="0"
         onChange={(e) => setValue(e.target.value)}
+        data-cy="time-slider"
       />
       {value}
     </div>
-  );
+  )
 }

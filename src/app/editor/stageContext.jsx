@@ -1,5 +1,5 @@
 //import { set } from 'node_modules/cypress/types/lodash';
-import { createContext, useState } from 'react'
+import { createContext, useState, useCallback, useMemo, useEffect } from 'react'
 import { stringify } from 'yaml'
 import {
   useGame,
@@ -7,7 +7,7 @@ import {
   usePlayer,
   useRound,
   useStageTimer,
-} from "@empirica/core/player/classic/react";
+} from '@empirica/core/player/classic/react'
 
 // export const StageContext = createContext({
 //     currentStageIndex: "default",
@@ -21,27 +21,65 @@ const StageProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0)
   const [treatment, setTreatment] = useState(null)
   const [templatesMap, setTemplatesMap] = useState(new Map())
+  const [refData, setRefData] = useState({})
+  const [selectedTreatmentIndex, setSelectedTreatmentIndex] = useState(0)
+  const [selectedIntroSequenceIndex, setSelectedIntroSequenceIndex] =
+    useState(0)
   const player = usePlayer()
 
   // for updating code editor, requires reload
-  function editTreatment(newTreatment) {
-    setTreatment(newTreatment)
-    localStorage.setItem('code', stringify(newTreatment))
-    window.location.reload()
-  }
+  const editTreatment = useCallback(
+    (newTreatment) => {
+      setTreatment(newTreatment)
+      localStorage.setItem('code', stringify(newTreatment))
+      window.location.reload()
+    },
+    [setTreatment]
+  )
 
-  const contextValue = {
-    currentStageIndex,
-    setCurrentStageIndex,
-    elapsed,
-    setElapsed,
-    treatment,
-    setTreatment,
-    editTreatment,
-    player,
-    templatesMap,
-    setTemplatesMap,
-  }
+  const contextValue = useMemo(
+    () => ({
+      currentStageIndex,
+      setCurrentStageIndex,
+      elapsed,
+      setElapsed,
+      treatment,
+      setTreatment,
+      editTreatment,
+      player,
+      templatesMap,
+      setTemplatesMap,
+      selectedTreatmentIndex,
+      setSelectedTreatmentIndex,
+      selectedIntroSequenceIndex,
+      setSelectedIntroSequenceIndex,
+      refData,
+      setRefData,
+    }),
+    [
+      currentStageIndex,
+      setCurrentStageIndex,
+      elapsed,
+      setElapsed,
+      treatment,
+      setTreatment,
+      editTreatment,
+      player,
+      templatesMap,
+      setTemplatesMap,
+      selectedTreatmentIndex,
+      setSelectedTreatmentIndex,
+      selectedIntroSequenceIndex,
+      setSelectedIntroSequenceIndex,
+      refData,
+      setRefData,
+    ]
+  )
+
+  // expose context values to the window object
+  useEffect(() => {
+    window.stageContext = contextValue
+  }, [contextValue])
 
   return (
     <StageContext.Provider value={contextValue}>

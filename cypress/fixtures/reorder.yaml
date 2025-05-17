@@ -1,0 +1,22 @@
+treatments:
+  - name: drag_and_drop_test
+    playerCount: 1
+    gameStages:
+      - name: Stage 1
+        duration: 300
+        elements:
+          - name: Element 1
+            type: survey
+            surveyName: CRT
+          - name: Element 2
+            type: survey
+            surveyName: TIPI
+      - name: Stage 2
+        duration: 200
+        elements:
+          - name: Element 1
+            type: survey
+            surveyName: CRT
+          - name: Element 2
+            type: survey
+            surveyName: TIPI  

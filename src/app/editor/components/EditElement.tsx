@@ -22,7 +22,14 @@ export function EditElement({
     editTreatment,
     templatesMap,
     setTemplatesMap,
+    selectedTreatmentIndex,
+    setSelectedTreatmentIndex,
   } = useContext(StageContext)
+
+  const stageTemplateName =
+    treatment.treatments[selectedTreatmentIndex]?.gameStages?.[
+      currentStageIndex
+    ]?.template || ''
 
   const {
     register,
@@ -33,13 +40,16 @@ export function EditElement({
   } = useForm({
     defaultValues: {
       name:
-        treatment?.treatments?.[0].gameStages[stageIndex]?.elements[
-          elementIndex
-        ]?.name || '',
+        stageTemplateName == ''
+          ? treatment?.treatments?.[selectedTreatmentIndex].gameStages[
+              stageIndex
+            ]?.elements?.[elementIndex]?.name || ''
+          : '',
       selectedOption:
-        treatment?.treatments?.[0].gameStages[stageIndex]?.elements[
-          elementIndex
-        ]?.type || 'Pick one',
+        stageTemplateName == ''
+          ? treatment?.treatments[selectedTreatmentIndex].gameStages[stageIndex]
+              ?.elements?.[elementIndex]?.type || 'Pick one'
+          : 'Pick one',
       file: '',
       url: '',
       params: [],
@@ -88,13 +98,13 @@ export function EditElement({
     }
 
     if (elementIndex === -1) {
-      updatedTreatment?.treatments[0].gameStages[stageIndex]?.elements?.push(
-        inputs
-      )
+      updatedTreatment?.treatments[selectedTreatmentIndex].gameStages[
+        stageIndex
+      ]?.elements?.push(inputs)
     } else {
-      updatedTreatment.treatments[0].gameStages[stageIndex].elements[
-        elementIndex
-      ] = inputs
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[
+        stageIndex
+      ].elements[elementIndex] = inputs
     }
 
     editTreatment(updatedTreatment)
@@ -106,10 +116,9 @@ export function EditElement({
     )
     if (confirm) {
       const updatedTreatment = JSON.parse(JSON.stringify(treatment)) // deep copy
-      updatedTreatment.treatments[0].gameStages[stageIndex].elements.splice(
-        elementIndex,
-        1
-      ) // delete in place
+      updatedTreatment.treatments[selectedTreatmentIndex].gameStages[
+        stageIndex
+      ].elements.splice(elementIndex, 1) // delete in place
       editTreatment(updatedTreatment)
     }
   }
