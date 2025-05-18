@@ -5,7 +5,7 @@ describe('timeline filter stages and treatments', () => {
         cy.clearCodeEditor();
         cy.readFileIntoCodeEditor('cypress/fixtures/filterTreatment.yaml');
         cy.containsInCodeEditor("treatment_one")
-        cy.get('[data-cy="yaml-save"]').realClick();
+        cy.get('[data-cy="code-editor-save"]').realClick();
     });
 
     it('should dynamically populate stage options in stages dropdown', () => {
@@ -165,7 +165,7 @@ describe('timeline filter stages and treatments', () => {
         let emptyTreatments = "treatments: []\n";
         cy.clearCodeEditor();
         cy.appendCodeEditor(`${emptyTreatments}`);
-        cy.get('[data-cy="yaml-save"]').realClick();
+        cy.get('[data-cy="code-editor-save"]').realClick();
 
         // Verify the messages
         cy.get('[data-cy="treatments-dropdown"] select').should('contain', 'Nothing available');

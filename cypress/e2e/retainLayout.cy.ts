@@ -14,7 +14,7 @@ describe('editor layout persistence', () => {
     const yamltreatment = `treatments: {enter}- name: cypress_code_editor_test \n  playerCount: 1 \ngameStages: {enter}{home}        - name: Stage 1 \n  duration: 100 \nelements: []`
     cy.clearCodeEditor();
     cy.appendCodeEditor(`${yamltreatment}`) // equivalent to clear() in cypress
-    cy.get('[data-cy="yaml-save"]').realClick();
+    cy.get('[data-cy="code-editor-save"]').realClick();
   });
 
   it('remembers the left column width after a reload', () => {

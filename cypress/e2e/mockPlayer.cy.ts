@@ -18,7 +18,7 @@ describe('test spec', () => {
                 // the yamltreatment variable has no line numbers and line breaks
                 // so right now comparison is only on the treatmentName
                 cy.containsInCodeEditor('mock_player_test')
-                cy.get('[data-cy="yaml-save"]').click()
+                cy.get('[data-cy="code-editor-save"]').click()
 
                 // click on survey questions and complete survey
                 cy.contains('Please answer the following questions').should('exist')

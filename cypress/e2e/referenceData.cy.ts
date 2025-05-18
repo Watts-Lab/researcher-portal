@@ -12,7 +12,7 @@ describe('test spec', () => {
 
 
     cy.containsInCodeEditor('no_refs_stage')
-    cy.get('[data-cy="yaml-save"]').click()
+    cy.get('[data-cy="code-editor-save"]').click()
 
     // test confirm the stage title
     cy.contains('[data-cy="stagerefs-title"]', 'Stage Refs and Dependencies')

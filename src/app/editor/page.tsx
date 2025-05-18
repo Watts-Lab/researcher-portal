@@ -96,7 +96,7 @@ function EditorPageContent() {
         <DraggableSplitter dir="vertical" {...codeSeparatorProps} />
 
         <div id="rightColumn" className="flex-1 min-w-[200px] overflow-auto">
-          <CodeEditor />
+          <CodeEditor language={'yaml'} />
         </div>
       </div>
     </StageProvider>

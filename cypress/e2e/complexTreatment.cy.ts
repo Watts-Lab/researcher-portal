@@ -8,7 +8,7 @@ describe('complex treatment testing', () => {
         // set, verify, and save initial treatment
         cy.readFileIntoCodeEditor('cypress/fixtures/exampleTreatment.yaml')
         cy.containsInCodeEditor("simple template test")
-        cy.get('[data-cy="yaml-save"]').realClick();
+        cy.get('[data-cy="code-editor-save"]').realClick();
     });
 
     it('renders all stages and elements (including templates) in timeline', () => {

@@ -9,7 +9,7 @@ describe('timeline drag and drop', () => {
         // set, verify, and save treatment
         cy.readFileIntoCodeEditor('cypress/fixtures/reorder.yaml')
         cy.containsInCodeEditor('drag_and_drop_test');
-        cy.get('[data-cy="yaml-save"]').realClick();
+        cy.get('[data-cy="code-editor-save"]').realClick();
     });
 
     it('allows reordering of elements within stage', () => {
