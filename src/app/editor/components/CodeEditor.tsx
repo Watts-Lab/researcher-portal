@@ -123,9 +123,12 @@ export default function CodeEditor({ language = 'yaml' }) {
             scrollBeyondLastLine: false,
           }}
           onChange={(newValue: any) => handleChange(newValue)}
-          onMount={(editor: any, monaco: any) => {
+          onMount={(
+            editor: MonacoEditor.IStandaloneCodeEditor,
+            monacoInstance: Monaco
+          ) => {
             editorRef.current = editor
-            monacoRef.current = monaco
+            monacoRef.current = monacoInstance
 
             window.editor = editor // Expose the Monaco Editor instance for testing
           }}
