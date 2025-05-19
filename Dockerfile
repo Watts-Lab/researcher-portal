@@ -1,6 +1,9 @@
 # ---- Build Stage ----
 FROM node:22-alpine AS builder
 
+# Install rsync and bash
+RUN apk add --no-cache bash rsync
+
 # Set working directory
 WORKDIR /app
 
